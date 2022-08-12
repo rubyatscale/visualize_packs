@@ -1,6 +1,6 @@
 # visualize_packwerk
 
-This pack contains rake tasks to help visualize relationships between packwerk packs.
+This gem contains rake tasks to help visualize relationships between packwerk packs.
 
 # Usage
 ## Building a package graph for a selection of packages (owned by 5 teams max)
