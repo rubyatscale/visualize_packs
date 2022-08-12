@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "visualize_packwerk"
-  spec.version       = '0.0.3'
+  spec.version       = '0.0.4'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
   spec.summary       = 'A gem to visualize connections in a Rails app that uses Packwerk'

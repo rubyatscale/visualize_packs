@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packwerk (0.0.3)
+    visualize_packwerk (0.0.4)
       code_ownership
       package_protections
       parse_packwerk
@@ -90,6 +90,7 @@ GEM
       sorbet-static (= 0.5.10323)
     sorbet-runtime (0.5.10323)
     sorbet-static (0.5.10323-universal-darwin-20)
+    sorbet-static (0.5.10323-x86_64-linux)
     sorbet-static-and-runtime (0.5.10323)
       sorbet (= 0.5.10323)
       sorbet-runtime (= 0.5.10323)
@@ -123,6 +124,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   bundler (~> 2.2.16)
