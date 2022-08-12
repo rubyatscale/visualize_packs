@@ -28,6 +28,10 @@ jobs:
           gem install bundler
           bundle install --jobs 4 --retry 3
           bundle exec rspec
+          echo "git diff"
+          git diff
+          echo "git diff-index --quiet --cached HEAD"
+          git diff-index --quiet --cached HEAD`
   static-type-checking:
     runs-on: ubuntu-latest
     steps:
