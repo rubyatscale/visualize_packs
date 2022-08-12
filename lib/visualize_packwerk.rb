@@ -6,4 +6,12 @@ module VisualizePackwerk
   require 'code_ownership'
   require 'package_protections'
   require 'graphviz'
+
+  require 'visualize_packwerk/node_interface'
+  require 'visualize_packwerk/graph_interface'
+  require 'visualize_packwerk/team_node'
+  require 'visualize_packwerk/package_node'
+  require 'visualize_packwerk/team_graph'
+  require 'visualize_packwerk/package_graph'
+  require 'visualize_packwerk/package_relationships'
 end
