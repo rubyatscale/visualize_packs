@@ -3,13 +3,13 @@
 require 'visualize_packwerk'
 require 'rails'
 
-module MyGem
+module VisualizePackwerk
   class Railtie < Rails::Railtie
-    railtie_name :my_gem
+    railtie_name :visualize_packwerk
 
     rake_tasks do
       path = File.expand_path(__dir__)
-      Dir.glob("#{path}/tasks/**/*.rake").each { |f| load f }
+      Dir.glob("#{path}/tasks/visualize_packwerk.rake").each { |f| load f }
     end
   end
 end
