@@ -1,6 +1,6 @@
 # typed: strict
 
-module PackwerkVisualizations
+module VisualizePackwerk
   class TaskLoader
     include Rake::DSL
     extend T::Sig
@@ -70,4 +70,4 @@ module PackwerkVisualizations
   end
 end
 
-PackwerkVisualizations::TaskLoader.new.create_tasks!
+VisualizePackwerk::TaskLoader.new.create_tasks!
