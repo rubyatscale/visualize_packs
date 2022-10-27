@@ -2,6 +2,8 @@
 
 A d3 graph to visualize packwerk modularity.
 
+![This is an example of a packwerk modularity graph](docs/example.png)
+
 ## Setup
 
 Environment variables required to start the graph:
@@ -11,6 +13,7 @@ Environment variables required to start the graph:
 
 To start the graph in `modularity-graph`:
 
-1. Run `ruby parse_packwerk_integration.rb` from the command line
+1. Run `ruby parse_packwerk_integration.rb` from the command line. You can pass in the above environment variables like this:
+- Example: `RELATIVE_PATH_TO_REPOSITORY='../../my_repo' GITHUB_REPO_SLUG='MyOrg/myrepo' ruby parse_packwerk_integration.rb`
 2. Run `yarn start`
 3. Go to `http://localhost:3000/`
