@@ -27,7 +27,7 @@ module VisualizePackwerk
         # We would also need to ignore it when parsing PackageNodes.
         # next if p.name == ParsePackwerk::ROOT_PACKAGE_NAME
         owner = CodeOwnership.for_package(p)
-        violations_by_package = PackageProtections::ProtectedPackage.from(p).violations.group_by(&:to_package_name).transform_values(&:count)
+        violations_by_package = p.violations.group_by(&:to_package_name).transform_values(&:count)
 
         package_nodes << PackageNode.new(
           name: p.name,
