@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'sorbet-runtime'
   spec.add_dependency 'parse_packwerk'
-  spec.add_dependency 'package_protections'
   spec.add_dependency 'code_ownership'
   spec.add_dependency 'rake'
   spec.add_dependency 'ruby-graphviz'
