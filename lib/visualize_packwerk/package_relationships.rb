@@ -6,25 +6,6 @@ module VisualizePackwerk
 
     OUTPUT_FILENAME = T.let('packwerk.png'.freeze, String)
 
-    sig { void }
-    def initialize
-      @colors_by_team = T.let({}, T::Hash[String, String])
-      @remaining_colors = T.let(
-        [
-          # Found using https://htmlcolorcodes.com/color-picker/
-          '#77EE77', # green
-          '#DFEE77', # yellow
-          '#77EEE6', # teal
-          '#EEC077', # orange
-          '#EE77BF', # pink
-          '#EE6F6F', # red
-          '#ED6EDE', # magenta
-          '#8E8CFE', # blue
-          '#EEA877', # red-orange
-        ], T::Array[String]
-      )
-    end
-
     sig { params(teams: T::Array[CodeTeams::Team]).void }
     def create_package_graph_for_teams!(teams)
       packages = ParsePackwerk.all.select do |package|
@@ -38,27 +19,27 @@ module VisualizePackwerk
     def create_team_graph!(teams, show_all_teams: false)
       package_graph = PackageGraph.construct
       team_graph = TeamGraph.from_package_graph(package_graph)
-      highlighted_node_names = teams.map(&:name)
+      node_names = teams.map(&:name)
 
-      draw_graph!(team_graph, highlighted_node_names, show_all_nodes: show_all_teams)
+      draw_graph!(team_graph, node_names, show_all_nodes: show_all_teams)
     end
 
-    sig { params(packages: T::Array[ParsePackwerk::Package], show_all_packs: T::Boolean).void }
-    def create_package_graph!(packages, show_all_packs: false)
+    sig { params(packages: T::Array[ParsePackwerk::Package]).void }
+    def create_package_graph!(packages)
       graph = PackageGraph.construct
-      highlighted_node_names = packages.map(&:name)
-      draw_graph!(graph, highlighted_node_names, show_all_nodes: show_all_packs)
+      node_names = packages.map(&:name)
+      draw_graph!(graph, node_names)
     end
 
     sig { params(packages: T::Array[ParsePackwerk::Package], show_all_nodes: T::Boolean).void }
     def create_graph!(packages, show_all_nodes: false)
       graph = PackageGraph.construct
-      highlighted_node_names = packages.map(&:name)
-      draw_graph!(graph, highlighted_node_names, show_all_nodes: show_all_nodes)
+      node_names = packages.map(&:name)
+      draw_graph!(graph, node_names, show_all_nodes: show_all_nodes)
     end
 
-    sig { params(graph: GraphInterface, highlighted_node_names: T::Array[String], show_all_nodes: T::Boolean).void }
-    def draw_graph!(graph, highlighted_node_names, show_all_nodes: false)
+    sig { params(graph: GraphInterface, node_names: T::Array[String], show_all_nodes: T::Boolean).void }
+    def draw_graph!(graph, node_names, show_all_nodes: false)
       # SFDP looks better than dot in some cases, but less good in other cases.
       # If your visualization looks bad, change the layout to other_layout!
       # https://graphviz.org/docs/layouts/
@@ -69,13 +50,10 @@ module VisualizePackwerk
       # Create graph nodes
       graphviz_nodes = T.let({}, T::Hash[String, GraphViz::Node])
 
-      nodes_to_draw = graph.nodes
+      nodes_to_draw = graph.nodes.select{|n| node_names.include?(n.name) }
 
       nodes_to_draw.each do |node|
-        next unless highlighted_node_names.any? { |highlighted_node_name| node.depends_on?(highlighted_node_name) } || highlighted_node_names.include?(node.name)
-
-        highlight_node = highlighted_node_names.include?(node.name) && !show_all_nodes
-        graphviz_nodes[node.name] = add_node(node, graphviz_graph, highlight_node)
+        graphviz_nodes[node.name] = add_node(node, graphviz_graph)
       end
 
       max_edge_width = 10
@@ -83,7 +61,7 @@ module VisualizePackwerk
       # Draw all edges
       nodes_to_draw.each do |node|
         node.dependencies.each do |to_node|
-          next unless highlighted_node_names.include?(to_node)
+          next unless node_names.include?(to_node)
 
           graphviz_graph.add_edges(
             graphviz_nodes[node.name],
@@ -93,7 +71,7 @@ module VisualizePackwerk
         end
 
         node.violations_by_node_name.each do |to_node_name, violation_count|
-          next unless highlighted_node_names.include?(to_node_name)
+          next unless node_names.include?(to_node_name)
 
           edge_width = [
             [(violation_count / 5).to_i, 1].max, # rubocop:disable Lint/NumberConversion
@@ -114,43 +92,19 @@ module VisualizePackwerk
       puts 'Finished!'
     end
 
-    sig { params(node: NodeInterface, graph: GraphViz, highlight_node: T::Boolean).returns(GraphViz::Node) }
-    def add_node(node, graph, highlight_node)
-      default_node_options = {
+    sig { params(node: NodeInterface, graph: GraphViz).returns(GraphViz::Node) }
+    def add_node(node, graph)
+      node_options = {
         fontsize: 26.0,
-        fontcolor: 'white',
-        fillcolor: 'black',
+        fontcolor: 'black',
+        fillcolor: 'white',
         color: 'black',
         height: 1.0,
         style: 'filled, rounded',
         shape: 'box',
       }
 
-      node_options = if highlight_node
-        default_node_options.merge(
-          fillcolor: highlight_by_group(node),
-          color: highlight_by_group(node),
-          fontcolor: 'black'
-        )
-      else
-        default_node_options
-      end
-
       graph.add_nodes(node.name, **node_options)
-    end
-
-    sig { params(node: NodeInterface).returns(String) }
-    def highlight_by_group(node)
-      highlighted_package_color = @colors_by_team[node.group_name]
-      if !highlighted_package_color
-        highlighted_package_color = @remaining_colors.first
-        raise 'Can only color nodes a max of 5 unique colors for now' if highlighted_package_color.nil?
-
-        @remaining_colors.delete(highlighted_package_color)
-        @colors_by_team[node.group_name] = highlighted_package_color
-      end
-
-      highlighted_package_color
     end
   end
 
