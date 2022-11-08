@@ -27,7 +27,7 @@ module VisualizePackwerk
             end
           end
 
-          PackageRelationships.new.create_package_graph!(packages, show_all_packs: show_all_packs)
+          PackageRelationships.new.create_package_graph!(packages)
         end
 
         # This creates the array of symbols that are needed to declare an argument to a rake task
