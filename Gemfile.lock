@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packwerk (0.0.4)
+    visualize_packwerk (0.0.5)
       code_ownership
       parse_packwerk
       rake
@@ -12,7 +12,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    code_ownership (1.28.0)
+    code_ownership (1.28.2)
       code_teams (~> 1.0)
       parse_packwerk
       sorbet-runtime
