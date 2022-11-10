@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packwerk (0.0.5)
+    visualize_packwerk (0.0.6)
       code_ownership
       parse_packwerk
       rake
