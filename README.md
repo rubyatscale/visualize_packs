@@ -6,17 +6,17 @@ This gem contains rake tasks to help visualize relationships between packwerk pa
 ## Building a package graph for a selection of packages
 ```ruby
 # Select the packs you want to include
-selected_packs = ParsePackwerk.all
-selected_packs = ParsePackwerk.all.select{|p| ['packs/my_pack_1', 'packs/my_pack_2'].include?(p.name) }
-selected_packs = ParsePackwerk.all.select{|p| ['Team 1', 'Team 2'].include?(CodeOwnership.for_package(p)&.name) }
+selected_packs = Packs.all
+selected_packs = Packs.all.select{ |p| ['packs/my_pack_1', 'packs/my_pack_2'].include?(p.name) }
+selected_packs = Packs.all.select{ |p| ['Team 1', 'Team 2'].include?(CodeOwnership.for_package(p)&.name) }
 VisualizePackwerk.package_graph!(selected_packs)
 ```
 
 # Building a team graph for specific teams
-```
+```ruby
 # Select the teams you want to include
 selected_teams = CodeTeams.all
-selected_teams = CodeTeams.all.select{ ... }
+selected_teams = CodeTeams.all.select{ |t| ['Team 1', 'Team 2'].include?(t.name) }
 VisualizePackwerk.team_graph!(selected_teams)
 ```
 

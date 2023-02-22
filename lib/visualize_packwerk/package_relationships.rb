@@ -8,7 +8,7 @@ module VisualizePackwerk
 
     sig { params(teams: T::Array[CodeTeams::Team]).void }
     def create_package_graph_for_teams!(teams)
-      packages = ParsePackwerk.all.select do |package|
+      packages = Packs.all.select do |package|
         teams.map(&:name).include?(CodeOwnership.for_package(package)&.name)
       end
 
@@ -24,14 +24,14 @@ module VisualizePackwerk
       draw_graph!(team_graph, node_names, show_all_nodes: show_all_teams)
     end
 
-    sig { params(packages: T::Array[ParsePackwerk::Package]).void }
+    sig { params(packages: T::Array[Packs::Pack]).void }
     def create_package_graph!(packages)
       graph = PackageGraph.construct
       node_names = packages.map(&:name)
       draw_graph!(graph, node_names)
     end
 
-    sig { params(packages: T::Array[ParsePackwerk::Package], show_all_nodes: T::Boolean).void }
+    sig { params(packages: T::Array[Packs::Pack], show_all_nodes: T::Boolean).void }
     def create_graph!(packages, show_all_nodes: false)
       graph = PackageGraph.construct
       node_names = packages.map(&:name)

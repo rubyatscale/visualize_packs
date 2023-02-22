@@ -22,7 +22,7 @@ Dir.chdir(ENV['RELATIVE_PATH_TO_REPOSITORY']) do
       }
     end,
     "links" => ParsePackwerk.all.reject {|package| package.name === "."}.flat_map do |package|
-      package.dependencies.map do |dependency|
+      package.dependencies.reject { |d| d == '.' }.map do |dependency|
         {
           "source" => package.name,
           "target" => dependency,

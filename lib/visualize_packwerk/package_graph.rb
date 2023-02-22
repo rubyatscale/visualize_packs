@@ -22,18 +22,26 @@ module VisualizePackwerk
     sig { returns(PackageGraph) }
     def self.construct
       package_nodes = Set.new
-      ParsePackwerk.all.each do |p|
-        # We could consider ignoring the root!
-        # We would also need to ignore it when parsing PackageNodes.
-        # next if p.name == ParsePackwerk::ROOT_PACKAGE_NAME
+      Packs.all.each do |p|
         owner = CodeOwnership.for_package(p)
-        violations_by_package = p.violations.group_by(&:to_package_name).transform_values(&:count)
+
+        # Here we need to load the package violations and dependencies,
+        # so we need to use ParsePackwerk to parse that information.
+        package_info = ParsePackwerk.find(p.name)
+        next unless package_info # This should not happen unless packs/parse_packwerk change implementation
+
+        violations = package_info.violations
+        violations_by_package = violations.group_by(&:to_package_name).transform_values(&:count)
+        violations_by_package.delete('.') # remove root package violations
+
+        dependencies = package_info.dependencies
+        dependencies.delete('.') # remove root package dependencies
 
         package_nodes << PackageNode.new(
           name: p.name,
           team_name: owner&.name || 'Unknown',
           violations_by_package: violations_by_package,
-          dependencies: Set.new(p.dependencies)
+          dependencies: Set.new(dependencies)
         )
       end
 

@@ -3,6 +3,7 @@ PATH
   specs:
     visualize_packwerk (0.0.6)
       code_ownership
+      packs
       parse_packwerk
       rake
       ruby-graphviz

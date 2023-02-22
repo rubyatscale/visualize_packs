@@ -1,5 +1,6 @@
 # typed: strict
 
+require 'packs'
 require 'parse_packwerk'
 require 'code_ownership'
 require 'graphviz'
@@ -16,7 +17,7 @@ require 'visualize_packwerk/package_relationships'
 module VisualizePackwerk
   extend T::Sig
 
-  sig { params(packages: T::Array[ParsePackwerk::Package]).void }
+  sig { params(packages: T::Array[Packs::Pack]).void }
   def self.package_graph!(packages)
     PackageRelationships.new.create_package_graph!(packages)
   end
