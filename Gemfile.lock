@@ -1,8 +1,9 @@
 PATH
   remote: .
   specs:
-    visualize_packwerk (0.0.6)
+    visualize_packwerk (0.1.0)
       code_ownership
+      packs
       parse_packwerk
       rake
       ruby-graphviz
@@ -12,9 +13,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    code_ownership (1.28.2)
+    code_ownership (1.31.0)
       code_teams (~> 1.0)
-      parse_packwerk
+      packs
       sorbet-runtime
     code_teams (1.0.0)
       sorbet-runtime
@@ -22,8 +23,10 @@ GEM
     diff-lcs (1.5.0)
     method_source (1.0.0)
     netrc (0.11.0)
+    packs (0.0.6)
+      sorbet-runtime
     parallel (1.22.1)
-    parse_packwerk (0.14.0)
+    parse_packwerk (0.18.0)
       sorbet-runtime
     parser (3.1.2.1)
       ast (~> 2.4.1)
@@ -56,6 +59,7 @@ GEM
       sorbet-static (= 0.5.10323)
     sorbet-runtime (0.5.10323)
     sorbet-static (0.5.10323-universal-darwin-20)
+    sorbet-static (0.5.10323-universal-darwin-21)
     sorbet-static (0.5.10323-x86_64-linux)
     sorbet-static-and-runtime (0.5.10323)
       sorbet (= 0.5.10323)
@@ -87,6 +91,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-20
+  arm64-darwin-21
   x86_64-linux
 
 DEPENDENCIES

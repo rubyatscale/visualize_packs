@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "visualize_packwerk"
-  spec.version       = '0.0.6'
+  spec.version       = '0.1.0'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
   spec.summary       = 'A gem to visualize connections in a Rails app that uses Packwerk'
@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.6'
 
   spec.add_dependency 'sorbet-runtime'
+  spec.add_dependency 'packs'
   spec.add_dependency 'parse_packwerk'
   spec.add_dependency 'code_ownership'
   spec.add_dependency 'rake'
