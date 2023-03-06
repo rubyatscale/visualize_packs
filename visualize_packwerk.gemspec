@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "visualize_packwerk"
-  spec.version       = '0.1.1'
+  spec.version       = '0.1.2'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
   spec.summary       = 'A gem to visualize connections in a Rails app that uses Packwerk'
@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   end
 
   # Specify which files should be added to the gem when it is released.
-  spec.files = Dir['README.md', 'sorbet/**/*', 'lib/**/*']
+  spec.files = Dir['README.md', 'lib/**/*']
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.6'
 
