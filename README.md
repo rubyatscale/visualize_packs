@@ -20,8 +20,5 @@ selected_teams = CodeTeams.all.select{ |t| ['Team 1', 'Team 2'].include?(t.name)
 VisualizePackwerk.team_graph!(selected_teams)
 ```
 
-## bin/packs
-For simpler use, use `bin/packs` in `use_packwerk` (https://github.com/rubyatscale/use_packwerk)
-
 # Want to change something or add a feature?
 Submit a PR or post an issue!
