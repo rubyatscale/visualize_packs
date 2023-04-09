@@ -32,10 +32,8 @@ module VisualizePackwerk
 
         violations = package_info.violations
         violations_by_package = violations.group_by(&:to_package_name).transform_values(&:count)
-        violations_by_package.delete('.') # remove root package violations
 
         dependencies = package_info.dependencies
-        dependencies.delete('.') # remove root package dependencies
 
         package_nodes << PackageNode.new(
           name: p.name,
