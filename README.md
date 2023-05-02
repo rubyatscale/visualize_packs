@@ -2,6 +2,8 @@
 
 This gem contains rake tasks to help visualize relationships between packwerk packs.
 
+![Example of visualization](docs/example.png)
+
 # Usage
 ## Building a package graph for a selection of packages
 ```ruby
