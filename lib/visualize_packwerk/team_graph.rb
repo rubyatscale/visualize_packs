@@ -26,7 +26,9 @@ module VisualizePackwerk
         package_nodes_for_team.map(&:violations_by_package).each do |new_violations_by_package|
           new_violations_by_package.each do |pack_name, count|
             # We first get the pack owner of the violated package
-            other_team = package_graph.package_by_name(pack_name).team_name
+            other_package = package_graph.package_by_name(pack_name)
+            next if other_package.nil?
+            other_team = other_package.team_name
             violations_by_team[other_team] ||= 0
             # Then we add the violations on that team together
             # TODO: We may want to ignore this if team == other_team to avoid arrows pointing to self, but maybe not!
@@ -36,7 +38,9 @@ module VisualizePackwerk
 
         dependencies = Set.new
         package_nodes_for_team.map(&:dependencies).reduce(Set.new, :+).each do |dependency|
-          dependencies << package_graph.package_by_name(dependency).team_name
+          other_pack = package_graph.package_by_name(dependency)
+          next if other_pack.nil?
+          dependencies << other_pack.team_name
         end
 
         team_nodes << TeamNode.new(
