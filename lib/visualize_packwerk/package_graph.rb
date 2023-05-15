@@ -16,7 +16,7 @@ module VisualizePackwerk
     sig { params(package_nodes: T::Set[PackageNode]).void }
     def initialize(package_nodes:)
       @package_nodes = package_nodes
-      @index_by_name = T.let({}, T::Hash[String, PackageNode])
+      @index_by_name = T.let({}, T::Hash[String, T.nilable(PackageNode)])
     end
 
     sig { returns(PackageGraph) }
@@ -46,9 +46,9 @@ module VisualizePackwerk
       PackageGraph.new(package_nodes: package_nodes)
     end
 
-    sig { params(name: String).returns(PackageNode) }
+    sig { params(name: String).returns(T.nilable(PackageNode)) }
     def package_by_name(name)
-      @index_by_name[name] ||= T.must(package_nodes.find { |node| node.name == name })
+      @index_by_name[name] ||= package_nodes.find { |node| node.name == name }
     end
   end
 end
