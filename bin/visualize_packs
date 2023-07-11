@@ -26,4 +26,7 @@ OptionParser.new do |opt|
   end
 end.parse!
 
+pp "in bin"
+pp options
+
 VisualizePackwerk.package_graph!(options)
