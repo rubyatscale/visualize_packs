@@ -1,1 +1,1 @@
-See https://github.com/rubyatscale/visualize_packwerk/releases
+See https://github.com/rubyatscale/visualize_packs/releases

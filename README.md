@@ -1,4 +1,4 @@
-# visualize_packwerk
+# visualize_packs
 
 This gem helps visualize relationships between packwerk packs.
 

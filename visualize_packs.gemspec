@@ -1,17 +1,17 @@
 Gem::Specification.new do |spec|
-  spec.name          = "visualize_packwerk"
+  spec.name          = "visualize_packs"
   spec.version       = '0.2.3'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
-  spec.summary       = 'A gem to visualize connections in a Rails app that uses Packwerk'
-  spec.description   = 'A gem to visualize connections in a Rails app that uses Packwerk'
-  spec.homepage      = 'https://github.com/rubyatscale/visualize_packwerk'
+  spec.summary       = 'A gem to visualize connections in a Ruby app that uses packs'
+  spec.description   = 'A gem to visualize connections in a Ruby app that uses packs'
+  spec.homepage      = 'https://github.com/rubyatscale/visualize_packs'
   spec.license       = 'MIT'
 
   if spec.respond_to?(:metadata)
     spec.metadata['homepage_uri'] = spec.homepage
-    spec.metadata['source_code_uri'] = 'https://github.com/rubyatscale/visualize_packwerk'
-    spec.metadata['changelog_uri'] = 'https://github.com/rubyatscale/visualize_packwerk/releases'
+    spec.metadata['source_code_uri'] = 'https://github.com/rubyatscale/visualize_packs'
+    spec.metadata['changelog_uri'] = 'https://github.com/rubyatscale/visualize_packs/releases'
     spec.metadata['allowed_push_host'] = 'https://rubygems.org'
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
