@@ -1,6 +1,6 @@
 # typed: strict
 
-require 'packs'
+require 'packs-specification'
 require 'parse_packwerk'
 require 'code_ownership'
 require 'graphviz'
