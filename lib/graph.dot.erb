@@ -55,7 +55,6 @@ digraph package_diagram {
           <% grouped_packages[config.raw['architecture_layers'][index - 1]].each do |upper_layer_node| %>
             "<%= upper_layer_node.name %>" -> "<%= package.name %>" [
               style=invis
-              minlen=3
             ]
           <% end %>
         <% end %>
@@ -79,7 +78,7 @@ digraph package_diagram {
         "<%= package.name %>" -> "<%= violations_to_package %>"<%= violation_type == 'privacy' ? ':private' : '' %> [
           color=darkred
           style=dashed
-          constraint=false
+          # constraint=false
           # headlabel="<%= violation_type %>"
           <% if violation_type == 'privacy' %>
             arrowhead=crow
