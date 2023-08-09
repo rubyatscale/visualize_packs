@@ -7,9 +7,6 @@ require 'parse_packwerk'
 module VisualizePackwerk
 
   def self.package_graph!(options)
-    pp "in lib"
-    pp options
-
     config = ParsePackwerk::Configuration.fetch
     
     all_packages = filtered(Packs.all, options.only_package) 
