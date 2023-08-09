@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packwerk (0.2.1)
+    visualize_packwerk (0.2.3)
       code_ownership
       packs
       parse_packwerk
@@ -13,9 +13,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    code_ownership (1.33.1)
+    code_ownership (1.34.2)
       code_teams (~> 1.0)
-      packs
+      packs-specification
       sorbet-runtime (>= 0.5.10821)
     code_teams (1.0.2)
       sorbet-runtime
@@ -23,6 +23,8 @@ GEM
     diff-lcs (1.5.0)
     method_source (1.0.0)
     packs (0.0.6)
+      sorbet-runtime
+    packs-specification (0.0.8)
       sorbet-runtime
     parse_packwerk (0.19.3)
       sorbet-runtime
@@ -58,7 +60,10 @@ GEM
     sorbet (0.5.10950)
       sorbet-static (= 0.5.10950)
     sorbet-runtime (0.5.10953)
+    sorbet-static (0.5.10950-universal-darwin-20)
+    sorbet-static (0.5.10950-universal-darwin-21)
     sorbet-static (0.5.10950-universal-darwin-22)
+    sorbet-static (0.5.10950-x86_64-linux)
     spoom (1.1.13)
       sorbet (>= 0.5.9204)
       sorbet-runtime (>= 0.5.9204)
