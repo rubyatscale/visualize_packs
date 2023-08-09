@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.executables << 'visualize_packs'
 
   # Specify which files should be added to the gem when it is released.
-  spec.files = Dir['README.md', 'lib/**/*', "bin/**/*"]
+  spec.files = Dir['README.md', 'lib/**/*']
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.6'
 
