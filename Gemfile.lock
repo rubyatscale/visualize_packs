@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packs (0.2.3)
+    visualize_packs (0.3.0)
       code_ownership
       packs
       parse_packwerk
