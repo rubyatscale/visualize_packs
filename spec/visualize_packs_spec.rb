@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-RSpec.describe VisualizePackwerk do
+RSpec.describe VisualizePacks do
   it 'does not blow up' do
-    expect { VisualizePackwerk }.not_to raise_error
+    expect { VisualizePacks }.not_to raise_error
   end
 end
