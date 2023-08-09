@@ -21,8 +21,7 @@ module VisualizePackwerk
     end
 
     file = File.open(File.expand_path File.dirname(__FILE__) + "/graph.dot.erb")
-    templ = file.read.gsub(/^ *(<%.+%>) *$/, '\1')
-    template = ERB.new(templ, trim_mode: "%<>")
+    template = ERB.new(file.read)
     puts template.result(binding)
   end
 
