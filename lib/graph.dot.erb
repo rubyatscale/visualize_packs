@@ -55,7 +55,7 @@ digraph package_diagram {
           <% grouped_packages[config.raw['architecture_layers'][index - 1]].each do |upper_layer_node| %>
             "<%= upper_layer_node.name %>" -> "<%= package.name %>" [
               style=invis
-              minlen=20
+              minlen=3
             ]
           <% end %>
         <% end %>
