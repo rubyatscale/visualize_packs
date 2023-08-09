@@ -1,6 +1,6 @@
 # typed: strict
 
-module VisualizePackwerk
+module VisualizePacks
   class PackageNode < T::Struct
     extend T::Sig
     include NodeInterface

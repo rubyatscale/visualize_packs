@@ -1,6 +1,6 @@
 # typed: strict
 
-module VisualizePackwerk
+module VisualizePacks
   class PackageRelationships
     extend T::Sig
 

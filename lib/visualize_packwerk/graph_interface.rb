@@ -1,6 +1,6 @@
 # typed: strict
 
-module VisualizePackwerk
+module VisualizePacks
   # This stores graphviz-independent views of our package graph.
   # It should be optimized for fast lookup (leveraging internal indexes, which are stable due to the immutability of the package nodes)
   # A `TeamGraph` should be able to consume this and basically just create a reduced version

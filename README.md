@@ -1,6 +1,6 @@
 # visualize_packs
 
-This gem helps visualize relationships between packwerk packs.
+This gem helps visualize relationships between packs.
 
 ![Example of visualization](docs/example.png)
 
@@ -20,7 +20,7 @@ bin/packs # enter interactive mode to select what packs to visualize
 selected_packs = Packs.all
 selected_packs = Packs.all.select{ |p| ['packs/my_pack_1', 'packs/my_pack_2'].include?(p.name) }
 selected_packs = Packs.all.select{ |p| ['Team 1', 'Team 2'].include?(CodeOwnership.for_package(p)&.name) }
-VisualizePackwerk.package_graph!(selected_packs)
+VisualizePacks.package_graph!(selected_packs)
 ```
 
 ## Building a team graph for specific teams
@@ -28,7 +28,7 @@ VisualizePackwerk.package_graph!(selected_packs)
 # Select the teams you want to include
 selected_teams = CodeTeams.all
 selected_teams = CodeTeams.all.select{ |t| ['Team 1', 'Team 2'].include?(t.name) }
-VisualizePackwerk.team_graph!(selected_teams)
+VisualizePacks.team_graph!(selected_teams)
 ```
 
 # Want to change something or add a feature?

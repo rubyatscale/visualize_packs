@@ -14,7 +14,7 @@ require 'visualize_packs/team_graph'
 require 'visualize_packs/package_graph'
 require 'visualize_packs/package_relationships'
 
-module VisualizePackwerk
+module VisualizePacks
   extend T::Sig
 
   sig { params(packages: T::Array[Packs::Pack]).void }
