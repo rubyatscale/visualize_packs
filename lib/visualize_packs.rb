@@ -6,15 +6,15 @@ require 'code_ownership'
 require 'graphviz'
 require 'sorbet-runtime'
 
-require 'visualize_packwerk/node_interface'
-require 'visualize_packwerk/graph_interface'
-require 'visualize_packwerk/team_node'
-require 'visualize_packwerk/package_node'
-require 'visualize_packwerk/team_graph'
-require 'visualize_packwerk/package_graph'
-require 'visualize_packwerk/package_relationships'
+require 'visualize_packs/node_interface'
+require 'visualize_packs/graph_interface'
+require 'visualize_packs/team_node'
+require 'visualize_packs/package_node'
+require 'visualize_packs/team_graph'
+require 'visualize_packs/package_graph'
+require 'visualize_packs/package_relationships'
 
-module VisualizePackwerk
+module VisualizePacks
   extend T::Sig
 
   sig { params(packages: T::Array[Packs::Pack]).void }

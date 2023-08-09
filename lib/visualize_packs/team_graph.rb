@@ -1,6 +1,6 @@
 # typed: strict
 
-module VisualizePackwerk
+module VisualizePacks
   #
   # A team graph reduces a PackageGraph by aggregating over packages owned by teams
   #

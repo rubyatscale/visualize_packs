@@ -1,6 +1,6 @@
 # typed: strict
 
-module VisualizePackwerk
+module VisualizePacks
   class PackageGraph
     extend T::Sig
     include GraphInterface

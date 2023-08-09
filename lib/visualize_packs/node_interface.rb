@@ -1,6 +1,6 @@
 # typed: strict
 
-module VisualizePackwerk
+module VisualizePacks
   module NodeInterface
     extend T::Sig
     extend T::Helpers

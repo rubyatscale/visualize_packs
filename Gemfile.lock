@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packwerk (0.2.3)
+    visualize_packs (0.3.0)
       code_ownership
       packs
       parse_packwerk
@@ -97,7 +97,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   sorbet
   tapioca
-  visualize_packwerk!
+  visualize_packs!
 
 BUNDLED WITH
    2.2.33
