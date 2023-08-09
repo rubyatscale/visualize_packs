@@ -1,47 +1,29 @@
 # typed: strict
 
-require 'erb'
-require 'packs'
+require 'packs-specification'
 require 'parse_packwerk'
+require 'code_ownership'
+require 'graphviz'
+require 'sorbet-runtime'
+
+require 'visualize_packwerk/node_interface'
+require 'visualize_packwerk/graph_interface'
+require 'visualize_packwerk/team_node'
+require 'visualize_packwerk/package_node'
+require 'visualize_packwerk/team_graph'
+require 'visualize_packwerk/package_graph'
+require 'visualize_packwerk/package_relationships'
 
 module VisualizePackwerk
+  extend T::Sig
 
-  def self.package_graph!(options)
-    pp "in lib"
-    pp options
-
-    config = ParsePackwerk::Configuration.fetch
-    
-    all_packages = filtered(Packs.all, options.only_package) 
-    all_package_names = all_packages.map &:name
-
-    grouped_packages = config.raw['architecture_layers'].inject({"NotInLayer" => []}) do |result, key|
-      result[key] = []
-      result
-    end
-    all_packages.each do |package|
-      grouped_packages[package.config['layer'] || "NotInLayer"] << package
-    end
-
-    file = File.open(File.expand_path File.dirname(__FILE__) + "/graph.dot.erb")
-    templ = file.read.gsub(/^ *(<%.+%>) *$/, '\1')
-    template = ERB.new(templ, trim_mode: "%<>")
-    puts template.result(binding)
+  sig { params(packages: T::Array[Packs::Pack]).void }
+  def self.package_graph!(packages)
+    PackageRelationships.new.create_package_graph!(packages)
   end
 
-  private 
-
-  def self.filtered(all_packages, filter_package)
-    packages = all_packages.map { |pack| ParsePackwerk.find(pack.name) }
-    return packages unless filter_package
-
-    result = [filter_package]
-    result += packages.select{ |p| p.dependencies.include? filter_package }.map { |pack| pack.name }
-    result += ParsePackwerk.find(filter_package).dependencies
-    result += packages.select{ |p| p.violations.map(&:to_package_name).include? filter_package }.map { |pack| pack.name }
-    result += ParsePackwerk.find(filter_package).violations.map(&:to_package_name)
-    result = result.uniq
-
-    result.map { |pack_name| ParsePackwerk.find(pack_name) }
+  sig { params(teams: T::Array[CodeTeams::Team]).void }
+  def self.team_graph!(teams)
+    PackageRelationships.new.create_team_graph!(teams)
   end
 end
