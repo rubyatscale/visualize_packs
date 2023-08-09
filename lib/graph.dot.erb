@@ -78,7 +78,7 @@ digraph package_diagram {
         "<%= package.name %>" -> "<%= violations_to_package %>"<%= violation_type == 'privacy' ? ':private' : '' %> [
           color=darkred
           style=dashed
-          # constraint=false
+          constraint=false
           # headlabel="<%= violation_type %>"
           <% if violation_type == 'privacy' %>
             arrowhead=crow
