@@ -1,43 +1,25 @@
 # typed: strict
 
-require 'erb'
 require 'packs'
 require 'parse_packwerk'
+require 'graphviz'
+
+require 'erb'
 
 module VisualizePackwerk
+  extend T::Sig
 
-  def self.package_graph!(options)
+  sig { params(all_packages: T::Array[Packs::Pack]).void }
+  def self.package_graph!(all_packages)
     config = ParsePackwerk::Configuration.fetch
-    
-    all_packages = filtered(Packs.all, options.only_package) 
-    all_package_names = all_packages.map &:name
 
-    grouped_packages = config.raw['architecture_layers'].inject({"NotInLayer" => []}) do |result, key|
-      result[key] = []
+    grouped_packages = all_packages.inject({}) do |result, package|
+      result[package.config['layer'] || "NotInLayer"] ||= []
+      result[package.config['layer'] || "NotInLayer"] << package
       result
     end
-    all_packages.each do |package|
-      grouped_packages[package.config['layer'] || "NotInLayer"] << package
-    end
-
     file = File.open(File.expand_path File.dirname(__FILE__) + "/graph.dot.erb")
     template = ERB.new(file.read)
     puts template.result(binding)
-  end
-
-  private 
-
-  def self.filtered(all_packages, filter_package)
-    packages = all_packages.map { |pack| ParsePackwerk.find(pack.name) }
-    return packages unless filter_package
-
-    result = [filter_package]
-    result += packages.select{ |p| p.dependencies.include? filter_package }.map { |pack| pack.name }
-    result += ParsePackwerk.find(filter_package).dependencies
-    result += packages.select{ |p| p.violations.map(&:to_package_name).include? filter_package }.map { |pack| pack.name }
-    result += ParsePackwerk.find(filter_package).violations.map(&:to_package_name)
-    result = result.uniq
-
-    result.map { |pack_name| ParsePackwerk.find(pack_name) }
   end
 end
