@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "visualize_packs"
-  spec.version       = '0.3.1'
+  spec.version       = '0.5.0'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
   spec.summary       = 'A gem to visualize connections in a Ruby app that uses packs'
@@ -18,20 +18,18 @@ Gem::Specification.new do |spec|
           'public gem pushes.'
   end
 
+  spec.executables << 'visualize_packs'
+
   # Specify which files should be added to the gem when it is released.
-  spec.files = Dir['README.md', 'lib/**/*']
+  spec.files = Dir['README.md', 'lib/**/*', "bin/**/*"]
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 2.6'
 
-  spec.add_dependency 'sorbet-runtime'
-  spec.add_dependency 'packs-specification'
-  spec.add_dependency 'parse_packwerk'
-  spec.add_dependency 'code_ownership'
-  spec.add_dependency 'rake'
-  spec.add_dependency 'ruby-graphviz'
+  spec.add_development_dependency 'bundler'
+  spec.add_development_dependency 'sorbet-runtime'
+  spec.add_development_dependency "rspec", "~> 3.12"
 
-  spec.add_development_dependency 'bundler', '~> 2.2.16'
-  spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'sorbet'
-  spec.add_development_dependency 'tapioca'
+  spec.add_dependency 'packs-specification'
+  spec.add_dependency 'parse_packwerk', '>= 0.20.0'
+
 end

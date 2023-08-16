@@ -1,0 +1,51 @@
+# This file contains a list of dependencies that are not part of the long term plan for the
+# '.' package.
+# We should generally work to reduce this list over time.
+#
+# You can regenerate this file using the following command:
+#
+# bin/packwerk update-todo
+---
+.:
+  "::SomeClass":
+    violations:
+    - dependency
+    - architecture
+    - visibility
+    files:
+    - file_a
+packs/models/packs/model_a:
+  "::SomeClass1":
+    violations:
+    - dependency
+    - privacy
+    - architecture
+    - visibility
+    files:
+    - file_b
+  "::SomeClass2":
+    violations:
+    - dependency
+    - privacy
+    - architecture
+    - visibility
+    files:
+    - file_c
+  "::SomeClass3":
+    violations:
+    - dependency
+    - privacy
+    - architecture
+    files:
+    - file_d
+  "::SomeClass4":
+    violations:
+    - dependency
+    - privacy
+    files:
+    - file_e
+  "::SomeClass5":
+    violations:
+    - dependency
+    files:
+    - file_f
