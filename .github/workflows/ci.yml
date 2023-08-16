@@ -49,4 +49,15 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Run tests
         run: cd spec && ./ci.sh
-
+  static_type_check:
+    name: "Type Check"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8230315d06ad95c617244d2f265d237a1682d445
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@eae47962baca661befdfd24e4d6c34ade04858f7
+        with:
+          bundler-cache: true
+          ruby-version: head
+      - name: Run static type checks
+        run: bundle exec srb tc

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../lib/visualize_packs'
 
 RSpec.describe "VisualizePacks" do

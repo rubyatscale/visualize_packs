@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+# typed: false
+
 require 'erb'
 require 'packs-specification'
 require 'parse_packwerk'

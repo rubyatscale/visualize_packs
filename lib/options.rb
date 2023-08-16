@@ -1,33 +1,21 @@
-class Options
-  attr_accessor :show_layers
-  attr_accessor :show_dependencies
-  attr_accessor :show_todos
-  attr_accessor :show_privacy
-  attr_accessor :show_teams
+# frozen_string_literal: true
+# typed: strict
 
-  attr_accessor :focus_package
-  attr_accessor :show_only_edges_to_focus_package
+class Options < T::Struct
+  extend T::Sig
 
-  attr_accessor :roll_nested_todos_into_top_level
-  attr_accessor :focus_folder
-  attr_accessor :show_nested_relationships
+  prop :show_layers, T::Boolean, default: true
+  prop :show_dependencies, T::Boolean, default: true
+  prop :show_todos, T::Boolean, default: true
+  prop :show_privacy, T::Boolean, default: true
+  prop :show_teams, T::Boolean, default: true
 
-  attr_accessor :remote_base_url
+  prop :focus_package, T.nilable(String)
+  prop :show_only_edges_to_focus_package, T::Boolean, default: false
 
-  def initialize
-    @show_layers = true
-    @show_dependencies = true
-    @show_todos = true
-    @show_privacy = true
-    @show_teams = true
+  prop :roll_nested_todos_into_top_level, T::Boolean, default: false
+  prop :focus_folder, T.nilable(String)
+  prop :show_nested_relationships, T::Boolean, default: true
 
-    @focus_package = nil
-    @show_only_edges_to_focus_package = false
-
-    @roll_nested_todos_into_top_level = false
-    @focus_folder = nil
-    @show_nested_relationships = true
-
-    @remote_base_url = nil
-  end
+  prop :remote_base_url, T.nilable(String)
 end
