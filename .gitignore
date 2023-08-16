@@ -9,3 +9,8 @@
 
 # rspec failure tracking
 .rspec_status
+
+*_new.dot
+*_new.png
+
+.DS_Store
