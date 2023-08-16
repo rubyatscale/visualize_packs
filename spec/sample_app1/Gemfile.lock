@@ -1,9 +1,10 @@
 PATH
   remote: ../..
   specs:
-    visualize_packs (0.5.0)
+    visualize_packs (0.5.1)
       packs-specification
       parse_packwerk (>= 0.20.0)
+      sorbet-runtime
 
 GEM
   remote: https://rubygems.org/
