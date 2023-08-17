@@ -48,7 +48,7 @@ jobs:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby }}
       - name: Run tests
-        run: cd spec && ./ci.sh
+        run: ./spec/ci.sh
   static_type_check:
     name: "Type Check"
     runs-on: ubuntu-latest

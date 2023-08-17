@@ -11,6 +11,8 @@
 .rspec_status
 
 *_new.dot
-*_new.png
+spec/sample_app1/tests/*.png
+diagram_examples_new.png
+diagram_examples_comparison.png
 
 .DS_Store

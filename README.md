@@ -35,13 +35,16 @@ bundle exec visualize_packs --help
 
 ## Contributing
 
-To contribute, install graphviz (and the `dot` command). You must also have Ruby 3.2.2 and bundler installed. Then
+To contribute, install graphviz (and the `dot` command) and imagemagick. You must also have Ruby 3.2.2 and bundler installed. Then
 
 ```
-cd spec
-./test.sh
+./spec/test.sh
 ```
 
-Then, in `spec/sample_app` visually compare all `X.png` to `X_new.png` to make sure you are happy with the changes. If you, are, run `./update_cassettes.sh` in the same folder and commit the new test files with your changes.
+At the end of the test run, a new window will open up showing you a comparison of the old graphs (on the left) and the new graphs (on the right). Compare the visuals to make sure you're getting the changes you were expecting.
 
-If you have imagemagick installed, you can then also run `./create_comparison.sh` to create one big image of all the before (left) and after (right) versions of the sample diagrams.
+Once you are ready, run the following and commit the new `diagram_examples.png` and the new dot files with your changes:
+
+```
+./spec/update_cassettes.sh
+```
