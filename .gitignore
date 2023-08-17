@@ -11,7 +11,7 @@
 .rspec_status
 
 *_new.dot
-spec/sample_app1/tests/*.png
+spec/sample_app1/test_output/*.png
 diagram_examples_new.png
 diagram_examples_comparison.png
 
