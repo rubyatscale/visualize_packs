@@ -42,11 +42,11 @@ digraph package_diagram {
               >
           ]
         
-        "packs/models/packs/model_b" [
+        "packs/models/packs/model_ab" [
             fontsize=12.0
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
-                  <tr> <td align='left'> packs/models/packs/model_b </td> </tr>
+                  <tr> <td align='left'> packs/models/packs/model_ab </td> </tr>
                 </table>
               >
           ]
@@ -94,7 +94,7 @@ digraph package_diagram {
         
     }
         "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
-        "packs/models" -> "packs/models/packs/model_b" [ color=purple penwidth=3 ]
+        "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
   subgraph cluster_legend {
     fontsize=16
     label="Edges Styles and Arrow Heads"
