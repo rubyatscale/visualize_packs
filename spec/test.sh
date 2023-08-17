@@ -1,7 +1,7 @@
 set -x
 set -e
 
-cd sample_app1
+cd spec/sample_app1
 bundle
 
 bundle exec visualize_packs --help
@@ -36,3 +36,22 @@ bundle exec visualize_packs --focus_on=packs/ui                       $URL > tes
 bundle exec visualize_packs --focus_on=packs/ui --only-edges-to-focus $URL > tests/focussed_on_packs_ui_focus_edges_new.dot && dot tests/focussed_on_packs_ui_focus_edges_new.dot -Tpng -o tests/focussed_on_packs_ui_focus_edges_new.png
 
 bundle exec visualize_packs --focus_folder=packs/model $URL > tests/focus_folder_new.dot && dot tests/focus_folder_new.dot -Tpng -o tests/focus_folder_new.png
+
+convert tests/plain_new.png \
+  tests/no_layers_new.png \
+  tests/no_dependencies_new.png \
+  tests/no_todos_new.png \
+  tests/no_privacy_new.png \
+  tests/no_teams_new.png \
+  tests/no_nested_relationships_new.png \
+  tests/roll_nested_todos_into_top_level_new.png \
+  tests/only_layers_new.png \
+  tests/no_to_all_new.png \
+  tests/focussed_on_packs_ui_new.png \
+  tests/focussed_on_packs_ui_focus_edges_new.png \
+  tests/focus_folder_new.png \
+ -append ../../diagram_examples_new.png
+
+convert ../../diagram_examples.png ../../diagram_examples_new.png +append ../../diagram_examples_comparison.png
+
+open ../../diagram_examples_comparison.png

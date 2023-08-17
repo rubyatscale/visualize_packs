@@ -1,7 +1,7 @@
 set -x
 set -e
 
-cd sample_app1
+cd spec/sample_app1
 bundle
 
 rm -f tests/*.dot
