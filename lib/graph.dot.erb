@@ -112,7 +112,7 @@ digraph package_diagram {
   <%- if options.show_nested_relationships -%>
   <%- all_packages.each do |package| -%>
     <%- all_packages.each do |nested_package| -%>
-      <%- if nested_package.name.include?(package.name) && !(nested_package.name == package.name) -%>
+      <%- if nested_package.name.include?("#{package.name}/") && !(nested_package.name == package.name) -%>
         "<%= package.name -%>" -> "<%= nested_package.name -%>" [ color=purple penwidth=3 ]
       <%- end -%>
     <%- end -%>
