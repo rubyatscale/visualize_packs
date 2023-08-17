@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs - hiding dependencies, hiding todos, hiding privacy, hiding teams</b>>
+    label=<<b>sample_app1: All packs - hiding dependencies, hiding todos, hiding privacy, hiding teams, hiding nested relationships</b>>
     fontsize=18
   ]
   node [
@@ -27,6 +27,8 @@ digraph package_diagram {
         cluster=true
         rank = 0        "packs/models" [
             fontsize=12.0
+              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models"
+
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/models </td> </tr>
@@ -36,6 +38,8 @@ digraph package_diagram {
         
         "packs/models/packs/model_a" [
             fontsize=12.0
+              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
+
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/models/packs/model_a </td> </tr>
@@ -45,6 +49,8 @@ digraph package_diagram {
         
         "packs/models/packs/model_ab" [
             fontsize=12.0
+              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
+
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/models/packs/model_ab </td> </tr>
@@ -54,6 +60,8 @@ digraph package_diagram {
         
         "packs/ui" [
             fontsize=12.0
+              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
+
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/ui </td> </tr>
@@ -71,6 +79,8 @@ digraph package_diagram {
         cluster=true
         rank = 1        "packs/utility" [
             fontsize=12.0
+              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
+
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/utility </td> </tr>
@@ -91,6 +101,8 @@ digraph package_diagram {
         cluster=false
         "." [
             fontsize=12.0
+              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/"
+
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> . </td> </tr>
@@ -100,8 +112,6 @@ digraph package_diagram {
         
     }
               "packs/utility" -> "." [ style=invis ]
-        "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
-        "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
   subgraph cluster_legend {
     fontsize=16
     label="Edges Styles and Arrow Heads"

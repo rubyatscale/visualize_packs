@@ -7,23 +7,16 @@ convert sample_app1/tests/no_dependencies.png sample_app1/tests/no_dependencies_
 convert sample_app1/tests/no_todos.png sample_app1/tests/no_todos_new.png +append sample_app1/tests/no_todos_appened_new.png
 convert sample_app1/tests/no_privacy.png sample_app1/tests/no_privacy_new.png +append sample_app1/tests/no_privacy_appened_new.png
 convert sample_app1/tests/no_teams.png sample_app1/tests/no_teams_new.png +append sample_app1/tests/no_teams_appened_new.png
+convert sample_app1/tests/no_nested_relationships.png sample_app1/tests/no_nested_relationships_new.png +append sample_app1/tests/no_nested_relationships_appened_new.png
+convert sample_app1/tests/roll_nested_todos_into_top_level.png sample_app1/tests/roll_nested_todos_into_top_level_new.png +append sample_app1/tests/roll_nested_todos_into_top_level_appened_new.png
 
 convert sample_app1/tests/only_layers.png sample_app1/tests/only_layers_new.png +append sample_app1/tests/only_layers_appened_new.png
 convert sample_app1/tests/no_to_all.png sample_app1/tests/no_to_all_new.png +append sample_app1/tests/no_to_all_appened_new.png
 
-convert sample_app1/tests/focussed_on_root.png sample_app1/tests/focussed_on_root_new.png +append sample_app1/tests/focussed_on_root_appened_new.png
 convert sample_app1/tests/focussed_on_packs_ui.png sample_app1/tests/focussed_on_packs_ui_new.png +append sample_app1/tests/focussed_on_packs_ui_appened_new.png
-convert sample_app1/tests/focussed_on_packs_model.png sample_app1/tests/focussed_on_packs_model_new.png +append sample_app1/tests/focussed_on_packs_model_appened_new.png
-convert sample_app1/tests/focussed_on_packs_utility.png sample_app1/tests/focussed_on_packs_utility_new.png +append sample_app1/tests/focussed_on_packs_utility_appened_new.png
-
-convert sample_app1/tests/focussed_on_root_focus_edges.png sample_app1/tests/focussed_on_root_focus_edges_new.png +append sample_app1/tests/focussed_on_root_focus_edges_appened_new.png
 convert sample_app1/tests/focussed_on_packs_ui_focus_edges.png sample_app1/tests/focussed_on_packs_ui_focus_edges_new.png +append sample_app1/tests/focussed_on_packs_ui_focus_edges_appened_new.png
-convert sample_app1/tests/focussed_on_packs_model_focus_edges.png sample_app1/tests/focussed_on_packs_model_focus_edges_new.png +append sample_app1/tests/focussed_on_packs_model_focus_edges_appened_new.png
-convert sample_app1/tests/focussed_on_packs_utility_focus_edges.png sample_app1/tests/focussed_on_packs_utility_focus_edges_new.png +append sample_app1/tests/focussed_on_packs_utility_focus_edges_appened_new.png
 
-convert sample_app1/tests/roll_nested_todos_into_top_level.png sample_app1/tests/roll_nested_todos_into_top_level_new.png +append sample_app1/tests/roll_nested_todos_into_top_level_appened_new.png
 convert sample_app1/tests/focus_folder.png sample_app1/tests/focus_folder_new.png +append sample_app1/tests/focus_folder_appened_new.png
-convert sample_app1/tests/no_nested_relationships.png sample_app1/tests/no_nested_relationships_new.png +append sample_app1/tests/no_nested_relationships_appened_new.png
 
 convert sample_app1/tests/plain_appened_new.png \
   sample_app1/tests/no_layers_appened_new.png \
@@ -31,19 +24,13 @@ convert sample_app1/tests/plain_appened_new.png \
   sample_app1/tests/no_todos_appened_new.png \
   sample_app1/tests/no_privacy_appened_new.png \
   sample_app1/tests/no_teams_appened_new.png \
+  sample_app1/tests/no_nested_relationships_appened_new.png \
+  sample_app1/tests/roll_nested_todos_into_top_level_appened_new.png \
   sample_app1/tests/only_layers_appened_new.png \
   sample_app1/tests/no_to_all_appened_new.png \
-  sample_app1/tests/focussed_on_root_appened_new.png \
   sample_app1/tests/focussed_on_packs_ui_appened_new.png \
-  sample_app1/tests/focussed_on_packs_model_appened_new.png \
-  sample_app1/tests/focussed_on_packs_utility_appened_new.png \
-  sample_app1/tests/focussed_on_root_focus_edges_appened_new.png \
   sample_app1/tests/focussed_on_packs_ui_focus_edges_appened_new.png \
-  sample_app1/tests/focussed_on_packs_model_focus_edges_appened_new.png \
-  sample_app1/tests/focussed_on_packs_utility_focus_edges_appened_new.png \
-  sample_app1/tests/roll_nested_todos_into_top_level_appened_new.png \
   sample_app1/tests/focus_folder_appened_new.png \
-  sample_app1/tests/no_nested_relationships_appened_new.png \
  -append sample_app1/tests/all_new.png
 
 open sample_app1/tests/all_new.png
