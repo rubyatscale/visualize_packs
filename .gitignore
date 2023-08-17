@@ -10,7 +10,6 @@
 # rspec failure tracking
 .rspec_status
 
-*_new.dot
-*_new.png
+spec/sample_app1/tests/*.png
 
 .DS_Store
