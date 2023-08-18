@@ -6,7 +6,7 @@ bundle
 
 GENERATE_PNGS=$1
 NEW=$2
-URL="--remote-base-url=https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app"
+URL="--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app"
 
 bundle exec visualize_packs $URL > test_output/plain$NEW.dot
 
