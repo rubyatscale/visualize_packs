@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs - hiding dependencies, hiding todos, hiding privacy, hiding teams, hiding nested relationships</b>>
+    label=<<b>sample_app1: All packs - hiding layers, hiding dependencies, hiding todos, hiding privacy, hiding teams, hiding nested relationships</b>>
     fontsize=18
   ]
   node [
@@ -23,11 +23,10 @@ digraph package_diagram {
       color=darkgrey
       fillcolor=lightblue
       style=filled
-        label="app"
-        cluster=true
-        rank = 0        "packs/models" [
+        cluster=false
+        "packs/models" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models"
 
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
@@ -38,7 +37,7 @@ digraph package_diagram {
         
         "packs/models/packs/model_a" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
 
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
@@ -49,7 +48,7 @@ digraph package_diagram {
         
         "packs/models/packs/model_ab" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
 
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
@@ -60,7 +59,7 @@ digraph package_diagram {
         
         "packs/ui" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
 
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
@@ -75,11 +74,10 @@ digraph package_diagram {
       color=darkgrey
       fillcolor=lightblue
       style=filled
-        label="utilities"
-        cluster=true
-        rank = 1        "packs/utility" [
+        cluster=false
+        "packs/utility" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
 
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
@@ -89,10 +87,6 @@ digraph package_diagram {
           ]
         
     }
-              "packs/models" -> "packs/utility" [ style=invis ]
-              "packs/models/packs/model_a" -> "packs/utility" [ style=invis ]
-              "packs/models/packs/model_ab" -> "packs/utility" [ style=invis ]
-              "packs/ui" -> "packs/utility" [ style=invis ]
     subgraph NotInLayer {
       shape=box
       color=darkgrey
@@ -101,7 +95,7 @@ digraph package_diagram {
         cluster=false
         "." [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/"
 
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
@@ -111,7 +105,6 @@ digraph package_diagram {
           ]
         
     }
-              "packs/utility" -> "." [ style=invis ]
   subgraph cluster_legend {
     fontsize=16
     label="Edges Styles and Arrow Heads"

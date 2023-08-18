@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs</b><br/><font point-size='12'>Widest todo edge is 5 violations</font>>
+    label=<<b>sample_app1: All packs - hiding todos</b>>
     fontsize=18
   ]
   node [
@@ -27,7 +27,7 @@ digraph package_diagram {
         cluster=true
         rank = 0        "packs/models" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -42,7 +42,7 @@ digraph package_diagram {
         
         "packs/models/packs/model_a" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -57,7 +57,7 @@ digraph package_diagram {
         
         "packs/models/packs/model_ab" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -72,7 +72,7 @@ digraph package_diagram {
         
         "packs/ui" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -93,7 +93,7 @@ digraph package_diagram {
         cluster=true
         rank = 1        "packs/utility" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
 
               style=filled
               fillcolor="#91DBA0"
@@ -117,7 +117,7 @@ digraph package_diagram {
         cluster=false
         "." [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/"
 
               style=filled
               fillcolor="#B5B4BD"
@@ -138,41 +138,6 @@ digraph package_diagram {
           "packs/models/packs/model_ab" -> "." [ color=darkgreen ]
           "packs/ui" -> "packs/models/packs/model_a" [ color=darkgreen ]
           "packs/ui" -> "packs/utility" [ color=darkgreen ]
-            "packs/ui" -> "." [ color=darkred style=dashed
-              constraint=false
-              # headlabel="dependency"
-                arrowhead=odot
-              penwidth=2            ]
-            "packs/ui" -> "." [ color=darkred style=dashed
-              constraint=false
-              # headlabel="architecture"
-                arrowhead=invodot
-              penwidth=2            ]
-            "packs/ui" -> "." [ color=darkred style=dashed
-              constraint=false
-              # headlabel="visibility"
-                arrowhead=obox
-              penwidth=2            ]
-            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
-              constraint=false
-              # headlabel="dependency"
-                arrowhead=odot
-              penwidth=10            ]
-            "packs/ui" -> "packs/models/packs/model_a":private [ color=darkred style=dashed
-              constraint=false
-              # headlabel="privacy"
-                arrowhead=crow
-              penwidth=8            ]
-            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
-              constraint=false
-              # headlabel="architecture"
-                arrowhead=invodot
-              penwidth=6            ]
-            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
-              constraint=false
-              # headlabel="visibility"
-                arrowhead=obox
-              penwidth=4            ]
         "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
         "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
   subgraph cluster_legend {
