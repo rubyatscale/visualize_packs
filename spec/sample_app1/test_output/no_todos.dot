@@ -27,7 +27,7 @@ digraph package_diagram {
         cluster=true
         rank = 0        "packs/models" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -42,7 +42,7 @@ digraph package_diagram {
         
         "packs/models/packs/model_a" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -57,7 +57,7 @@ digraph package_diagram {
         
         "packs/models/packs/model_ab" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -72,7 +72,7 @@ digraph package_diagram {
         
         "packs/ui" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/ui"
 
               style=filled
               fillcolor="#FFA9C5"
@@ -93,7 +93,7 @@ digraph package_diagram {
         cluster=true
         rank = 1        "packs/utility" [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/utility"
 
               style=filled
               fillcolor="#91DBA0"
@@ -117,7 +117,7 @@ digraph package_diagram {
         cluster=false
         "." [
             fontsize=12.0
-              URL="https://github.com/shageman/visualize_packwerk/tree/main/spec/sample_app/"
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/"
 
               style=filled
               fillcolor="#B5B4BD"

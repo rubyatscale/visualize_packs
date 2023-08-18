@@ -31,7 +31,7 @@ bundle exec visualize_packs --help
 
 ## What outputs look like
 
-![Sample diagrams produced](https://github.com/shageman/visualize_packs/blob/main/diagram_examples.png?raw=true)
+![Sample diagrams produced](https://github.com/rubyatscale/visualize_packs/blob/main/diagram_examples.png?raw=true)
 
 ## Contributing
 
