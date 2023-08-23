@@ -11,6 +11,7 @@ require_relative '../lib/options'
 options = Options.new
 
 OptionParser.new do |opt|
+  opt.on('--no-legend', "Don't show legend") { |o| options.show_legend = false }
   opt.on('--no-layers', "Don't show architectural layers") { |o| options.show_layers = false }
   opt.on('--no-dependencies', "Don't show accepted dependencies") { |o| options.show_dependencies = false }
   opt.on('--no-todos', "Don't show package todos") { |o| options.show_todos = false }

@@ -4,6 +4,7 @@
 class Options < T::Struct
   extend T::Sig
 
+  prop :show_legend, T::Boolean, default: true
   prop :show_layers, T::Boolean, default: true
   prop :show_dependencies, T::Boolean, default: true
   prop :show_todos, T::Boolean, default: true
