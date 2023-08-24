@@ -18,5 +18,7 @@ class Options < T::Struct
   prop :focus_folder, T.nilable(String)
   prop :show_nested_relationships, T::Boolean, default: true
 
+  prop :exclude_packs, T::Array[String], default: []
+
   prop :remote_base_url, T.nilable(String)
 end

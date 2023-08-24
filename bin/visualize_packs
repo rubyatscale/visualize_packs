@@ -25,6 +25,8 @@ OptionParser.new do |opt|
   opt.on('--focus_folder=FOLDER', "Draw package diagram only for packages in FOLDER") { |o| options.focus_folder = o }
   opt.on('--no_nested_relationships', "Don't draw nested package relationships") { |o| options.show_nested_relationships = false }
 
+  opt.on('--exclude-packs=pack1,pack2,etc', "Exclude these packs from diagram") { |o| options.exclude_packs = o.to_s.split(",") }
+
   opt.on('--remote-base-url=PACKAGE', "Link package nodes to an URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
   opt.on_tail("-h", "--help", "Show this message") do
