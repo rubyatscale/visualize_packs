@@ -11,7 +11,7 @@ module VisualizePacks
   def self.package_graph!(options, raw_config, packages)
     raise ArgumentError, "Package #{options.focus_package} does not exist. Found packages #{packages.map(&:name).join(", ")}" if options.focus_package && !packages.map(&:name).include?(options.focus_package)
 
-    all_packages = filtered(packages, options.focus_package, options.focus_folder).sort_by {|x| x.name }
+    all_packages = filtered(packages, options.focus_package, options.focus_folder, options.exclude_packs).sort_by {|x| x.name }
     all_package_names = all_packages.map &:name
 
     all_packages = remove_nested_packs(all_packages) if options.roll_nested_todos_into_top_level
@@ -66,6 +66,7 @@ module VisualizePacks
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
+      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{exclude_packs_info(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
@@ -73,6 +74,17 @@ module VisualizePacks
       sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_violation_count} violation#{max_violation_count > 1 ? 's' : ''}</font>"
     end
     "<<b>#{main_title}</b>#{sub_title}>"
+  end
+
+  def self.exclude_packs_info(exclude_packs)
+    case exclude_packs.size
+    when 1
+      exclude_packs.first
+    when 2
+      exclude_packs.join(" and ")
+    else
+      "#{exclude_packs[0, 2].join(", ")}, and #{exclude_packs.size - 2} more."
+    end
   end
 
   def self.show_edge_builder(options, all_package_names)
@@ -121,8 +133,8 @@ module VisualizePacks
     violation_counts.values.max
   end
 
-  def self.filtered(packages, filter_package, filter_folder)
-    return packages unless filter_package || filter_folder
+  def self.filtered(packages, filter_package, filter_folder, exclude_packs)
+    return packages unless filter_package || filter_folder || exclude_packs.any?
 
     result = packages.map { |pack| pack.name }
 
@@ -137,6 +149,10 @@ module VisualizePacks
 
     if filter_folder
       result = result.select { |p| p.include? filter_folder }
+    end
+
+    if exclude_packs.any?
+      result = result.reject { |p| exclude_packs.include? p }
     end
 
     result.map { |pack_name| ParsePackwerk.find(pack_name) }
