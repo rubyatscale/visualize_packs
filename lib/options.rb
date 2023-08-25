@@ -20,6 +20,7 @@ class Options < T::Struct
 
   prop :exclude_packs, T::Array[String], default: []
   prop :exclude_violation_types, T::Array[String], default: []
+  prop :only_violation_types, T::Array[String], default: []
 
   prop :remote_base_url, T.nilable(String)
 end

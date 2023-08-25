@@ -68,6 +68,7 @@ module VisualizePacks
       options.show_nested_relationships ? nil : "hiding nested relationships",
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{to_limited_sentence(options.exclude_packs)}",
       options.exclude_violation_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_violation_types)} violation types",
+      options.only_violation_types.empty? ? nil : "only #{to_limited_sentence(options.only_violation_types)} violation types",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""

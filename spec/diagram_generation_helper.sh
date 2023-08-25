@@ -29,6 +29,7 @@ bundle exec visualize_packs --focus_folder=packs/model $URL > test_output/focus_
 
 bundle exec visualize_packs --exclude-packs=packs/ui,packs/models/packs/model_a,. $URL > test_output/exclude_packs$NEW.dot
 bundle exec visualize_packs --exclude-violation-types=architecture,visibility,dependency $URL > test_output/exclude_violation_types$NEW.dot
+bundle exec visualize_packs --only-violation-types=architecture,visibility $URL > test_output/only_violation_types$NEW.dot
 
 if [ "$GENERATE_PNGS" = "GENERATE_PNGS" ]; then
   dot test_output/plain$NEW.dot -Tpng -o test_output/plain$NEW.png
@@ -52,6 +53,7 @@ if [ "$GENERATE_PNGS" = "GENERATE_PNGS" ]; then
 
   dot test_output/exclude_packs$NEW.dot -Tpng -o test_output/exclude_packs$NEW.png
   dot test_output/exclude_violation_types$NEW.dot -Tpng -o test_output/exclude_violation_types$NEW.png
+  dot test_output/only_violation_types$NEW.dot -Tpng -o test_output/only_violation_types$NEW.png
 
   convert test_output/plain$NEW.png \
     test_output/no_legend$NEW.png \
@@ -69,5 +71,6 @@ if [ "$GENERATE_PNGS" = "GENERATE_PNGS" ]; then
     test_output/focus_folder$NEW.png \
     test_output/exclude_packs$NEW.png \
     test_output/exclude_violation_types$NEW.png \
+    test_output/only_violation_types$NEW.png \
     -append ../../diagram_examples$NEW.png
 fi

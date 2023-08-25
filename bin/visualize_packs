@@ -27,6 +27,7 @@ OptionParser.new do |opt|
 
   opt.on('--exclude-packs=pack1,pack2,etc', "Exclude these packs from diagram") { |o| options.exclude_packs = o.to_s.split(",") }
   opt.on('--exclude-violation-types=privacy,architecture,etc', "Exclude these types of violations") { |o| options.exclude_violation_types = o.to_s.split(",") }
+  opt.on('--only-violation-types=privacy,architecture,etc', "Show only these types of violations") { |o| options.only_violation_types = o.to_s.split(",") }
 
   opt.on('--remote-base-url=PACKAGE', "Link package nodes to an URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
