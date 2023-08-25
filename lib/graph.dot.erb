@@ -81,14 +81,14 @@ digraph package_diagram {
   <%- end -%>
   <%- if options.show_todos -%>
     <%- all_packages.each do |package| -%>
-      <%- filtered_violations = package.violations.reject { options.exclude_violation_types.include?(_1.type) } -%>
-      <%- if options.only_violation_types.any? -%>
-        <%- filtered_violations = filtered_violations.select { options.only_violation_types.include?(_1.type) } -%>
+      <%- filtered_violations = package.violations.reject { options.exclude_todo_types.include?(_1.type) } -%>
+      <%- if options.only_todo_types.any? -%>
+        <%- filtered_violations = filtered_violations.select { options.only_todo_types.include?(_1.type) } -%>
       <%- end -%>
       <%- violations_by_package = filtered_violations.group_by(&:to_package_name) -%>
       <%- violations_by_package.keys.each do |violations_to_package| -%>
-        <%- violation_types = violations_by_package[violations_to_package].group_by(&:type) -%>
-        <%- violation_types.keys.each do |violation_type| -%>
+        <%- todo_types = violations_by_package[violations_to_package].group_by(&:type) -%>
+        <%- todo_types.keys.each do |violation_type| -%>
           <%- if show_edge.call(package.name, violations_to_package) -%>
             "<%= package.name -%>" -> "<%= violations_to_package -%>"<%= violation_type == 'privacy' ? ':private' : '' -%> [ color=darkred style=dashed
               constraint=false
@@ -104,7 +104,7 @@ digraph package_diagram {
               <%- end -%>
               <%-
                 max_edge_width = 10
-                edge_width = (violation_types[violation_type].count / max_violation_count.to_f * max_edge_width).to_i
+                edge_width = (todo_types[violation_type].count / max_violation_count.to_f * max_edge_width).to_i
               -%>
               penwidth=<%= edge_width -%>
             ]

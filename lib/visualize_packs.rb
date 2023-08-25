@@ -67,8 +67,8 @@ module VisualizePacks
       options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{to_limited_sentence(options.exclude_packs)}",
-      options.exclude_violation_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_violation_types)} violation types",
-      options.only_violation_types.empty? ? nil : "only #{to_limited_sentence(options.only_violation_types)} violation types",
+      options.exclude_todo_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_todo_types)} todos",
+      options.only_todo_types.empty? ? nil : "only #{to_limited_sentence(options.only_todo_types)} todos",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
@@ -122,11 +122,11 @@ module VisualizePacks
     all_packages.each do |package|
       violations_by_package = package.violations.group_by(&:to_package_name)
       violations_by_package.keys.each do |violations_to_package|
-        violation_types = violations_by_package[violations_to_package].group_by(&:type)
-        violation_types.keys.each do |violation_type|
+        todo_types = violations_by_package[violations_to_package].group_by(&:type)
+        todo_types.keys.each do |violation_type|
           if show_edge.call(package.name, violations_to_package)
             key = "#{package.name}->#{violations_to_package}:#{violation_type}"
-            violation_counts[key] = violation_types[violation_type].count
+            violation_counts[key] = todo_types[violation_type].count
             # violation_counts[key] += 1
           end
         end
