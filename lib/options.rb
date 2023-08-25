@@ -8,6 +8,8 @@ class Options < T::Struct
   prop :show_layers, T::Boolean, default: true
   prop :show_dependencies, T::Boolean, default: true
   prop :show_todos, T::Boolean, default: true
+  prop :exclude_todo_types, T::Array[String], default: []
+  prop :only_todo_types, T::Array[String], default: []
   prop :show_privacy, T::Boolean, default: true
   prop :show_teams, T::Boolean, default: true
 
@@ -19,8 +21,6 @@ class Options < T::Struct
   prop :show_nested_relationships, T::Boolean, default: true
 
   prop :exclude_packs, T::Array[String], default: []
-  prop :exclude_todo_types, T::Array[String], default: []
-  prop :only_todo_types, T::Array[String], default: []
 
   prop :remote_base_url, T.nilable(String)
 end

@@ -62,13 +62,13 @@ module VisualizePacks
       options.show_layers ? nil : "hiding layers",
       options.show_dependencies ? nil : "hiding dependencies",
       options.show_todos ? nil : "hiding todos",
+      options.exclude_todo_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_todo_types)} todos",
+      options.only_todo_types.empty? ? nil : "only #{to_limited_sentence(options.only_todo_types)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{to_limited_sentence(options.exclude_packs)}",
-      options.exclude_todo_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_todo_types)} todos",
-      options.only_todo_types.empty? ? nil : "only #{to_limited_sentence(options.only_todo_types)} todos",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
