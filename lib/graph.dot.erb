@@ -81,7 +81,7 @@ digraph package_diagram {
   <%- end -%>
   <%- if options.show_todos -%>
     <%- all_packages.each do |package| -%>
-      <%- violations_by_package = package.violations.group_by(&:to_package_name) -%>
+      <%- violations_by_package = package.violations.reject { options.exclude_violation_types.include?(_1.type) }.group_by(&:to_package_name) -%>
       <%- violations_by_package.keys.each do |violations_to_package| -%>
         <%- violation_types = violations_by_package[violations_to_package].group_by(&:type) -%>
         <%- violation_types.keys.each do |violation_type| -%>

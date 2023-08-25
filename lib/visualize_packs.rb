@@ -66,7 +66,8 @@ module VisualizePacks
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
-      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{exclude_packs_info(options.exclude_packs)}",
+      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{to_limited_sentence(options.exclude_packs)}",
+      options.exclude_violation_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_violation_types)} violation types",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
@@ -76,14 +77,14 @@ module VisualizePacks
     "<<b>#{main_title}</b>#{sub_title}>"
   end
 
-  def self.exclude_packs_info(exclude_packs)
-    case exclude_packs.size
+  def self.to_limited_sentence(list)
+    case list.size
     when 1
-      exclude_packs.first
+      list.first
     when 2
-      exclude_packs.join(" and ")
+      list.join(" and ")
     else
-      "#{exclude_packs[0, 2].join(", ")}, and #{exclude_packs.size - 2} more."
+      "#{list[0, 2].join(", ")}, and #{list.size - 2} more"
     end
   end
 
