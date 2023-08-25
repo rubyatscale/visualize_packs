@@ -1,8 +1,8 @@
 set -x
 set -e
 
-rm -f tests/*.dot
-rm -f tests/*.png
+rm -f spec/sample_app1/test_output/*.dot
+rm -f spec/sample_app1/test_output/*.png
 
 ./spec/diagram_generation_helper.sh GENERATE_PNGS
 
