@@ -18,7 +18,7 @@ OptionParser.new do |opt|
   opt.on('--no-privacy', "Don't show privacy enforcement") { |o| options.show_privacy = false }
   opt.on('--no-teams', "Don't show team colors") { |o| options.show_teams = false }
 
-  opt.on('--focus-on=PACKAGE', "Don't show privacy enforcement") { |o| options.focus_package = o }
+  opt.on('--focus-on=PACKAGE', "Focus on a specific package") { |o| options.focus_package = o }
   opt.on('--only-edges-to-focus', "If focus is set, this shows only the edges to/from the focus node instead of all edges in the focussed graph. This only has effect when --focus-on is set.") { |o| options.show_only_edges_to_focus_package = true }
 
   opt.on('--roll_nested_todos_into_top_level', "Don't show nested packages (not counting root). Connect edges to top-level package instead") { |o| options.roll_nested_todos_into_top_level = true }
