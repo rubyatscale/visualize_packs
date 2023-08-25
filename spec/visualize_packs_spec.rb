@@ -178,4 +178,38 @@ RSpec.describe "VisualizePacks" do
       ## it does include the violation from the nested pack onto a
     end
   end
+
+  describe ".limited_sentence" do
+    subject { VisualizePacks.limited_sentence(list) }
+
+    context "with an empty list" do
+      let(:list) { [] }
+
+      it { is_expected.to eq "" }
+    end
+
+    context "with a list of 1 item" do
+      let(:list) { ["foo"] }
+
+      it { is_expected.to eq "foo" }
+    end
+
+    context "with a list of 2 items" do
+      let(:list) { ["foo", "bar"] }
+
+      it { is_expected.to eq "foo and bar" }
+    end
+
+    context "with a list of 3 items" do
+      let(:list) { ["foo", "bar", "baz"] }
+
+      it { is_expected.to eq "foo, bar, and 1 more" }
+    end
+
+    context "with a list of 4 items" do
+      let(:list) { ["foo", "bar", "baz", "wow"] }
+
+      it { is_expected.to eq "foo, bar, and 2 more" }
+    end
+  end
 end

@@ -62,12 +62,12 @@ module VisualizePacks
       options.show_layers ? nil : "hiding layers",
       options.show_dependencies ? nil : "hiding dependencies",
       options.show_todos ? nil : "hiding todos",
-      options.only_todo_types.empty? ? nil : "only #{to_limited_sentence(options.only_todo_types)} todos",
+      options.only_todo_types.empty? ? nil : "only #{limited_sentence(options.only_todo_types)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
-      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{to_limited_sentence(options.exclude_packs)}",
+      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
@@ -77,11 +77,8 @@ module VisualizePacks
     "<<b>#{main_title}</b>#{sub_title}>"
   end
 
-  def self.to_limited_sentence(list)
-    case list.size
-    when 1
-      list.first
-    when 2
+  def self.limited_sentence(list)
+    if list.size <= 2
       list.join(" and ")
     else
       "#{list[0, 2].join(", ")}, and #{list.size - 2} more"
