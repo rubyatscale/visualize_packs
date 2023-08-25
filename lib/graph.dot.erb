@@ -81,7 +81,7 @@ digraph package_diagram {
   <%- end -%>
   <%- if options.show_todos -%>
     <%- all_packages.each do |package| -%>
-      <%- filtered_violations = package.violations.reject { options.exclude_todo_types.include?(_1.type) } -%>
+      <%- filtered_violations = package.violations -%>
       <%- if options.only_todo_types.any? -%>
         <%- filtered_violations = filtered_violations.select { options.only_todo_types.include?(_1.type) } -%>
       <%- end -%>

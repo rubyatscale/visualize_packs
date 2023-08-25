@@ -14,7 +14,6 @@ bundle exec visualize_packs --no-legend $URL > test_output/no_legend$NEW.dot
 bundle exec visualize_packs --no-layers $URL > test_output/no_layers$NEW.dot
 bundle exec visualize_packs --no-dependencies $URL > test_output/no_dependencies$NEW.dot
 bundle exec visualize_packs --no-todos $URL > test_output/no_todos$NEW.dot
-bundle exec visualize_packs --exclude-todo-types=architecture,visibility,dependency $URL > test_output/exclude_todo_types$NEW.dot
 bundle exec visualize_packs --only-todo-types=architecture,visibility $URL > test_output/only_todo_types$NEW.dot
 bundle exec visualize_packs --no-privacy $URL > test_output/no_privacy$NEW.dot
 bundle exec visualize_packs --no-teams $URL > test_output/no_teams$NEW.dot
@@ -38,7 +37,6 @@ if [ "$GENERATE_PNGS" = "GENERATE_PNGS" ]; then
   dot test_output/no_layers$NEW.dot -Tpng -o test_output/no_layers$NEW.png
   dot test_output/no_dependencies$NEW.dot -Tpng -o test_output/no_dependencies$NEW.png
   dot test_output/no_todos$NEW.dot -Tpng -o test_output/no_todos$NEW.png
-  dot test_output/exclude_todo_types$NEW.dot -Tpng -o test_output/exclude_todo_types$NEW.png
   dot test_output/only_todo_types$NEW.dot -Tpng -o test_output/only_todo_types$NEW.png
   dot test_output/no_privacy$NEW.dot -Tpng -o test_output/no_privacy$NEW.png
   dot test_output/no_teams$NEW.dot -Tpng -o test_output/no_teams$NEW.png
@@ -60,7 +58,6 @@ if [ "$GENERATE_PNGS" = "GENERATE_PNGS" ]; then
     test_output/no_layers$NEW.png \
     test_output/no_dependencies$NEW.png \
     test_output/no_todos$NEW.png \
-    test_output/exclude_todo_types$NEW.png \
     test_output/only_todo_types$NEW.png \
     test_output/no_privacy$NEW.png \
     test_output/no_teams$NEW.png \

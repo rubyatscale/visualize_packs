@@ -62,7 +62,6 @@ module VisualizePacks
       options.show_layers ? nil : "hiding layers",
       options.show_dependencies ? nil : "hiding dependencies",
       options.show_todos ? nil : "hiding todos",
-      options.exclude_todo_types.empty? ? nil : "excluding #{to_limited_sentence(options.exclude_todo_types)} todos",
       options.only_todo_types.empty? ? nil : "only #{to_limited_sentence(options.only_todo_types)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
