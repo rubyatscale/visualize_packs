@@ -62,11 +62,12 @@ module VisualizePacks
       options.show_layers ? nil : "hiding layers",
       options.show_dependencies ? nil : "hiding dependencies",
       options.show_todos ? nil : "hiding todos",
+      options.only_todo_types.empty? ? nil : "only #{limited_sentence(options.only_todo_types)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
-      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{exclude_packs_info(options.exclude_packs)}",
+      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
@@ -76,14 +77,11 @@ module VisualizePacks
     "<<b>#{main_title}</b>#{sub_title}>"
   end
 
-  def self.exclude_packs_info(exclude_packs)
-    case exclude_packs.size
-    when 1
-      exclude_packs.first
-    when 2
-      exclude_packs.join(" and ")
+  def self.limited_sentence(list)
+    if list.size <= 2
+      list.join(" and ")
     else
-      "#{exclude_packs[0, 2].join(", ")}, and #{exclude_packs.size - 2} more."
+      "#{list[0, 2].join(", ")}, and #{list.size - 2} more"
     end
   end
 
@@ -120,11 +118,11 @@ module VisualizePacks
     all_packages.each do |package|
       violations_by_package = package.violations.group_by(&:to_package_name)
       violations_by_package.keys.each do |violations_to_package|
-        violation_types = violations_by_package[violations_to_package].group_by(&:type)
-        violation_types.keys.each do |violation_type|
+        todo_types = violations_by_package[violations_to_package].group_by(&:type)
+        todo_types.keys.each do |violation_type|
           if show_edge.call(package.name, violations_to_package)
             key = "#{package.name}->#{violations_to_package}:#{violation_type}"
-            violation_counts[key] = violation_types[violation_type].count
+            violation_counts[key] = todo_types[violation_type].count
             # violation_counts[key] += 1
           end
         end

@@ -8,6 +8,7 @@ class Options < T::Struct
   prop :show_layers, T::Boolean, default: true
   prop :show_dependencies, T::Boolean, default: true
   prop :show_todos, T::Boolean, default: true
+  prop :only_todo_types, T::Array[String], default: []
   prop :show_privacy, T::Boolean, default: true
   prop :show_teams, T::Boolean, default: true
 
