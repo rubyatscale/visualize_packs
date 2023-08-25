@@ -10,6 +10,19 @@ require_relative '../lib/options'
 
 options = Options.new
 
+supported_todo_types = %w[
+  privacy
+  architecture
+  visibility
+  dependency
+].sort.freeze
+
+def validated_list(o, valid_arguments)
+  list = o.to_s.split(",").uniq
+  raise OptionParser::InvalidArgument, o unless (list - valid_arguments).empty?
+  list
+end
+
 OptionParser.new do |opt|
   opt.on('--no-legend', "Don't show legend") { |o| options.show_legend = false }
   opt.on('--no-layers', "Don't show architectural layers") { |o| options.show_layers = false }
@@ -26,8 +39,8 @@ OptionParser.new do |opt|
   opt.on('--no_nested_relationships', "Don't draw nested package relationships") { |o| options.show_nested_relationships = false }
 
   opt.on('--exclude-packs=pack1,pack2,etc', "Exclude these packs from diagram") { |o| options.exclude_packs = o.to_s.split(",") }
-  opt.on('--exclude-todo-types=privacy,architecture,etc', "Exclude these types of todos") { |o| options.exclude_todo_types = o.to_s.split(",") }
-  opt.on('--only-todo-types=privacy,architecture,etc', "Show only these types of todos") { |o| options.only_todo_types = o.to_s.split(",") }
+  opt.on('--exclude-todo-types=privacy,architecture,etc', "Exclude these types of todos (supported types: #{supported_todo_types.join(', ')})") { |o| options.exclude_todo_types = validated_list(o, supported_todo_types) }
+  opt.on('--only-todo-types=privacy,architecture,etc', "Show only these types of todos (supported types: #{supported_todo_types.join(', ')})") { |o| options.only_todo_types = validated_list(o, supported_todo_types) }
 
   opt.on('--remote-base-url=PACKAGE', "Link package nodes to an URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
