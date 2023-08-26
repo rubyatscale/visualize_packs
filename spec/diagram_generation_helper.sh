@@ -1,4 +1,6 @@
-set -x
+#!/bin/bash
+
+# set -x
 set -e
 
 cd spec/sample_app1
@@ -8,66 +10,49 @@ GENERATE_PNGS=$1
 NEW=$2
 URL="--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app"
 
-bundle exec visualize_packs $URL > test_output/plain$NEW.dot
+declare -a test_names # To keep the list of tests in the defined order
+declare -A test_params # To map test names to command parameters
 
-bundle exec visualize_packs --no-legend $URL > test_output/no_legend$NEW.dot
-bundle exec visualize_packs --no-layers $URL > test_output/no_layers$NEW.dot
-bundle exec visualize_packs --no-dependencies $URL > test_output/no_dependencies$NEW.dot
-bundle exec visualize_packs --no-todos $URL > test_output/no_todos$NEW.dot
-bundle exec visualize_packs --only-todo-types=architecture,visibility $URL > test_output/only_todo_types$NEW.dot
-bundle exec visualize_packs --no-privacy $URL > test_output/no_privacy$NEW.dot
-bundle exec visualize_packs --no-teams $URL > test_output/no_teams$NEW.dot
-bundle exec visualize_packs --no_nested_relationships $URL > test_output/no_nested_relationships$NEW.dot
-bundle exec visualize_packs --roll_nested_todos_into_top_level $URL > test_output/roll_nested_todos_into_top_level$NEW.dot
+test_names+=("plain"); test_params[${test_names[-1]}]=""
 
-bundle exec visualize_packs             --no-dependencies --no-todos --no-privacy --no-teams --no_nested_relationships $URL > test_output/only_layers$NEW.dot
-bundle exec visualize_packs --no-layers --no-dependencies --no-todos --no-privacy --no-teams --no_nested_relationships $URL > test_output/no_to_all$NEW.dot
+test_names+=("no_legend"); test_params[${test_names[-1]}]="--no-legend"
+test_names+=("no_layers"); test_params[${test_names[-1]}]="--no-layers"
+test_names+=("no_dependencies"); test_params[${test_names[-1]}]="--no-dependencies"
+test_names+=("no_todos"); test_params[${test_names[-1]}]="--no-todos"
+test_names+=("only_todo_types"); test_params[${test_names[-1]}]="--only-todo-types=architecture,visibility"
+test_names+=("no_privacy"); test_params[${test_names[-1]}]="--no-privacy"
+test_names+=("no_teams"); test_params[${test_names[-1]}]="--no-teams"
+test_names+=("no_nested_relationships"); test_params[${test_names[-1]}]="--no_nested_relationships"
+test_names+=("roll_nested_todos_into_top_level"); test_params[${test_names[-1]}]="--roll_nested_todos_into_top_level"
 
-bundle exec visualize_packs --focus_on=packs/ui                       $URL > test_output/focussed_on_packs_ui$NEW.dot
-bundle exec visualize_packs --focus_on=packs/ui --only-edges-to-focus $URL > test_output/focussed_on_packs_ui_focus_edges$NEW.dot
+test_names+=("only_layers"); test_params[${test_names[-1]}]="--no-dependencies --no-todos --no-privacy --no-teams --no_nested_relationships"
+test_names+=("no_to_all"); test_params[${test_names[-1]}]="--no-layers --no-dependencies --no-todos --no-privacy --no-teams --no_nested_relationships"
 
-bundle exec visualize_packs --focus_folder=packs/model $URL > test_output/focus_folder$NEW.dot
+test_names+=("focussed_on_packs_ui"); test_params[${test_names[-1]}]="--focus_on=packs/ui"
+test_names+=("focussed_on_packs_ui_focus_edges"); test_params[${test_names[-1]}]="--focus_on=packs/ui --only-edges-to-focus"
 
-bundle exec visualize_packs --exclude-packs=packs/ui,packs/models/packs/model_a,. $URL > test_output/exclude_packs$NEW.dot
+test_names+=("focus_folder"); test_params[${test_names[-1]}]="--focus_folder=packs/model"
+
+test_names+=("exclude_packs"); test_params[${test_names[-1]}]="--exclude-packs=packs/ui,packs/models/packs/model_a,."
+
+# Debugging...
+# echo "test_names: ${test_names[@]}"
+# echo "keys: ${!test_params[@]}"
+# echo "values: ${test_params[@]}"
+
+for test in "${test_names[@]}"; do
+  params=${test_params[$test]}
+  echo "Testing $test: $params"
+  bundle exec visualize_packs $params $URL > test_output/$test$NEW.dot
+done
 
 if [ "$GENERATE_PNGS" = "GENERATE_PNGS" ]; then
-  dot test_output/plain$NEW.dot -Tpng -o test_output/plain$NEW.png
+  convert_params=""
+  for test in "${test_names[@]}"; do
+    convert_params+=" test_output/$test$NEW.png"
+    echo "Generating png for $test"
+    dot test_output/$test$NEW.dot -Tpng -o test_output/$test$NEW.png
+  done
 
-  dot test_output/no_legend$NEW.dot -Tpng -o test_output/no_legend$NEW.png
-  dot test_output/no_layers$NEW.dot -Tpng -o test_output/no_layers$NEW.png
-  dot test_output/no_dependencies$NEW.dot -Tpng -o test_output/no_dependencies$NEW.png
-  dot test_output/no_todos$NEW.dot -Tpng -o test_output/no_todos$NEW.png
-  dot test_output/only_todo_types$NEW.dot -Tpng -o test_output/only_todo_types$NEW.png
-  dot test_output/no_privacy$NEW.dot -Tpng -o test_output/no_privacy$NEW.png
-  dot test_output/no_teams$NEW.dot -Tpng -o test_output/no_teams$NEW.png
-  dot test_output/no_nested_relationships$NEW.dot -Tpng -o test_output/no_nested_relationships$NEW.png
-  dot test_output/roll_nested_todos_into_top_level$NEW.dot -Tpng -o test_output/roll_nested_todos_into_top_level$NEW.png
-
-  dot test_output/only_layers$NEW.dot -Tpng -o test_output/only_layers$NEW.png
-  dot test_output/no_to_all$NEW.dot -Tpng -o test_output/no_to_all$NEW.png
-
-  dot test_output/focussed_on_packs_ui$NEW.dot -Tpng -o test_output/focussed_on_packs_ui$NEW.png
-  dot test_output/focussed_on_packs_ui_focus_edges$NEW.dot -Tpng -o test_output/focussed_on_packs_ui_focus_edges$NEW.png
-
-  dot test_output/focus_folder$NEW.dot -Tpng -o test_output/focus_folder$NEW.png
-
-  dot test_output/exclude_packs$NEW.dot -Tpng -o test_output/exclude_packs$NEW.png
-
-  convert test_output/plain$NEW.png \
-    test_output/no_legend$NEW.png \
-    test_output/no_layers$NEW.png \
-    test_output/no_dependencies$NEW.png \
-    test_output/no_todos$NEW.png \
-    test_output/only_todo_types$NEW.png \
-    test_output/no_privacy$NEW.png \
-    test_output/no_teams$NEW.png \
-    test_output/no_nested_relationships$NEW.png \
-    test_output/roll_nested_todos_into_top_level$NEW.png \
-    test_output/only_layers$NEW.png \
-    test_output/no_to_all$NEW.png \
-    test_output/focussed_on_packs_ui$NEW.png \
-    test_output/focussed_on_packs_ui_focus_edges$NEW.png \
-    test_output/focus_folder$NEW.png \
-    test_output/exclude_packs$NEW.png \
-    -append ../../diagram_examples$NEW.png
+  convert $convert_params -append ../../diagram_examples$NEW.png
 fi
