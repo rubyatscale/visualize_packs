@@ -81,30 +81,30 @@ digraph package_diagram {
   <%- end -%>
   <%- if options.show_todos -%>
     <%- all_packages.each do |package| -%>
-      <%- filtered_violations = package.violations -%>
+      <%- filtered_todos = package.violations -%>
       <%- if options.only_todo_types.any? -%>
-        <%- filtered_violations = filtered_violations.select { options.only_todo_types.include?(_1.type) } -%>
+        <%- filtered_todos = filtered_todos.select { options.only_todo_types.include?(_1.type) } -%>
       <%- end -%>
-      <%- violations_by_package = filtered_violations.group_by(&:to_package_name) -%>
-      <%- violations_by_package.keys.each do |violations_to_package| -%>
-        <%- todo_types = violations_by_package[violations_to_package].group_by(&:type) -%>
-        <%- todo_types.keys.each do |violation_type| -%>
-          <%- if show_edge.call(package.name, violations_to_package) -%>
-            "<%= package.name -%>" -> "<%= violations_to_package -%>"<%= violation_type == 'privacy' ? ':private' : '' -%> [ color=darkred style=dashed
+      <%- todos_by_package = filtered_todos.group_by(&:to_package_name) -%>
+      <%- todos_by_package.keys.each do |todos_to_package| -%>
+        <%- todo_types = todos_by_package[todos_to_package].group_by(&:type) -%>
+        <%- todo_types.keys.each do |todo_type| -%>
+          <%- if show_edge.call(package.name, todos_to_package) -%>
+            "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [ color=darkred style=dashed
               constraint=false
-              # headlabel="<%= violation_type -%>"
-              <%- if violation_type == 'privacy' -%>
+              # headlabel="<%= todo_type -%>"
+              <%- if todo_type == 'privacy' -%>
                 arrowhead=crow
-              <%- elsif violation_type == 'architecture' -%>
+              <%- elsif todo_type == 'architecture' -%>
                 arrowhead=invodot
-              <%- elsif violation_type == 'visibility' -%>
+              <%- elsif todo_type == 'visibility' -%>
                 arrowhead=obox
-              <%- elsif violation_type == 'dependency' -%>
+              <%- elsif todo_type == 'dependency' -%>
                 arrowhead=odot
               <%- end -%>
               <%-
                 max_edge_width = 10
-                edge_width = (todo_types[violation_type].count / max_violation_count.to_f * max_edge_width).to_i
+                edge_width = (todo_types[todo_type].count / max_todo_count.to_f * max_edge_width).to_i
               -%>
               penwidth=<%= edge_width -%>
             ]
