@@ -18,9 +18,9 @@ module VisualizePacks
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
-    max_violation_count = max_violation_count(all_packages, show_edge)
+    max_todo_count = max_todo_count(all_packages, show_edge)
 
-    title = diagram_title(options, max_violation_count)
+    title = diagram_title(options, max_todo_count)
 
     architecture_layers = (raw_config['architecture_layers'] || []) + ["NotInLayer"]
     grouped_packages = architecture_layers.inject({}) do |result, key|
@@ -52,7 +52,7 @@ module VisualizePacks
     package.config.dig("metadata", "owner") || package.config["owner"]
   end
 
-  def self.diagram_title(options, max_violation_count)
+  def self.diagram_title(options, max_todo_count)
     app_name = File.basename(Dir.pwd)
     focus_edge_info = options.focus_package && options.show_only_edges_to_focus_package ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
     focus_info = options.focus_package || options.focus_folder ? "Focus on #{[options.focus_package, options.focus_folder].compact.join(' and ')} (#{focus_edge_info})" : "All packs"
@@ -71,8 +71,8 @@ module VisualizePacks
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
     sub_title = ""
-    if options.show_todos && max_violation_count
-      sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_violation_count} violation#{max_violation_count > 1 ? 's' : ''}</font>"
+    if options.show_todos && max_todo_count
+      sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
     end
     "<<b>#{main_title}</b>#{sub_title}>"
   end
@@ -113,22 +113,22 @@ module VisualizePacks
     end
   end
 
-  def self.max_violation_count(all_packages, show_edge)
-    violation_counts = {}
+  def self.max_todo_count(all_packages, show_edge)
+    todo_counts = {}
     all_packages.each do |package|
-      violations_by_package = package.violations.group_by(&:to_package_name)
-      violations_by_package.keys.each do |violations_to_package|
-        todo_types = violations_by_package[violations_to_package].group_by(&:type)
-        todo_types.keys.each do |violation_type|
-          if show_edge.call(package.name, violations_to_package)
-            key = "#{package.name}->#{violations_to_package}:#{violation_type}"
-            violation_counts[key] = todo_types[violation_type].count
-            # violation_counts[key] += 1
+      todos_by_package = package.violations.group_by(&:to_package_name)
+      todos_by_package.keys.each do |todos_to_package|
+        todo_types = todos_by_package[todos_to_package].group_by(&:type)
+        todo_types.keys.each do |todo_type|
+          if show_edge.call(package.name, todos_to_package)
+            key = "#{package.name}->#{todos_to_package}:#{todo_type}"
+            todo_counts[key] = todo_types[todo_type].count
+            # todo_counts[key] += 1
           end
         end
       end
     end
-    violation_counts.values.max
+    todo_counts.values.max
   end
 
   def self.filtered(packages, filter_package, filter_folder, exclude_packs)
@@ -201,7 +201,7 @@ module VisualizePacks
           nested_packages[d] || d
         end.uniq.reject { |p| p == package.name }
 
-        morphed_violations = package.violations.map do |v|
+        morphed_todos = package.violations.map do |v|
           ParsePackwerk::Violation.new(
             type: v.type, 
             to_package_name: nested_packages[v.to_package_name] || v.to_package_name, 
@@ -219,10 +219,10 @@ module VisualizePacks
           metadata: package.metadata,
           dependencies: morphed_dependencies,
           config: package.config,
-          violations: morphed_violations
+          violations: morphed_todos
         )
         # add dependencies TO nested packages to top-level package
-        # add violations TO nested packages to top-level package
+        # add todos TO nested packages to top-level package
       end
     end
 
