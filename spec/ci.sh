@@ -13,7 +13,7 @@ rm -rf vendor/
 
 if [[ `git status --porcelain` ]]; then
   echo "Changes to git detected. Fail."
-  echo "Please make sure you ran './update_cassettes.sh' and checked in all changes into git."
+  echo "Please make sure you ran './spec/update_cassettes.sh' and checked in all changes into git."
   exit 1
 else
   echo "No changes to git detected. Success."
