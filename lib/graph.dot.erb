@@ -102,11 +102,7 @@ digraph package_diagram {
               <%- elsif todo_type == 'dependency' -%>
                 arrowhead=odot
               <%- end -%>
-              <%-
-                max_edge_width = 10
-                edge_width = (todo_types[todo_type].count / max_todo_count.to_f * max_edge_width).to_i
-              -%>
-              penwidth=<%= edge_width -%>
+              penwidth=<%= todo_edge_width(todo_types[todo_type].count, max_todo_count) -%>
             ]
           <%- end -%>
         <%- end -%>

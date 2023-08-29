@@ -131,6 +131,11 @@ module VisualizePacks
     todo_counts.values.max
   end
 
+  def self.todo_edge_width(todo_count, max_todo_count)
+    max_edge_width = 10
+    (todo_count / max_todo_count.to_f * max_edge_width).to_i
+  end
+
   def self.filtered(packages, filter_package, filter_folder, exclude_packs)
     return packages unless filter_package || filter_folder || exclude_packs.any?
 
