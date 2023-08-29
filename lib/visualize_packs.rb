@@ -14,7 +14,7 @@ module VisualizePacks
     all_packages = filtered(packages, options.focus_package, options.focus_folder, options.exclude_packs).sort_by {|x| x.name }
     all_package_names = all_packages.map &:name
 
-    all_packages = remove_nested_packs(all_packages) if options.roll_nested_todos_into_top_level
+    all_packages = remove_nested_packs(all_packages) if options.roll_nested_into_parent_packs
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
@@ -65,7 +65,7 @@ module VisualizePacks
       options.only_todo_types.empty? ? nil : "only #{limited_sentence(options.only_todo_types)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
-      options.roll_nested_todos_into_top_level ? "hiding nested packs" : nil,
+      options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
@@ -159,13 +159,12 @@ module VisualizePacks
   def self.all_nested_packages(all_package_names)
     all_package_names.reject { |p| p == '.' }.inject({}) do |result, package|
       package_map_tally = all_package_names.map { |other_package| Pathname.new(package).parent.to_s.include?(other_package) }
-      if package_map_tally.tally[true].nil?
-        #nothing to do
-      elsif package_map_tally.tally[true] > 1
-        raise "Can't handle multiple levels of nesting atm"
-      elsif package_map_tally.tally[true] == 1
-        result[package] = all_package_names[package_map_tally.find_index(true)]
-      end
+
+      acc = []
+      all_package_names.each_with_index { |pack, idx| acc << pack if package_map_tally[idx] }
+      acc.sort_by(&:length)
+      result[package] = acc.first unless acc.empty?
+
       result
     end
   end

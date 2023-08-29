@@ -23,7 +23,7 @@ test_names+=("only_todo_types"); test_params[${test_names[-1]}]="--only-todo-typ
 test_names+=("no_privacy"); test_params[${test_names[-1]}]="--no-privacy"
 test_names+=("no_teams"); test_params[${test_names[-1]}]="--no-teams"
 test_names+=("no_nested_relationships"); test_params[${test_names[-1]}]="--no_nested_relationships"
-test_names+=("roll_nested_todos_into_top_level"); test_params[${test_names[-1]}]="--roll_nested_todos_into_top_level"
+test_names+=("roll_nested_into_parent_packs"); test_params[${test_names[-1]}]="--roll-nested-into-parent-packs"
 
 test_names+=("only_layers"); test_params[${test_names[-1]}]="--no-dependencies --no-todos --no-privacy --no-teams --no_nested_relationships"
 test_names+=("no_to_all"); test_params[${test_names[-1]}]="--no-layers --no-dependencies --no-todos --no-privacy --no-teams --no_nested_relationships"

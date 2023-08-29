@@ -35,9 +35,9 @@ OptionParser.new do |opt|
   opt.on('--focus-on=PACKAGE', "Focus on a specific package") { |o| options.focus_package = o }
   opt.on('--only-edges-to-focus', "If focus is set, this shows only the edges to/from the focus node instead of all edges in the focussed graph. This only has effect when --focus-on is set.") { |o| options.show_only_edges_to_focus_package = true }
 
-  opt.on('--roll_nested_todos_into_top_level', "Don't show nested packages (not counting root). Connect edges to top-level package instead") { |o| options.roll_nested_todos_into_top_level = true }
+  opt.on('--roll-nested-into-parent-packs', "Don't show nested packages (not counting root). Connect edges to top-level package instead") { |o| options.roll_nested_into_parent_packs = true }
   opt.on('--focus_folder=FOLDER', "Draw package diagram only for packages in FOLDER") { |o| options.focus_folder = o }
-  opt.on('--no_nested_relationships', "Don't draw nested package relationships") { |o| options.show_nested_relationships = false }
+  opt.on('--no_nested_relationships', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
 
   opt.on('--exclude-packs=pack1,pack2,etc', "Exclude these packs from diagram") { |o| options.exclude_packs = o.to_s.split(",") }
 

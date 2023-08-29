@@ -15,7 +15,7 @@ class Options < T::Struct
   prop :focus_package, T.nilable(String)
   prop :show_only_edges_to_focus_package, T::Boolean, default: false
 
-  prop :roll_nested_todos_into_top_level, T::Boolean, default: false
+  prop :roll_nested_into_parent_packs, T::Boolean, default: false
   prop :focus_folder, T.nilable(String)
   prop :show_nested_relationships, T::Boolean, default: true
 
