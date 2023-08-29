@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "visualize_packs"
-  spec.version       = '0.5.6'
+  spec.version       = '0.5.7'
   spec.authors       = ['Gusto Engineers']
   spec.email         = ['dev@gusto.com']
   spec.summary       = 'A gem to visualize connections in a Ruby app that uses packs'
