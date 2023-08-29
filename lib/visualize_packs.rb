@@ -159,13 +159,12 @@ module VisualizePacks
   def self.all_nested_packages(all_package_names)
     all_package_names.reject { |p| p == '.' }.inject({}) do |result, package|
       package_map_tally = all_package_names.map { |other_package| Pathname.new(package).parent.to_s.include?(other_package) }
-      if package_map_tally.tally[true].nil?
-        #nothing to do
-      elsif package_map_tally.tally[true] > 1
-        raise "Can't handle multiple levels of nesting atm"
-      elsif package_map_tally.tally[true] == 1
-        result[package] = all_package_names[package_map_tally.find_index(true)]
-      end
+
+      acc = []
+      all_package_names.each_with_index { |pack, idx| acc << pack if package_map_tally[idx] }
+      acc.sort_by(&:length)
+      result[package] = acc.first unless acc.empty?
+
       result
     end
   end

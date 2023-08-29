@@ -4,7 +4,14 @@ require_relative '../lib/visualize_packs'
 
 RSpec.describe "VisualizePacks" do
   describe ".all_nested_packages" do
-    it "should work" do
+    it "has an empty result if there are no nested packs" do
+      input = %w(. packs/a packs/b )
+      expected_output = {} 
+
+      expect(VisualizePacks.all_nested_packages(input)).to eq(expected_output)
+    end
+
+    it "works for nested packs" do
       input = %w(. packs/a packs/a/z packs/b packs/b/packs/x packs/b/packs/y)
       expected_output = {
         "packs/a/z" => "packs/a",
@@ -15,10 +22,15 @@ RSpec.describe "VisualizePacks" do
       expect(VisualizePacks.all_nested_packages(input)).to eq(expected_output)
     end
 
-    it "explicitly doesn't handle multiple nestings" do
+    it "works for multiply nested packages" do
       input = %w(. packs/a packs/a/b packs/a/b/c)
 
-      expect { VisualizePacks.all_nested_packages(input) }.to raise_exception(RuntimeError)
+      expected_output = {
+        "packs/a/b" => "packs/a",
+        "packs/a/b/c" => "packs/a",
+      } 
+
+      expect(VisualizePacks.all_nested_packages(input)).to eq(expected_output)
     end
   end
 
