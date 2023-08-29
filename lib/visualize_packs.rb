@@ -169,7 +169,7 @@ module VisualizePacks
     end
 
     if exclude_packs.any?
-      result = result.reject { |p| exclude_packs.include? p }
+      result = result.reject { |p| exclude_pack?(p, exclude_packs) }
     end
 
     result.map { |pack_name| ParsePackwerk.find(pack_name) }
@@ -245,5 +245,9 @@ module VisualizePacks
     end
 
     morphed_packages.reject { |p| nested_packages.keys.include?(p.name) }
+  end
+
+  def self.exclude_pack?(pack, exclude_packs)
+    exclude_packs.any? {|p| File.fnmatch(p, pack)}
   end
 end

@@ -39,7 +39,7 @@ OptionParser.new do |opt|
   opt.on('--focus_folder=FOLDER', "Draw package diagram only for packages in FOLDER") { |o| options.focus_folder = o }
   opt.on('--no_nested_relationships', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
 
-  opt.on('--exclude-packs=pack1,pack2,etc', "Exclude these packs from diagram") { |o| options.exclude_packs = o.to_s.split(",") }
+  opt.on('--exclude-packs=pack1,pack2,etc', "Exclude listed packs from diagram. Allows filname matching style wildcards like 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
 
   opt.on('--remote-base-url=PACKAGE', "Link package nodes to an URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
