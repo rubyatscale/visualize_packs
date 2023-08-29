@@ -142,37 +142,37 @@ digraph package_diagram {
               constraint=false
               # headlabel="dependency"
                 arrowhead=odot
-              penwidth=2            ]
+              penwidth=1.0            ]
             "packs/ui" -> "." [ color=darkred style=dashed
               constraint=false
               # headlabel="architecture"
                 arrowhead=invodot
-              penwidth=2            ]
+              penwidth=1.0            ]
             "packs/ui" -> "." [ color=darkred style=dashed
               constraint=false
               # headlabel="visibility"
                 arrowhead=obox
-              penwidth=2            ]
+              penwidth=1.0            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
               constraint=false
               # headlabel="dependency"
                 arrowhead=odot
-              penwidth=10            ]
+              penwidth=10.0            ]
             "packs/ui" -> "packs/models/packs/model_a":private [ color=darkred style=dashed
               constraint=false
               # headlabel="privacy"
                 arrowhead=crow
-              penwidth=8            ]
+              penwidth=7.75            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
               constraint=false
               # headlabel="architecture"
                 arrowhead=invodot
-              penwidth=6            ]
+              penwidth=5.5            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
               constraint=false
               # headlabel="visibility"
                 arrowhead=obox
-              penwidth=4            ]
+              penwidth=3.25            ]
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"
