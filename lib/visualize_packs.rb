@@ -131,10 +131,24 @@ module VisualizePacks
     todo_counts.values.max
   end
 
-  def self.todo_edge_width(todo_count, max_todo_count)
-    max_edge_width = 10
-    (todo_count / max_todo_count.to_f * max_edge_width).to_i
-  end
+  def self.todo_edge_width(todo_count, max_count)
+    # Limits
+    min_width = 1
+    max_width = 10
+    min_count = 1 # Number of todos equivalent to min_width
+
+    # Ensure safe values
+    return 0 if todo_count < min_count
+    return max_width if todo_count > max_count
+
+    todo_range = max_count - min_count
+    width_range = max_width - min_width
+    count_delta = todo_count - min_count
+
+    width_delta = count_delta / todo_range.to_f * width_range
+    edge_width = min_width + width_delta
+    edge_width.round(2)
+ end
 
   def self.filtered(packages, filter_package, filter_folder, exclude_packs)
     return packages unless filter_package || filter_folder || exclude_packs.any?

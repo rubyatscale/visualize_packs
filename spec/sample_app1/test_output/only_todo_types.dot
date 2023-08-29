@@ -142,22 +142,22 @@ digraph package_diagram {
               constraint=false
               # headlabel="architecture"
                 arrowhead=invodot
-              penwidth=2            ]
+              penwidth=1.0            ]
             "packs/ui" -> "." [ color=darkred style=dashed
               constraint=false
               # headlabel="visibility"
                 arrowhead=obox
-              penwidth=2            ]
+              penwidth=1.0            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
               constraint=false
               # headlabel="architecture"
                 arrowhead=invodot
-              penwidth=6            ]
+              penwidth=5.5            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
               constraint=false
               # headlabel="visibility"
                 arrowhead=obox
-              penwidth=4            ]
+              penwidth=3.25            ]
         "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
         "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
     subgraph cluster_legend {
