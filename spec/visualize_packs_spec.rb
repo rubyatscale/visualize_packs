@@ -279,4 +279,25 @@ RSpec.describe "VisualizePacks" do
       end
     end
   end
+
+  describe '.exclude_pack?' do
+    it 'does not exclude non-matches' do
+      expect(VisualizePacks.exclude_pack?("pack", ["packs", "spack", "ack", "components"])).to be_falsy
+    end
+
+    it 'excludes matches' do
+      expect(VisualizePacks.exclude_pack?("pack", ["pack", "park"])).to be_truthy
+      expect(VisualizePacks.exclude_pack?("park", ["pack", "park"])).to be_truthy
+    end
+
+    it 'excludes matches using fnmatch' do
+      expect(VisualizePacks.exclude_pack?("component", ["pack/*"])).to be_falsy
+      expect(VisualizePacks.exclude_pack?("pack", ["pack/*"])).to be_falsy
+      expect(VisualizePacks.exclude_pack?("pack/a", ["pack/*"])).to be_truthy
+      expect(VisualizePacks.exclude_pack?("pack/a/b", ["pack/*"])).to be_truthy
+
+      expect(VisualizePacks.exclude_pack?("pack/a/b", ["pack/*/b"])).to be_truthy
+      expect(VisualizePacks.exclude_pack?("pack/a/c", ["pack/*/b"])).to be_falsy
+    end
+  end
 end
