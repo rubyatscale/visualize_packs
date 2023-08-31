@@ -133,37 +133,51 @@ digraph package_diagram {
           "packs/ui" -> "packs/models/packs/model_a" [ color=darkgreen ]
           "packs/ui" -> "packs/utility" [ color=darkgreen ]
             "packs/ui" -> "." [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="dependency"
                 arrowhead=odot
               penwidth=1.0            ]
             "packs/ui" -> "." [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="architecture"
                 arrowhead=invodot
               penwidth=1.0            ]
             "packs/ui" -> "." [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=1.0            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="dependency"
                 arrowhead=odot
               penwidth=10.0            ]
             "packs/ui" -> "packs/models/packs/model_a":private [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="privacy"
                 arrowhead=crow
               penwidth=7.75            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="architecture"
                 arrowhead=invodot
               penwidth=5.5            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
-              constraint=false
+
+                constraint=false
+
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=3.25            ]
