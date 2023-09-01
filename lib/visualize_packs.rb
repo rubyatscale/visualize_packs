@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# typed: false
+# typed: strict
 
 require 'erb'
 require 'packs-specification'
@@ -7,14 +7,14 @@ require 'parse_packwerk'
 require 'digest/md5'
 
 module VisualizePacks
+  extend T::Sig
 
+  sig { params(options: Options, raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
   def self.package_graph!(options, raw_config, packages)
-    raise ArgumentError, "Package #{options.focus_package} does not exist. Found packages #{packages.map(&:name).join(", ")}" if options.focus_package && !packages.map(&:name).include?(options.focus_package)
-
-    all_packages = filtered(packages, options.focus_package, options.focus_folder, options.include_packs, options.exclude_packs).sort_by {|x| x.name }
+    all_packages = filtered(packages, options).compact.sort_by {|x| x.name }
     all_package_names = all_packages.map &:name
 
-    all_packages = remove_nested_packs(all_packages) if options.roll_nested_into_parent_packs
+    all_packages = remove_nested_packs(all_packages, options)
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
@@ -48,14 +48,16 @@ module VisualizePacks
 
   private 
 
+  sig { params(package: ParsePackwerk::Package).returns(T.nilable(String)) }
   def self.code_owner(package)
     package.config.dig("metadata", "owner") || package.config["owner"]
   end
 
+  sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
   def self.diagram_title(options, max_todo_count)
     app_name = File.basename(Dir.pwd)
-    focus_edge_info = options.focus_package && options.show_only_edges_to_focus_package ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
-    focus_info = options.focus_package || options.focus_folder ? "Focus on #{[options.focus_package, options.focus_folder].compact.join(' and ')} (#{focus_edge_info})" : "All packs"
+    focus_edge_info = options.focus_package.any? && options.show_only_edges_to_focus_package ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
+    focus_info = options.focus_package.any? || options.focus_folder ? "Focus on #{[limited_sentence(options.focus_package), options.focus_folder].compact.join(' and ')} (#{focus_edge_info})" : "All packs"
     skipped_info = 
     [
       options.show_legend ? nil : "hiding legend",
@@ -78,14 +80,18 @@ module VisualizePacks
     "<<b>#{main_title}</b>#{sub_title}>"
   end
 
+  sig { params(list: T.nilable(T::Array[String])).returns(T.nilable(String)) }
   def self.limited_sentence(list)
+    return nil if !list || list.empty?
+
     if list.size <= 2
       list.join(" and ")
     else
-      "#{list[0, 2].join(", ")}, and #{list.size - 2} more"
+      "#{T.must(list[0, 2]).join(", ")}, and #{list.size - 2} more"
     end
   end
 
+  sig { params(options: Options, all_package_names: T::Array[String]).returns(T.proc.params(arg0: String, arg1: String).returns(T::Boolean)) }
   def self.show_edge_builder(options, all_package_names)
     return lambda do |start_node, end_node|
       (
@@ -97,11 +103,15 @@ module VisualizePacks
         options.show_only_edges_to_focus_package && 
         all_package_names.include?(start_node) && 
         all_package_names.include?(end_node) && 
-        [start_node, end_node].include?(options.focus_package)
+        (
+          match_packs?(start_node, options.focus_package) ||
+          match_packs?(end_node, options.focus_package)
+        )
       )
     end
   end
 
+  sig { returns(T.nilable(T.proc.params(arg0: String).returns(String))) }
   def self.node_color_builder
     return lambda do |text|
       return unless text
@@ -114,17 +124,17 @@ module VisualizePacks
     end
   end
 
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean)).returns(T.nilable(Integer)) }
   def self.max_todo_count(all_packages, show_edge)
     todo_counts = {}
     all_packages.each do |package|
-      todos_by_package = package.violations.group_by(&:to_package_name)
-      todos_by_package.keys.each do |todos_to_package|
-        todo_types = todos_by_package[todos_to_package].group_by(&:type)
-        todo_types.keys.each do |todo_type|
+      todos_by_package = package.violations&.group_by(&:to_package_name)
+      todos_by_package&.keys&.each do |todos_to_package|
+        todo_types = todos_by_package&& todos_by_package[todos_to_package]&.group_by(&:type)
+        todo_types&.keys&.each do |todo_type|
           if show_edge.call(package.name, todos_to_package)
             key = "#{package.name}->#{todos_to_package}:#{todo_type}"
-            todo_counts[key] = todo_types[todo_type].count
-            # todo_counts[key] += 1
+            todo_counts[key] = todo_types && todo_types[todo_type]&.count
           end
         end
       end
@@ -132,6 +142,7 @@ module VisualizePacks
     todo_counts.values.max
   end
 
+  sig { params(todo_count: Integer, max_count: Integer).returns(T.any(Float, Integer)) }
   def self.todo_edge_width(todo_count, max_count)
     # Limits
     min_width = 1
@@ -151,22 +162,44 @@ module VisualizePacks
     edge_width.round(2)
  end
 
-  def self.filtered(packages, filter_package, filter_folder, include_packs, exclude_packs)
-    return packages unless filter_package || filter_folder || include_packs || exclude_packs.any?
+ sig { params(packages: T::Array[ParsePackwerk::Package], options: Options).returns(T::Array[ParsePackwerk::Package]) }
+ def self.filtered(packages, options)
+    focus_package = options.focus_package
+    focus_folder = options.focus_folder 
+    include_packs = options.include_packs 
+    exclude_packs = options.exclude_packs
 
+    return packages unless focus_package.any? || focus_folder || include_packs || exclude_packs.any?
+
+    nested_packages = all_nested_packages(packages.map { |p| p.name })
+
+    packages_by_name = packages.inject({}) do |res, p|
+      res[p.name] = p
+      res
+    end
+ 
+    result = T.let([], T::Array[T.nilable(String)])
     result = packages.map { |pack| pack.name }
 
-    if filter_package
-      result = [filter_package]
-      result += packages.select{ |p| p.dependencies.include? filter_package }.map { |pack| pack.name }
-      result += ParsePackwerk.find(filter_package).dependencies
-      result += packages.select{ |p| p.violations.map(&:to_package_name).include? filter_package }.map { |pack| pack.name }
-      result += ParsePackwerk.find(filter_package).violations.map(&:to_package_name)
+    if !focus_package.empty?
+      result = []
+      result += packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_package) }
+      result += packages.select{ |p| p.dependencies.any? { |d| match_packs?(d, focus_package) }}.map { |pack| pack.name }
+      result += packages.select{ |p| p.violations&.map(&:to_package_name)&.any? { |v| match_packs?(v, focus_package) }}.map { |pack| pack.name }
+      packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_package) }.each do |p|
+        result += packages_by_name[p].dependencies
+        result += packages_by_name[p].violations.map(&:to_package_name)
+      end
       result = result.uniq
+      parent_packs = result.inject([]) do |res, package_name|
+        res << nested_packages[package_name]
+        res
+      end
+      result = (result + parent_packs).uniq.compact
     end
 
-    if filter_folder
-      result = result.select { |p| p.include? filter_folder }
+    if focus_folder
+      result = result.select { |p| p.include? focus_folder }
     end
 
     if include_packs
@@ -177,9 +210,10 @@ module VisualizePacks
       result = result.reject { |p| match_packs?(p, exclude_packs) }
     end
 
-    result.map { |pack_name| ParsePackwerk.find(pack_name) }
+    result.map { |pack_name| packages_by_name[pack_name] }
   end
 
+  sig { params(all_package_names: T::Array[String]).returns(T::Hash[String, String]) }
   def self.all_nested_packages(all_package_names)
     all_package_names.reject { |p| p == '.' }.inject({}) do |result, package|
       package_map_tally = all_package_names.map { |other_package| Pathname.new(package).parent.to_s.include?(other_package) }
@@ -193,7 +227,10 @@ module VisualizePacks
     end
   end
 
-  def self.remove_nested_packs(packages)
+  sig { params(packages: T::Array[ParsePackwerk::Package], options: Options).returns(T::Array[ParsePackwerk::Package]) }
+  def self.remove_nested_packs(packages, options)
+    return packages unless options.roll_nested_into_parent_packs
+
     nested_packages = all_nested_packages(packages.map { |p| p.name })
 
     # top-level packages
@@ -212,9 +249,9 @@ module VisualizePacks
               enforce_privacy: package.enforce_privacy,
               public_path: package.public_path,
               metadata: package.metadata,
-              dependencies: package.dependencies + nested_package.dependencies,
+              dependencies: package.dependencies + T.must(nested_package).dependencies,
               config: package.config,
-              violations: package.violations + nested_package.violations
+              violations: T.must(package.violations) + T.must(T.must(nested_package).violations)
             )
           end
         end
@@ -224,7 +261,7 @@ module VisualizePacks
           nested_packages[d] || d
         end.uniq.reject { |p| p == package.name }
 
-        morphed_todos = package.violations.map do |v|
+        morphed_todos = T.must(package.violations).map do |v|
           ParsePackwerk::Violation.new(
             type: v.type, 
             to_package_name: nested_packages[v.to_package_name] || v.to_package_name, 
@@ -244,15 +281,14 @@ module VisualizePacks
           config: package.config,
           violations: morphed_todos
         )
-        # add dependencies TO nested packages to top-level package
-        # add todos TO nested packages to top-level package
       end
     end
 
     morphed_packages.reject { |p| nested_packages.keys.include?(p.name) }
   end
 
-  def self.match_packs?(pack, packs)
-    packs.any? {|p| File.fnmatch(p, pack)}
+  sig { params(pack: String, packs_name_with_wildcards: T::Array[String]).returns(T::Boolean) }
+  def self.match_packs?(pack, packs_name_with_wildcards)
+    packs_name_with_wildcards.any? {|p| File.fnmatch(p, pack)}
   end
 end

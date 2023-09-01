@@ -12,7 +12,7 @@ class Options < T::Struct
   prop :show_privacy, T::Boolean, default: true
   prop :show_teams, T::Boolean, default: true
 
-  prop :focus_package, T.nilable(String)
+  prop :focus_package, T::Array[String], default: []
   prop :show_only_edges_to_focus_package, T::Boolean, default: false
 
   prop :roll_nested_into_parent_packs, T::Boolean, default: false
