@@ -11,7 +11,7 @@ module VisualizePacks
   def self.package_graph!(options, raw_config, packages)
     raise ArgumentError, "Package #{options.focus_package} does not exist. Found packages #{packages.map(&:name).join(", ")}" if options.focus_package && !packages.map(&:name).include?(options.focus_package)
 
-    all_packages = filtered(packages, options.focus_package, options.focus_folder, options.exclude_packs).sort_by {|x| x.name }
+    all_packages = filtered(packages, options.focus_package, options.focus_folder, options.include_packs, options.exclude_packs).sort_by {|x| x.name }
     all_package_names = all_packages.map &:name
 
     all_packages = remove_nested_packs(all_packages) if options.roll_nested_into_parent_packs
@@ -67,6 +67,7 @@ module VisualizePacks
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
+      options.include_packs ? "including only: #{limited_sentence(options.include_packs)}" : nil,
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
@@ -150,8 +151,8 @@ module VisualizePacks
     edge_width.round(2)
  end
 
-  def self.filtered(packages, filter_package, filter_folder, exclude_packs)
-    return packages unless filter_package || filter_folder || exclude_packs.any?
+  def self.filtered(packages, filter_package, filter_folder, include_packs, exclude_packs)
+    return packages unless filter_package || filter_folder || include_packs || exclude_packs.any?
 
     result = packages.map { |pack| pack.name }
 
@@ -168,8 +169,12 @@ module VisualizePacks
       result = result.select { |p| p.include? filter_folder }
     end
 
+    if include_packs
+      result = result.select { |p| match_packs?(p, include_packs) }
+    end
+
     if exclude_packs.any?
-      result = result.reject { |p| exclude_pack?(p, exclude_packs) }
+      result = result.reject { |p| match_packs?(p, exclude_packs) }
     end
 
     result.map { |pack_name| ParsePackwerk.find(pack_name) }
@@ -247,7 +252,7 @@ module VisualizePacks
     morphed_packages.reject { |p| nested_packages.keys.include?(p.name) }
   end
 
-  def self.exclude_pack?(pack, exclude_packs)
-    exclude_packs.any? {|p| File.fnmatch(p, pack)}
+  def self.match_packs?(pack, packs)
+    packs.any? {|p| File.fnmatch(p, pack)}
   end
 end

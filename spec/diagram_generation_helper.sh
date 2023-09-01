@@ -33,7 +33,7 @@ test_names+=("focussed_on_packs_ui_focus_edges"); test_params[${test_names[-1]}]
 
 test_names+=("focus_folder"); test_params[${test_names[-1]}]="--focus_folder=packs/model"
 
-test_names+=("exclude_packs"); test_params[${test_names[-1]}]="--exclude-packs=packs/ui,packs/models/packs/model_a,."
+test_names+=("include_exclude_packs"); test_params[${test_names[-1]}]="--include-packs=* --exclude-packs=packs/ui,packs/models/packs/model_a,."
 
 # Debugging...
 # echo "test_names: ${test_names[@]}"
