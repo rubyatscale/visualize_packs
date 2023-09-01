@@ -198,36 +198,13 @@ RSpec.describe "VisualizePacks" do
   end
 
   describe ".limited_sentence" do
-    subject { VisualizePacks.limited_sentence(list) }
-
-    context "with an empty list" do
-      let(:list) { [] }
-
-      it { is_expected.to eq "" }
-    end
-
-    context "with a list of 1 item" do
-      let(:list) { ["foo"] }
-
-      it { is_expected.to eq "foo" }
-    end
-
-    context "with a list of 2 items" do
-      let(:list) { ["foo", "bar"] }
-
-      it { is_expected.to eq "foo and bar" }
-    end
-
-    context "with a list of 3 items" do
-      let(:list) { ["foo", "bar", "baz"] }
-
-      it { is_expected.to eq "foo, bar, and 1 more" }
-    end
-
-    context "with a list of 4 items" do
-      let(:list) { ["foo", "bar", "baz", "wow"] }
-
-      it { is_expected.to eq "foo, bar, and 2 more" }
+    it "outputs a lossy (but always short) versiin if the original list" do
+      expect(VisualizePacks.limited_sentence(nil)).to eq nil
+      expect(VisualizePacks.limited_sentence([])).to eq nil
+      expect(VisualizePacks.limited_sentence(["foo"])).to eq "foo"
+      expect(VisualizePacks.limited_sentence(["foo", "bar"])).to eq "foo and bar"
+      expect(VisualizePacks.limited_sentence(["foo", "bar", "baz"])).to eq "foo, bar, and 1 more"
+      expect(VisualizePacks.limited_sentence(["foo", "bar", "baz", "wow"])).to eq "foo, bar, and 2 more"
     end
   end
 
