@@ -32,7 +32,7 @@ OptionParser.new do |opt|
   opt.on('--no-privacy', "Don't show privacy enforcement") { |o| options.show_privacy = false }
   opt.on('--no-teams', "Don't show team colors") { |o| options.show_teams = false }
 
-  opt.on('--focus-folder=FOLDER', "Draw package diagram only for packages in FOLDER. Matches with 'include' for partial matches") { |o| options.focus_folder = o }
+  opt.on('--focus-folder=FOLDER', "Draw package diagram only for packages in FOLDER. Matches with 'include' for partial matches") { |o| options.focus_folder = o.empty? ? nil : o }
   opt.on('--focus-pack=pack1,pack2', "Focus on a specific package(s). Wildcards support: 'packs/*'") { |o| options.focus_package = o.to_s.split(",") }
   opt.on('--only-edges-to-focus', "If focus is set, this shows only the edges to/from the focus node instead of all edges in the focussed graph. This only has effect when --focus-on is set.") { |o| options.show_only_edges_to_focus_package = true }
 
