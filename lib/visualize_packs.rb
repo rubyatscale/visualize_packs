@@ -14,7 +14,7 @@ module VisualizePacks
     all_packages = filtered(packages, options).compact.sort_by {|x| x.name }
     all_package_names = all_packages.map &:name
 
-    all_packages = remove_nested_packs(all_packages) if options.roll_nested_into_parent_packs
+    all_packages = remove_nested_packs(all_packages, options)
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
@@ -219,8 +219,10 @@ module VisualizePacks
     end
   end
 
-  sig { params(packages: T::Array[ParsePackwerk::Package]).returns(T::Array[ParsePackwerk::Package]) }
-  def self.remove_nested_packs(packages)
+  sig { params(packages: T::Array[ParsePackwerk::Package], options: Options).returns(T::Array[ParsePackwerk::Package]) }
+  def self.remove_nested_packs(packages, options)
+    return packages unless options.roll_nested_into_parent_packs
+
     nested_packages = all_nested_packages(packages.map { |p| p.name })
 
     # top-level packages

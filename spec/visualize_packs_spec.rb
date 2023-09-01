@@ -137,8 +137,10 @@ RSpec.describe "VisualizePacks" do
         ]
       end
 
+      options = Options.new
+      options.roll_nested_into_parent_packs = true
 
-      result = VisualizePacks.remove_nested_packs([top_level_a, top_level_b, nested_a, nested_b])
+      result = VisualizePacks.remove_nested_packs([top_level_a, top_level_b, nested_a, nested_b], options)
       expect(result.count).to eq 2
 
       new_top_level_a = result[0]
