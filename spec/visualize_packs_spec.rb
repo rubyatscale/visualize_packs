@@ -384,9 +384,5 @@ RSpec.describe "VisualizePacks" do
       @options.exclude_packs = ['packs/something', 'packs/something/*']
       expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_c, @pack_d, @pack_e]
     end
-
-    it 'will fail' do
-      expect(1).to eq(0)
-    end
   end
 end
