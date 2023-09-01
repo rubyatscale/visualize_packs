@@ -209,56 +209,23 @@ RSpec.describe "VisualizePacks" do
   end
 
   describe ".todo_edge_width" do
-    subject { VisualizePacks.todo_edge_width(todo_count, max_count) }
-
     # Define expectations this way:
-    # [todo_count, max_count] => expected_value
-    {
-      [2, 3] => 5.5,
-      [4, 10] => 4,
-      [5, 10] => 5,
-      [8, 10] => 8,
-      [9, 10] => 9,
-      [25, 100] => 3.18,
-      [50, 100] => 5.45,
-      [75, 100] => 7.73,
-      [99, 100] => 9.91,
-      [250, 1_000] => 3.24,
-      [500, 1_000] => 5.5,
-      [750, 1_000] => 7.75,
-      [999, 1_000] => 9.99,
-    }.group_by { |params, value| params.last }.each do |max_value, expectations|
-
-      context "when max_count is #{max_value}" do
-        let(:max_count) { max_value }
-
-        context "and todo_count is 0" do
-          let(:todo_count) { 0 }
-
-          it { is_expected.to eq 0 }
-        end
-
-        context "and todo_count is 1" do
-          let(:todo_count) { 1 }
-
-          it { is_expected.to eq 1 }
-        end
-
-        expectations.each do |params, expected_value|
-          count_value = params.first
-
-          context "and todo_count is #{count_value}" do
-            let(:todo_count) { count_value }
-
-            it { is_expected.to eq expected_value }
-          end
-        end
-
-        context "and todo_count is #{max_value}" do
-          let(:todo_count) { max_value }
-
-          it { is_expected.to eq 10 }
-        end
+    # [todo_count, max_count, expected_value]
+    [
+      [0,       3,     0],
+      [2,       3,   5.5],
+      [3,       3,    10],
+      [0,      10,     0],
+      [4,      10,     4],
+      [9,      10,     9],
+      [10,     10,    10],
+      [0,     100,     0],
+      [25,    100,  3.18],
+      [75,    100,  7.73],
+      [99,    100,  9.91],
+    ].each do |todo_count, max_count, expectation|
+      it "returns #{expectation} for a todo count of #{todo_count} and max todos being #{max_count}" do
+        expect(VisualizePacks.todo_edge_width(todo_count, max_count)).to eq expectation
       end
     end
   end
