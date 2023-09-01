@@ -53,7 +53,7 @@ module VisualizePacks
     package.config.dig("metadata", "owner") || package.config["owner"]
   end
 
-  sig { params(options: Options, max_todo_count: Integer).returns(String) }
+  sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
   def self.diagram_title(options, max_todo_count)
     app_name = File.basename(Dir.pwd)
     focus_edge_info = options.focus_package.any? && options.show_only_edges_to_focus_package ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
@@ -121,7 +121,7 @@ module VisualizePacks
     end
   end
 
-  sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean)).returns(Integer) }
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean)).returns(T.nilable(Integer)) }
   def self.max_todo_count(all_packages, show_edge)
     todo_counts = {}
     all_packages.each do |package|
