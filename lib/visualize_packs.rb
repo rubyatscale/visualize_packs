@@ -103,7 +103,10 @@ module VisualizePacks
         options.show_only_edges_to_focus_package && 
         all_package_names.include?(start_node) && 
         all_package_names.include?(end_node) && 
-        [start_node, end_node].include?(options.focus_package)
+        (
+          match_packs?(start_node, options.focus_package) ||
+          match_packs?(end_node, options.focus_package)
+        )
       )
     end
   end
@@ -182,7 +185,7 @@ module VisualizePacks
       result += packages.select{ |p| p.violations&.map(&:to_package_name)&.any? { |v| match_packs?(v, focus_package) }}.map { |pack| pack.name }
       packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_package) }.each do |p|
         result += packages_by_name[p].dependencies
-        packages_by_name[p].violations.map(&:to_package_name)
+        result += packages_by_name[p].violations.map(&:to_package_name)
       end
       result = result.uniq
     end
