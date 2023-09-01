@@ -348,13 +348,15 @@ RSpec.describe "VisualizePacks" do
 
     it 'returns package lists filter with a list of focus packages (possibly with wildcards)' do
       @options.focus_package = ['packs/something/a']
-      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a]
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_s]
 
+      @options.focus_package = ['packs/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq @all_packs
+    end
+
+    it 'leaves parent packs in the result when filtering packages' do
       @options.focus_package = ['packs/something/*']
-      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_b]
-
-      @options.focus_package = ['packs/something', 'packs/something/*']
-      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_s, @pack_a, @pack_b]
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_b, @pack_s]
     end
 
     it 'returns package lists filter with a focus folder using substring matching' do

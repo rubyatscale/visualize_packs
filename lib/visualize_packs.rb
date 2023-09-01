@@ -171,11 +171,14 @@ module VisualizePacks
 
     return packages unless focus_package.any? || focus_folder || include_packs || exclude_packs.any?
 
+    nested_packages = all_nested_packages(packages.map { |p| p.name })
+
     packages_by_name = packages.inject({}) do |res, p|
       res[p.name] = p
       res
     end
  
+    result = T.let([], T::Array[T.nilable(String)])
     result = packages.map { |pack| pack.name }
 
     if !focus_package.empty?
@@ -188,6 +191,11 @@ module VisualizePacks
         result += packages_by_name[p].violations.map(&:to_package_name)
       end
       result = result.uniq
+      parent_packs = result.inject([]) do |res, package_name|
+        res << nested_packages[package_name]
+        res
+      end
+      result = (result + parent_packs).uniq.compact
     end
 
     if focus_folder
