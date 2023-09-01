@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: Focus on packs/ui (showing only edges to/from focus pack)</b><br/><font point-size='12'>Widest todo edge is 5 todos</font>>
+    label=<<b>sample_app1: Focus on  (showing only edges to/from focus pack)</b><br/><font point-size='12'>Widest todo edge is 5 todos</font>>
     fontsize=18
   ]
   node [

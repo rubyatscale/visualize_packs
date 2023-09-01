@@ -57,7 +57,7 @@ module VisualizePacks
   def self.diagram_title(options, max_todo_count)
     app_name = File.basename(Dir.pwd)
     focus_edge_info = options.focus_package.any? && options.show_only_edges_to_focus_package ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
-    focus_info = options.focus_package.any? || options.focus_folder ? "Focus on #{[options.focus_package, options.focus_folder].compact.join(' and ')} (#{focus_edge_info})" : "All packs"
+    focus_info = options.focus_package.any? || options.focus_folder ? "Focus on #{[limited_sentence(options.include_packs), options.focus_folder].compact.join(' and ')} (#{focus_edge_info})" : "All packs"
     skipped_info = 
     [
       options.show_legend ? nil : "hiding legend",
@@ -80,9 +80,9 @@ module VisualizePacks
     "<<b>#{main_title}</b>#{sub_title}>"
   end
 
-  sig { params(list: T.nilable(T::Array[String])).returns(String) }
+  sig { params(list: T.nilable(T::Array[String])).returns(T.nilable(String)) }
   def self.limited_sentence(list)
-    return '' unless list
+    return nil unless list
 
     if list.size <= 2
       list.join(" and ")
