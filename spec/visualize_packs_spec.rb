@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'packs-specification'
+require 'sorbet-runtime'
+
+require_relative '../lib/options'
 require_relative '../lib/visualize_packs'
 
 RSpec.describe "VisualizePacks" do
@@ -298,6 +302,91 @@ RSpec.describe "VisualizePacks" do
 
       expect(VisualizePacks.match_packs?("pack/a/b", ["pack/*/b"])).to be_truthy
       expect(VisualizePacks.match_packs?("pack/a/c", ["pack/*/b"])).to be_falsy
+    end
+  end
+
+  describe '.filtered' do
+    before do
+      @options = Options.new
+      @options.focus_package = []
+      @options.focus_folder = nil
+      @options.include_packs = nil
+      @options.exclude_packs = []
+
+      @make_pack = ->(name) { 
+        ParsePackwerk::Package.new(
+          name: name,
+          enforce_dependencies: true,
+          enforce_privacy: false,
+          public_path: '',
+          metadata: {},
+          dependencies: [],
+          config: {},
+          violations: []
+        )
+      }
+
+      @pack_s = @make_pack.call('packs/something')
+      @pack_a = @make_pack.call('packs/something/a')
+      @pack_b = @make_pack.call('packs/something/b')
+      @pack_c = @make_pack.call('packs/something_else/c')
+      @pack_d = @make_pack.call('packs/something_else/d')
+      @pack_e = @make_pack.call('packs/e')
+
+      @all_packs = [@pack_s, @pack_a, @pack_b, @pack_c, @pack_d, @pack_e]
+    end
+
+    it 'works with empty package lists' do
+      expect(VisualizePacks.filtered([], @options)).to eq []
+    end
+
+    it 'returns unfiltered package lists' do
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq @all_packs
+    end
+
+    it 'returns package lists filter with a list of focus packages (possibly with wildcards)' do
+      @options.focus_package = ['packs/something/a']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a]
+
+      @options.focus_package = ['packs/something/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_b]
+
+      @options.focus_package = ['packs/something', 'packs/something/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_s, @pack_a, @pack_b]
+    end
+
+    it 'returns package lists filter with a focus folder using substring matching' do
+      @options.focus_folder = 'packs/something'
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_s, @pack_a, @pack_b, @pack_c, @pack_d]
+
+      @options.focus_folder = 'packs/something_else'
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_c, @pack_d]
+    end
+
+    it 'returns package lists filter with a list of included packages (possibly with wildcards)' do
+      @options.include_packs = ['packs/something/a']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a]
+
+      @options.include_packs = ['packs/something/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_b]
+
+      @options.include_packs = ['packs/something', 'packs/something/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_s, @pack_a, @pack_b]
+    end
+
+    it 'returns package lists filter with a list of excluded packages (possibly with wildcards)' do
+      @options.exclude_packs = ['packs/something/a']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_s, @pack_b, @pack_c, @pack_d, @pack_e]
+
+      @options.exclude_packs = ['packs/something/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_s, @pack_c, @pack_d, @pack_e]
+
+      @options.exclude_packs = ['packs/something', 'packs/something/*']
+      expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_c, @pack_d, @pack_e]
+    end
+
+    it 'will fail' do
+      expect(1).to eq(0)
     end
   end
 end

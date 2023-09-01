@@ -9,9 +9,7 @@ require 'digest/md5'
 module VisualizePacks
 
   def self.package_graph!(options, raw_config, packages)
-    raise ArgumentError, "Package #{options.focus_package} does not exist. Found packages #{packages.map(&:name).join(", ")}" if options.focus_package && !packages.map(&:name).include?(options.focus_package)
-
-    all_packages = filtered(packages, options.focus_package, options.focus_folder, options.include_packs, options.exclude_packs).sort_by {|x| x.name }
+    all_packages = filtered(packages, options).sort_by {|x| x.name }
     all_package_names = all_packages.map &:name
 
     all_packages = remove_nested_packs(all_packages) if options.roll_nested_into_parent_packs
@@ -151,22 +149,35 @@ module VisualizePacks
     edge_width.round(2)
  end
 
-  def self.filtered(packages, filter_package, filter_folder, include_packs, exclude_packs)
-    return packages unless filter_package || filter_folder || include_packs || exclude_packs.any?
+  def self.filtered(packages, options)
+    focus_package = options.focus_package
+    focus_folder = options.focus_folder 
+    include_packs = options.include_packs 
+    exclude_packs = options.exclude_packs
 
+    return packages unless focus_package.any? || focus_folder || include_packs || exclude_packs.any?
+
+    packages_by_name = packages.inject({}) do |res, p|
+      res[p.name] = p
+      res
+    end
+ 
     result = packages.map { |pack| pack.name }
 
-    if filter_package
-      result = [filter_package]
-      result += packages.select{ |p| p.dependencies.include? filter_package }.map { |pack| pack.name }
-      result += ParsePackwerk.find(filter_package).dependencies
-      result += packages.select{ |p| p.violations.map(&:to_package_name).include? filter_package }.map { |pack| pack.name }
-      result += ParsePackwerk.find(filter_package).violations.map(&:to_package_name)
+    if !focus_package.empty?
+      result = []
+      result += packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_package) }
+      result += packages.select{ |p| p.dependencies.any? { |d| match_packs?(d, focus_package) }}.map { |pack| pack.name }
+      result += packages.select{ |p| p.violations.map(&:to_package_name).any? { |v| match_packs?(v, focus_package) }}.map { |pack| pack.name }
+      packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_package) }.each do |p|
+        result += packages_by_name[p].dependencies
+        packages_by_name[p].violations.map(&:to_package_name)
+      end
       result = result.uniq
     end
 
-    if filter_folder
-      result = result.select { |p| p.include? filter_folder }
+    if focus_folder
+      result = result.select { |p| p.include? focus_folder }
     end
 
     if include_packs
@@ -177,7 +188,7 @@ module VisualizePacks
       result = result.reject { |p| match_packs?(p, exclude_packs) }
     end
 
-    result.map { |pack_name| ParsePackwerk.find(pack_name) }
+    result.map { |pack_name| packages_by_name[pack_name] }
   end
 
   def self.all_nested_packages(all_package_names)
@@ -252,7 +263,7 @@ module VisualizePacks
     morphed_packages.reject { |p| nested_packages.keys.include?(p.name) }
   end
 
-  def self.match_packs?(pack, packs)
-    packs.any? {|p| File.fnmatch(p, pack)}
+  def self.match_packs?(pack, packs_name_with_wildcards)
+    packs_name_with_wildcards.any? {|p| File.fnmatch(p, pack)}
   end
 end
