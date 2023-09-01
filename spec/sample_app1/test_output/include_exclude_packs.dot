@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs - excluding packs: packs/ui, packs/models/packs/model_a, and 1 more</b>>
+    label=<<b>sample_app1: All packs - including only: *, excluding packs: packs/ui, packs/models/packs/model_a, and 1 more</b>>
     fontsize=18
   ]
   node [
