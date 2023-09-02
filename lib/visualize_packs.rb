@@ -104,8 +104,14 @@ module VisualizePacks
         all_package_names.include?(start_node) && 
         all_package_names.include?(end_node) && 
         (
-          match_packs?(start_node, options.focus_package) ||
-          match_packs?(end_node, options.focus_package)
+          case options.show_only_edges_to_focus_package
+          when FocusPackEdgeDirection::InOut then
+            match_packs?(start_node, options.focus_package) || match_packs?(end_node, options.focus_package)
+          when FocusPackEdgeDirection::In then
+            match_packs?(end_node, options.focus_package)
+          when FocusPackEdgeDirection::Out then
+            match_packs?(start_node, options.focus_package)
+          end
         )
       )
     end
