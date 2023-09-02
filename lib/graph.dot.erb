@@ -33,7 +33,7 @@ digraph package_diagram {
       <%- end -%>
       <%- grouped_packages[layer_name].each do |package| -%>
         "<%= package.name -%>" [
-            fontsize=<%= options.focus_package.any? && options.focus_package.any? {|p| File.fnmatch(p, package.name)} ? 18.0 : 12.0 -%>
+            fontsize=<%= options.focus_pack.any? && options.focus_pack.any? {|p| File.fnmatch(p, package.name)} ? 18.0 : 12.0 -%>
             <%- if options.remote_base_url %>
               URL="<%= options.remote_base_url %>/<%= package.name == '.' ? '' : package.name -%>"
             <%- end %>

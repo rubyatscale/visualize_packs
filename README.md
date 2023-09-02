@@ -48,3 +48,5 @@ Once you are ready, run the following and commit the new `diagram_examples.png` 
 ```
 ./spec/update_cassettes.sh
 ```
+
+Please check in a new `diagram_examples.png` only if there are actual visual changes.
