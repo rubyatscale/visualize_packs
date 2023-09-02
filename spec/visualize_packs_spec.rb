@@ -254,7 +254,7 @@ RSpec.describe "VisualizePacks" do
   describe '.filtered' do
     before do
       @options = Options.new
-      @options.focus_package = []
+      @options.focus_pack = []
       @options.focus_folder = nil
       @options.include_packs = nil
       @options.exclude_packs = []
@@ -291,15 +291,15 @@ RSpec.describe "VisualizePacks" do
     end
 
     it 'returns package lists filter with a list of focus packages (possibly with wildcards)' do
-      @options.focus_package = ['packs/something/a']
+      @options.focus_pack = ['packs/something/a']
       expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_s]
 
-      @options.focus_package = ['packs/*']
+      @options.focus_pack = ['packs/*']
       expect(VisualizePacks.filtered(@all_packs, @options)).to eq @all_packs
     end
 
     it 'leaves parent packs in the result when filtering packages' do
-      @options.focus_package = ['packs/something/*']
+      @options.focus_pack = ['packs/something/*']
       expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_a, @pack_b, @pack_s]
     end
 
@@ -344,10 +344,10 @@ RSpec.describe "VisualizePacks" do
       expect(subject).to be_a Proc
     end
 
-    context "when show_only_edges_to_focus_package is not set" do
+    context "when show_only_edges_to_focus_pack is not set" do
       before do
         @options = Options.new
-        @options.show_only_edges_to_focus_package = nil
+        @options.show_only_edges_to_focus_pack = nil
       end
 
       it "shows an edge IFF both start and end pack are in the list of packages" do
@@ -369,11 +369,11 @@ RSpec.describe "VisualizePacks" do
       end
     end
 
-    context "when show_only_edges_to_focus_package i set to in_out" do
+    context "when show_only_edges_to_focus_pack i set to in_out" do
       before do
         @options = Options.new
-        @options.show_only_edges_to_focus_package = FocusPackEdgeDirection::InOut
-        @options.focus_package = ['a']
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
+        @options.focus_pack = ['a']
       end
 
       it "shows an edge IFF both start and end pack are in the list of packages and one of the packs is the focus pack " do
@@ -395,11 +395,11 @@ RSpec.describe "VisualizePacks" do
       end
     end
 
-    context "when show_only_edges_to_focus_package i set to in" do
+    context "when show_only_edges_to_focus_pack i set to in" do
       before do
         @options = Options.new
-        @options.show_only_edges_to_focus_package = FocusPackEdgeDirection::In
-        @options.focus_package = ['a']
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::In
+        @options.focus_pack = ['a']
       end
 
       it "shows an edge IFF both start and end pack are in the list of packages and the arrow goes TOWARDS the focus pack" do
@@ -421,11 +421,11 @@ RSpec.describe "VisualizePacks" do
       end
     end
 
-    context "when show_only_edges_to_focus_package i set to out" do
+    context "when show_only_edges_to_focus_pack i set to out" do
       before do
         @options = Options.new
-        @options.show_only_edges_to_focus_package = FocusPackEdgeDirection::Out
-        @options.focus_package = ['a']
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::Out
+        @options.focus_pack = ['a']
       end
 
       it "shows an edge IFF both start and end pack are in the list of packages and the arrow goes AWAY FROM the focus pack" do

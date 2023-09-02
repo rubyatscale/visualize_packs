@@ -20,8 +20,8 @@ class Options < T::Struct
   prop :show_privacy, T::Boolean, default: true
   prop :show_teams, T::Boolean, default: true
 
-  prop :focus_package, T::Array[String], default: []
-  prop :show_only_edges_to_focus_package, T.nilable(FocusPackEdgeDirection), default: nil
+  prop :focus_pack, T::Array[String], default: []
+  prop :show_only_edges_to_focus_pack, T.nilable(FocusPackEdgeDirection), default: nil
 
   prop :roll_nested_into_parent_packs, T::Boolean, default: false
   prop :focus_folder, T.nilable(String)
