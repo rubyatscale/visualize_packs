@@ -333,4 +333,118 @@ RSpec.describe "VisualizePacks" do
       expect(VisualizePacks.filtered(@all_packs, @options)).to eq [@pack_c, @pack_d, @pack_e]
     end
   end
+
+  describe '.show_edge_builder' do
+    subject {  VisualizePacks.show_edge_builder(@options, %w(a b c)) }
+
+    it 'returns a proc' do
+      @options = Options.new
+      @package_names = []
+
+      expect(subject).to be_a Proc
+    end
+
+    context "when show_only_edges_to_focus_package is not set" do
+      before do
+        @options = Options.new
+        @options.show_only_edges_to_focus_package = nil
+      end
+
+      it "shows an edge IFF both start and end pack are in the list of packages" do
+        expect(subject.call('a', 'b')).to be_truthy
+        expect(subject.call('a', 'c')).to be_truthy
+        expect(subject.call('a', 'd')).to be_falsy
+
+        expect(subject.call('b', 'a')).to be_truthy
+        expect(subject.call('b', 'c')).to be_truthy
+        expect(subject.call('b', 'd')).to be_falsy
+
+        expect(subject.call('c', 'a')).to be_truthy
+        expect(subject.call('c', 'b')).to be_truthy
+        expect(subject.call('c', 'd')).to be_falsy
+
+        expect(subject.call('d', 'a')).to be_falsy
+        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'c')).to be_falsy
+      end
+    end
+
+    context "when show_only_edges_to_focus_package i set to in_out" do
+      before do
+        @options = Options.new
+        @options.show_only_edges_to_focus_package = FocusPackEdgeDirection::InOut
+        @options.focus_package = ['a']
+      end
+
+      it "shows an edge IFF both start and end pack are in the list of packages and one of the packs is the focus pack " do
+        expect(subject.call('a', 'b')).to be_truthy
+        expect(subject.call('a', 'c')).to be_truthy
+        expect(subject.call('a', 'd')).to be_falsy
+
+        expect(subject.call('b', 'a')).to be_truthy
+        expect(subject.call('b', 'c')).to be_falsy
+        expect(subject.call('b', 'd')).to be_falsy
+
+        expect(subject.call('c', 'a')).to be_truthy
+        expect(subject.call('c', 'b')).to be_falsy
+        expect(subject.call('c', 'd')).to be_falsy
+
+        expect(subject.call('d', 'a')).to be_falsy
+        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'c')).to be_falsy
+      end
+    end
+
+    context "when show_only_edges_to_focus_package i set to in" do
+      before do
+        @options = Options.new
+        @options.show_only_edges_to_focus_package = FocusPackEdgeDirection::In
+        @options.focus_package = ['a']
+      end
+
+      it "shows an edge IFF both start and end pack are in the list of packages and the arrow goes TOWARDS the focus pack" do
+        expect(subject.call('a', 'b')).to be_falsy
+        expect(subject.call('a', 'c')).to be_falsy
+        expect(subject.call('a', 'd')).to be_falsy
+
+        expect(subject.call('b', 'a')).to be_truthy
+        expect(subject.call('b', 'c')).to be_falsy
+        expect(subject.call('b', 'd')).to be_falsy
+
+        expect(subject.call('c', 'a')).to be_truthy
+        expect(subject.call('c', 'b')).to be_falsy
+        expect(subject.call('c', 'd')).to be_falsy
+
+        expect(subject.call('d', 'a')).to be_falsy
+        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'c')).to be_falsy
+      end
+    end
+
+    context "when show_only_edges_to_focus_package i set to out" do
+      before do
+        @options = Options.new
+        @options.show_only_edges_to_focus_package = FocusPackEdgeDirection::Out
+        @options.focus_package = ['a']
+      end
+
+      it "shows an edge IFF both start and end pack are in the list of packages and the arrow goes AWAY FROM the focus pack" do
+        expect(subject.call('a', 'b')).to be_truthy
+        expect(subject.call('a', 'c')).to be_truthy
+        expect(subject.call('a', 'd')).to be_falsy
+
+        expect(subject.call('b', 'a')).to be_falsy
+        expect(subject.call('b', 'c')).to be_falsy
+        expect(subject.call('b', 'd')).to be_falsy
+
+        expect(subject.call('c', 'a')).to be_falsy
+        expect(subject.call('c', 'b')).to be_falsy
+        expect(subject.call('c', 'd')).to be_falsy
+
+        expect(subject.call('d', 'a')).to be_falsy
+        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'c')).to be_falsy
+      end
+    end
+  end
 end
