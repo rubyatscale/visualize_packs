@@ -193,11 +193,27 @@ module VisualizePacks
     if !focus_pack.empty?
       result = []
       result += packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
-      result += packages.select{ |p| p.dependencies.any? { |d| match_packs?(d, focus_pack) }}.map { |pack| pack.name }
-      result += packages.select{ |p| p.violations&.map(&:to_package_name)&.any? { |v| match_packs?(v, focus_pack) }}.map { |pack| pack.name }
+      if options.show_dependencies
+        result += packages.select { |p| p.dependencies.any? { |d| match_packs?(d, focus_pack) }}.map { |pack| pack.name }
+      end
+      if options.show_todos && [nil, FocusPackEdgeDirection::In, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
+        result += packages.select do
+          |p| (p.violations || []).inject([]) do |res, todo|
+            res << todo.to_package_name if options.only_todo_types.empty? || options.only_todo_types.include?(todo.type)
+            res
+          end.any? { |v| match_packs?(v, focus_pack) }
+        end.map { |pack| pack.name }
+      end
       packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }.each do |p|
-        result += packages_by_name[p].dependencies
-        result += packages_by_name[p].violations.map(&:to_package_name)
+        if options.show_dependencies
+          result += packages_by_name[p].dependencies
+        end
+        if options.show_todos && [nil, FocusPackEdgeDirection::Out, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
+          result += (packages_by_name[p].violations || []).inject([]) do |res, todo|
+            res << todo.to_package_name if options.only_todo_types.empty? || options.only_todo_types.include?(todo.type)
+            res
+          end
+        end
       end
       result = result.uniq
       parent_packs = result.inject([]) do |res, package_name|
