@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# typed: ignore
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -11,3 +12,14 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 end
+
+RSpec::Matchers.define :match_packs do |expected_array|
+  match do |actual_array|
+    expected_array.map(&:name).sort == actual_array.map(&:name).sort
+  end
+
+  failure_message do |actual_array|
+    "Expected packs #{actual_array.map(&:name).sort} to eq: #{expected_array.map(&:name).sort}"
+  end
+end
+
