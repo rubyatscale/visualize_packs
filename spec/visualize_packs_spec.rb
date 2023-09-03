@@ -230,6 +230,69 @@ RSpec.describe "VisualizePacks" do
     end
   end
 
+  describe '.max_todo_count' do
+    before do
+      @package_with_todos = -> (todos) {
+        x = ParsePackwerk::Package.new(
+          name: "packs/a",
+          enforce_dependencies: true,
+          enforce_privacy: false,
+          public_path: 'app/public',
+          metadata: {},
+          dependencies: [],
+          config: {},
+        )
+        allow(x).to receive(:violations) do
+          todos.keys.inject([]) do |result, todo_type|
+            todos[todo_type].times do
+              result << ParsePackwerk::Violation.new(
+                type: todo_type.to_s,
+                to_package_name: "packs/b",
+                class_name: "SomeClass1",
+                files: ["some_file1"]
+              )
+            end
+            result
+          end
+        end
+        x
+      }
+      @options = Options.new
+    end
+
+    let(:show_edge) { VisualizePacks.show_edge_builder(@options, [@package.name, 'packs/b']) }
+
+    it "is nil if todos aren't being shown" do
+      @options.show_todos = false
+      @package = @package_with_todos.call({privacy: 1})
+
+      expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be nil
+    end
+
+    it "is nil if there aren't any todos" do
+      @options.show_todos = true
+      @package = @package_with_todos.call({})
+
+      expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be nil
+    end
+
+    it "returns the highest number of todos found in shown package relationships" do
+      @options.show_todos = true
+      @package = @package_with_todos.call({privacy: 3, dependency: 1})
+
+      expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
+    end
+
+    it "does not include counts from todo types that are not being shown" do
+      @options.show_todos = true
+      @options.only_todo_types = %w(privacy architecture)
+      @package = @package_with_todos.call({privacy: 3, dependency: 4, architecture: 2})
+
+      expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
+    end
+
+  end
+
   describe '.match_packs?' do
     it 'does not exclude non-matches' do
       expect(VisualizePacks.match_packs?("pack", ["packs", "spack", "ack", "components"])).to be_falsy

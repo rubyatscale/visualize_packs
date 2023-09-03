@@ -12,13 +12,12 @@ module VisualizePacks
   sig { params(options: Options, raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
   def self.package_graph!(options, raw_config, packages)
     all_packages = filtered(packages, options).compact.sort_by {|x| x.name }
-    all_package_names = all_packages.map &:name
-
     all_packages = remove_nested_packs(all_packages, options)
+    all_package_names = all_packages.map &:name
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
-    max_todo_count = max_todo_count(all_packages, show_edge)
+    max_todo_count = max_todo_count(all_packages, show_edge, options)
 
     title = diagram_title(options, max_todo_count)
 
@@ -130,17 +129,21 @@ module VisualizePacks
     end
   end
 
-  sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean)).returns(T.nilable(Integer)) }
-  def self.max_todo_count(all_packages, show_edge)
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean), options: Options).returns(T.nilable(Integer)) }
+  def self.max_todo_count(all_packages, show_edge, options)
     todo_counts = {}
-    all_packages.each do |package|
-      todos_by_package = package.violations&.group_by(&:to_package_name)
-      todos_by_package&.keys&.each do |todos_to_package|
-        todo_types = todos_by_package&& todos_by_package[todos_to_package]&.group_by(&:type)
-        todo_types&.keys&.each do |todo_type|
-          if show_edge.call(package.name, todos_to_package)
-            key = "#{package.name}->#{todos_to_package}:#{todo_type}"
-            todo_counts[key] = todo_types && todo_types[todo_type]&.count
+    if options.show_todos
+      all_packages.each do |package|
+        todos_by_package = package.violations&.group_by(&:to_package_name)
+        todos_by_package&.keys&.each do |todos_to_package|
+          todo_types = todos_by_package&& todos_by_package[todos_to_package]&.group_by(&:type)
+          todo_types&.keys&.each do |todo_type|
+            if options.only_todo_types.empty? || options.only_todo_types.include?(todo_type)
+              if show_edge.call(package.name, todos_to_package)
+                key = "#{package.name}->#{todos_to_package}:#{todo_type}"
+                todo_counts[key] = todo_types && todo_types[todo_type]&.count
+              end
+            end
           end
         end
       end

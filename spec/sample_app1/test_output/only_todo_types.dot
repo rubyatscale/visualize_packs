@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs - only architecture and visibility todos</b><br/><font point-size='12'>Widest todo edge is 5 todos</font>>
+    label=<<b>sample_app1: All packs - only architecture and visibility todos</b><br/><font point-size='12'>Widest todo edge is 3 todos</font>>
     fontsize=18
   ]
   node [
@@ -152,12 +152,12 @@ digraph package_diagram {
                 constraint=false
               # headlabel="architecture"
                 arrowhead=invodot
-              penwidth=5.5            ]
+              penwidth=10.0            ]
             "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
                 constraint=false
               # headlabel="visibility"
                 arrowhead=obox
-              penwidth=3.25            ]
+              penwidth=5.5            ]
         "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
         "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
     subgraph cluster_legend {
