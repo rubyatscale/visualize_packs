@@ -6,6 +6,8 @@ require 'packs-specification'
 require 'parse_packwerk'
 require 'digest/md5'
 
+require 'visualize_packs/options'
+
 module VisualizePacks
   extend T::Sig
 

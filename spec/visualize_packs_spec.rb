@@ -3,7 +3,6 @@
 require 'packs-specification'
 require 'sorbet-runtime'
 
-require_relative '../lib/options'
 require_relative '../lib/visualize_packs'
 
 RSpec.describe "VisualizePacks" do
