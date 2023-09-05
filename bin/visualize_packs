@@ -6,7 +6,6 @@ require "optparse"
 require "ostruct"
 
 require_relative '../lib/visualize_packs'
-require_relative '../lib/options'
 
 options = Options.new
 

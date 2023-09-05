@@ -3,7 +3,6 @@
 require 'packs-specification'
 require 'sorbet-runtime'
 
-require_relative '../lib/options'
 require_relative '../lib/visualize_packs'
 
 RSpec.describe "VisualizePacks" do
@@ -212,6 +211,8 @@ RSpec.describe "VisualizePacks" do
     # Define expectations this way:
     # [todo_count, max_count, expected_value]
     [
+      [0,       1,     0],
+      [1,       1,     1],
       [0,       3,     0],
       [2,       3,   5.5],
       [3,       3,    10],

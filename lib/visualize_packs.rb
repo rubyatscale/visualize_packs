@@ -6,6 +6,8 @@ require 'packs-specification'
 require 'parse_packwerk'
 require 'digest/md5'
 
+require 'visualize_packs/options'
+
 module VisualizePacks
   extend T::Sig
 
@@ -167,6 +169,8 @@ module VisualizePacks
     count_delta = todo_count - min_count
 
     width_delta = count_delta / todo_range.to_f * width_range
+    width_delta = 0 if width_delta.nan?
+
     edge_width = min_width + width_delta
     edge_width.round(2)
  end
