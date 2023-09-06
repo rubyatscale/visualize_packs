@@ -455,19 +455,6 @@ RSpec.describe "VisualizePacks" do
       end
     end
 
-    context 'when using include_packs' do
-      it 'returns package lists filter with a list of included packages (possibly with wildcards)' do
-        @options.include_packs = ['packs/something/a']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
-
-        @options.include_packs = ['packs/something/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_b])
-
-        @options.include_packs = ['packs/something', 'packs/something/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a, @pack_b])
-      end
-    end
-
     context 'when using exclude_packs' do
       it 'returns package lists filter with a list of excluded packages (possibly with wildcards)' do
         @options.exclude_packs = ['packs/something/a']

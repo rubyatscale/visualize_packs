@@ -70,7 +70,6 @@ module VisualizePacks
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
-      options.include_packs ? "including only: #{limited_sentence(options.include_packs)}" : nil,
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
@@ -172,10 +171,9 @@ module VisualizePacks
   sig { params(packages: T::Array[ParsePackwerk::Package], options: Options).returns(T::Array[ParsePackwerk::Package]) }
   def self.filtered(packages, options)
     focus_pack = options.focus_pack
-    include_packs = options.include_packs 
     exclude_packs = options.exclude_packs
 
-    return packages unless focus_pack.any? || include_packs || exclude_packs.any?
+    return packages unless focus_pack.any? || exclude_packs.any?
 
     nested_packages = all_nested_packages(packages.map { |p| p.name })
 
@@ -218,10 +216,6 @@ module VisualizePacks
         res
       end
       result = (result + parent_packs).uniq.compact
-    end
-
-    if include_packs
-      result = result.select { |p| match_packs?(p, include_packs) }
     end
 
     if exclude_packs.any?

@@ -38,9 +38,7 @@ OptionParser.new do |opt|
 
   opt.on('--focus-pack=', "Focus on a specific pack(s). Comma-separated list of packs. Wildcards supported: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
   opt.on('--focus-pack-edge-mode=', "If focus-pack is set, this shows only the edges into / out of / in and out of the focus node instead of all edges in the resulting graph. One of [all,in,out,inout]") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
-
   opt.on('--exclude-packs=', "Exclude listed packs from diagram. If used with include you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
-  opt.on('--include-packs=', "Include only listed packs in diagram. If used with exclude you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.include_packs = o.to_s.split(",") }
 
   opt.on('--remote-base-url=', "Link pack nodes to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 

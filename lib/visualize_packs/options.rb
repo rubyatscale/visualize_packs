@@ -28,7 +28,6 @@ class Options < T::Struct
   prop :show_nested_relationships, T::Boolean, default: true
 
   prop :exclude_packs, T::Array[String], default: []
-  prop :include_packs, T.nilable(T::Array[String]), default: nil
 
   prop :remote_base_url, T.nilable(String)
 end
