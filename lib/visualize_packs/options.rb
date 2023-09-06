@@ -3,6 +3,7 @@
 
 class FocusPackEdgeDirection < T::Enum
   enums do
+    None = new
     All = new
     In = new
     Out = new

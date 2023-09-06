@@ -365,7 +365,7 @@ RSpec.describe "VisualizePacks" do
     end
 
     context 'when using focus_pack' do
-      it 'returns package lists filter with a list of focus packages (possibly with wildcards)' do
+      it 'returns package lists filtered with a list of focus packages (possibly with wildcards)' do
         @options.focus_pack = ['packs/something/a']
         expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_s])
 
@@ -419,9 +419,22 @@ RSpec.describe "VisualizePacks" do
         expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
       end
 
-      it 'includes non-focus packs with todos from if the todo type is being shown' do
+      it 'does not include non-focus packs with todos from if the edge focus is set to None' do
+        @options.focus_pack = ['packs/something']
+        @options.show_dependencies = true
+        @options.show_todos = true
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
+
+        @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a'), @make_todo.call(:privacy, 'packs/something_else/c')]
+        @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
+
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+      end
+
+      it 'includes non-focus packs with todos from if the todo type is being shown (for InOut)' do
         @options.focus_pack = ['packs/something']
         @options.show_todos = true
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
         @options.only_todo_types = ['dependency']
 
         @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a'), @make_todo.call(:privacy, 'packs/something_else/c')]
