@@ -25,23 +25,25 @@ end
 OptionParser.new do |opt|
   opt.on('--no-legend', "Don't show legend") { |o| options.show_legend = false }
   opt.on('--no-layers', "Don't show architectural layers") { |o| options.show_layers = false }
-  opt.on('--no-dependencies', "Don't show accepted dependencies") { |o| options.show_dependencies = false }
-  opt.on('--no-todos', "Don't show package todos") { |o| options.show_todos = false }
-  opt.on('--only-todo-types=privacy,architecture,etc', "Show only these types of todos (supported types: #{supported_todo_types.join(', ')})") { |o| options.only_todo_types = validated_list(o, supported_todo_types) }
-  opt.on('--no-privacy', "Don't show privacy enforcement") { |o| options.show_privacy = false }
   opt.on('--no-teams', "Don't show team colors") { |o| options.show_teams = false }
+  
+  opt.on('--no-dependency-arrows', "Don't show accepted dependencies") { |o| options.show_dependencies = false }
 
-  opt.on('--focus-folder=FOLDER', "Draw package diagram only for packages in FOLDER. Matches with 'include' for partial matches") { |o| options.focus_folder = o.empty? ? nil : o }
-  opt.on('--focus-pack=pack1,pack2', "Focus on a specific package(s). Wildcards support: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
-  opt.on('--only-edges-to-focus=[in,out,inout]', "If focus-pack is set, this shows only the edges into / out of / in and out of the focus node instead of all edges in the focussed graph.") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
+  opt.on('--no-todo-arrows', "Don't show pack todos") { |o| options.show_todos = false }
+  opt.on("--only-todo-types=", "Show only the selected types of todos. Comma-separated list of [#{supported_todo_types.join(', ')}]") { |o| options.only_todo_types = validated_list(o, supported_todo_types) }
+  opt.on('--no-privacy-boxes', "Don't show privacy enforcement box on a pack") { |o| options.show_privacy = false }
 
-  opt.on('--roll-nested-into-parent-packs', "Don't show nested packages (not counting root). Connect edges to top-level package instead") { |o| options.roll_nested_into_parent_packs = true }
-  opt.on('--no-nested-relationships', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
+  opt.on('--no-nesting-arrows', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
+  opt.on('--roll-nested-into-parent-packs', "Don't show nested packs (not counting root). Connect edges to top-level pack instead") { |o| options.roll_nested_into_parent_packs = true }
 
-  opt.on('--exclude-packs=pack1,pack2,etc', "Exclude listed packs from diagram. If used with include you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
-  opt.on('--include-packs=pack1,pack2,etc', "Include only listed packs in diagram. If used with exclude you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.include_packs = o.to_s.split(",") }
+  opt.on('--focus-folder=', "Draw pack diagram only for packs in FOLDER. Matches partial folder paths") { |o| options.focus_folder = o.empty? ? nil : o }
+  opt.on('--focus-pack=', "Focus on a specific pack(s). Comma-separated list of packs. Wildcards supported: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
+  opt.on('--only-edges-to-focus=', "If focus-pack is set, this shows only the edges into / out of / in and out of the focus node instead of all edges in the focussed graph. One of [in,out,inout]") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
 
-  opt.on('--remote-base-url=PACKAGE', "Link package nodes to an URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
+  opt.on('--exclude-packs=', "Exclude listed packs from diagram. If used with include you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
+  opt.on('--include-packs=', "Include only listed packs in diagram. If used with exclude you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.include_packs = o.to_s.split(",") }
+
+  opt.on('--remote-base-url=', "Link pack nodes to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
   opt.on_tail("-h", "--help", "Show this message") do
     puts opt
