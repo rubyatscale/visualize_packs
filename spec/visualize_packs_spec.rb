@@ -505,7 +505,7 @@ RSpec.describe "VisualizePacks" do
     context "when show_only_edges_to_focus_pack is not set" do
       before do
         @options = Options.new
-        @options.show_only_edges_to_focus_pack = nil
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::All
       end
 
       it "shows an edge IFF both start and end pack are in the list of packages" do

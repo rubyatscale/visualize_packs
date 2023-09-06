@@ -3,6 +3,7 @@
 
 class FocusPackEdgeDirection < T::Enum
   enums do
+    All = new
     In = new
     Out = new
     InOut = new
@@ -22,7 +23,7 @@ class Options < T::Struct
 
   prop :focus_folder, T.nilable(String)
   prop :focus_pack, T::Array[String], default: []
-  prop :show_only_edges_to_focus_pack, T.nilable(FocusPackEdgeDirection), default: nil
+  prop :show_only_edges_to_focus_pack, FocusPackEdgeDirection, default: FocusPackEdgeDirection::All
 
   prop :roll_nested_into_parent_packs, T::Boolean, default: false
   prop :show_nested_relationships, T::Boolean, default: true

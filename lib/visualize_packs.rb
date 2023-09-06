@@ -57,7 +57,7 @@ module VisualizePacks
   sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
   def self.diagram_title(options, max_todo_count)
     app_name = File.basename(Dir.pwd)
-    focus_edge_info = options.focus_pack.any? && options.show_only_edges_to_focus_pack ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
+    focus_edge_info = options.focus_pack.any? && options.show_only_edges_to_focus_pack != FocusPackEdgeDirection::All ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
     focus_info = options.focus_pack.any? || options.focus_folder ? "Focus on #{[limited_sentence(options.focus_pack), options.focus_folder].compact.join(' and ')} (#{focus_edge_info})" : "All packs"
     skipped_info = 
     [
@@ -95,25 +95,19 @@ module VisualizePacks
   sig { params(options: Options, all_package_names: T::Array[String]).returns(T.proc.params(arg0: String, arg1: String).returns(T::Boolean)) }
   def self.show_edge_builder(options, all_package_names)
     return lambda do |start_node, end_node|
+      all_package_names.include?(start_node) && 
+      all_package_names.include?(end_node) && 
       (
-        !options.show_only_edges_to_focus_pack && 
-        all_package_names.include?(start_node) && 
-        all_package_names.include?(end_node)
-      ) ||
-      (
-        options.show_only_edges_to_focus_pack && 
-        all_package_names.include?(start_node) && 
-        all_package_names.include?(end_node) && 
-        (
-          case options.show_only_edges_to_focus_pack
-          when FocusPackEdgeDirection::InOut then
-            match_packs?(start_node, options.focus_pack) || match_packs?(end_node, options.focus_pack)
-          when FocusPackEdgeDirection::In then
-            match_packs?(end_node, options.focus_pack)
-          when FocusPackEdgeDirection::Out then
-            match_packs?(start_node, options.focus_pack)
-          end
-        )
+        case options.show_only_edges_to_focus_pack
+        when FocusPackEdgeDirection::All then
+          true
+        when FocusPackEdgeDirection::InOut then
+          match_packs?(start_node, options.focus_pack) || match_packs?(end_node, options.focus_pack)
+        when FocusPackEdgeDirection::In then
+          match_packs?(end_node, options.focus_pack)
+        when FocusPackEdgeDirection::Out then
+          match_packs?(start_node, options.focus_pack)
+        end
       )
     end
   end
@@ -200,7 +194,7 @@ module VisualizePacks
       if options.show_dependencies
         result += packages.select { |p| p.dependencies.any? { |d| match_packs?(d, focus_pack) }}.map { |pack| pack.name }
       end
-      if options.show_todos && [nil, FocusPackEdgeDirection::In, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
+      if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::In, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
         result += packages.select do
           |p| (p.violations || []).inject([]) do |res, todo|
             res << todo.to_package_name if options.only_todo_types.empty? || options.only_todo_types.include?(todo.type)
@@ -212,7 +206,7 @@ module VisualizePacks
         if options.show_dependencies
           result += packages_by_name[p].dependencies
         end
-        if options.show_todos && [nil, FocusPackEdgeDirection::Out, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
+        if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::Out, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
           result += (packages_by_name[p].violations || []).inject([]) do |res, todo|
             res << todo.to_package_name if options.only_todo_types.empty? || options.only_todo_types.include?(todo.type)
             res

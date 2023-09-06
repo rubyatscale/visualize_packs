@@ -29,7 +29,7 @@ test_names+=("roll_nested_into_parent_packs"); test_params[${test_names[-1]}]="-
 test_names+=("only_layers"); test_params[${test_names[-1]}]="--no-dependency-arrows --no-todo-arrows --no-privacy --no-teams --no-nesting-arrows"
 test_names+=("no_to_all"); test_params[${test_names[-1]}]="--no-layers --no-dependency-arrows --no-todo-arrows --no-privacy --no-teams --no-nesting-arrows"
 test_names+=("focussed_on_packs_ui"); test_params[${test_names[-1]}]="--focus-pack=packs/ui"
-test_names+=("focussed_on_packs_ui_focus_edges"); test_params[${test_names[-1]}]="--focus-pack=packs/ui --only-edges-to-focus=inout"
+test_names+=("focussed_on_packs_ui_focus_edges"); test_params[${test_names[-1]}]="--focus-pack=packs/ui --focus-pack-edge-mode=inout"
 test_names+=("focus_folder"); test_params[${test_names[-1]}]="--focus-folder=packs/model"
 test_names+=("include_exclude_packs"); test_params[${test_names[-1]}]="--include-packs=* --exclude-packs=packs/ui,packs/models/packs/model_a,."
 
