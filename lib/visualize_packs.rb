@@ -173,10 +173,10 @@ module VisualizePacks
 
     edge_width = min_width + width_delta
     edge_width.round(2)
- end
+  end
 
- sig { params(packages: T::Array[ParsePackwerk::Package], options: Options).returns(T::Array[ParsePackwerk::Package]) }
- def self.filtered(packages, options)
+  sig { params(packages: T::Array[ParsePackwerk::Package], options: Options).returns(T::Array[ParsePackwerk::Package]) }
+  def self.filtered(packages, options)
     focus_pack = options.focus_pack
     focus_folder = options.focus_folder 
     include_packs = options.include_packs 
