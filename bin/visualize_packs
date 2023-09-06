@@ -51,5 +51,5 @@ end.parse!
 puts VisualizePacks.package_graph!(
   options, 
   ParsePackwerk::Configuration.fetch.raw, 
-  Packs.all.map { |pack| ParsePackwerk.find(pack.name) }
+  Packs.all.map { ParsePackwerk.find(_1.name) }
 )
