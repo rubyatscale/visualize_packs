@@ -21,7 +21,6 @@ class Options < T::Struct
   prop :show_privacy, T::Boolean, default: true
   prop :show_teams, T::Boolean, default: true
 
-  prop :focus_folder, T.nilable(String)
   prop :focus_pack, T::Array[String], default: []
   prop :show_only_edges_to_focus_pack, FocusPackEdgeDirection, default: FocusPackEdgeDirection::All
 

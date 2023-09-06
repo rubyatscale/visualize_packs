@@ -36,7 +36,6 @@ OptionParser.new do |opt|
   opt.on('--no-nesting-arrows', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
   opt.on('--roll-nested-into-parent-packs', "Don't show nested packs (not counting root). Connect edges to top-level pack instead") { |o| options.roll_nested_into_parent_packs = true }
 
-  opt.on('--focus-folder=', "Draw pack diagram only for packs in FOLDER. Matches partial folder paths") { |o| options.focus_folder = o.empty? ? nil : o }
   opt.on('--focus-pack=', "Focus on a specific pack(s). Comma-separated list of packs. Wildcards supported: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
   opt.on('--focus-pack-edge-mode=', "If focus-pack is set, this shows only the edges into / out of / in and out of the focus node instead of all edges in the resulting graph. One of [all,in,out,inout]") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
 

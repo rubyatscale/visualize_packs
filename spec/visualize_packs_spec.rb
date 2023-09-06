@@ -455,16 +455,6 @@ RSpec.describe "VisualizePacks" do
       end
     end
 
-    context 'when using focus_folder' do
-      it 'returns package lists filter with a focus folder using substring matching' do
-        @options.focus_folder = 'packs/something'
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a, @pack_b, @pack_c, @pack_d])
-
-        @options.focus_folder = 'packs/something_else'
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_c, @pack_d])
-      end
-    end
-
     context 'when using include_packs' do
       it 'returns package lists filter with a list of included packages (possibly with wildcards)' do
         @options.include_packs = ['packs/something/a']
