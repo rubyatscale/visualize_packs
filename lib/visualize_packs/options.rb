@@ -12,11 +12,11 @@ end
 
 class FocusPackEdgeDirection < T::Enum
   enums do
-    None = new
-    All = new
-    In = new
-    Out = new
-    InOut = new
+    None = new # don't include non-focus packs and thus show no edges to/from them
+    All = new # include non-focus packs and show all edges between all visible nodes
+    In = new # include non-focus packs and show edges that go towards focus packs (and show all edges between focus packs)
+    Out = new # include non-focus packs and show edges that go away from focus packs (and show all edges between focus packs)
+    InOut = new # include non-focus packs and show edges that go towards or away from focus packs (and show all edges between focus packs)
   end
 end
 
