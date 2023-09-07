@@ -157,7 +157,7 @@ digraph package_diagram {
       J [ fontsize=12 shape=box label="package"]
 
       A -> B [label="accepted dependency" color=darkgreen]
-      K -> L [label="nested package" color=purple penwidth=3]
+      K -> L [label="nested package" color=purple]
       M -> N [label="visibile to" color=darkgreen]
 
       C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]

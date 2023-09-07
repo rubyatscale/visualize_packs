@@ -158,8 +158,8 @@ digraph package_diagram {
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=3.25            ]
-          "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
-          "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
+          "packs/models" -> "packs/models/packs/model_a" [ color=purple ]
+          "packs/models" -> "packs/models/packs/model_ab" [ color=purple ]
         "packs/models/packs/model_a" -> "packs/models" [ color=blue constraint=false ]
     subgraph cluster_legend {
       fontsize=16
@@ -181,7 +181,7 @@ digraph package_diagram {
       J [ fontsize=12 shape=box label="package"]
 
       A -> B [label="accepted dependency" color=darkgreen]
-      K -> L [label="nested package" color=purple penwidth=3]
+      K -> L [label="nested package" color=purple]
       M -> N [label="visibile to" color=darkgreen]
 
       C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]

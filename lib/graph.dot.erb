@@ -112,7 +112,7 @@ digraph package_diagram {
     <%- all_packages.each do |package| -%>
       <%- all_packages.each do |nested_package| -%>
         <%- if nested_package.name.include?("#{package.name}/") && !(nested_package.name == package.name) -%>
-          "<%= package.name -%>" -> "<%= nested_package.name -%>" [ color=purple penwidth=3 ]
+          "<%= package.name -%>" -> "<%= nested_package.name -%>" [ color=purple ]
         <%- end -%>
       <%- end -%>
     <%- end -%>
@@ -145,7 +145,7 @@ digraph package_diagram {
       J [ fontsize=12 shape=box label="package"]
 
       A -> B [label="accepted dependency" color=darkgreen]
-      K -> L [label="nested package" color=purple penwidth=3]
+      K -> L [label="nested package" color=purple]
       M -> N [label="visibile to" color=darkgreen]
 
       C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
