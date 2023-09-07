@@ -81,10 +81,7 @@ digraph package_diagram {
   <%- end -%>
   <%- if options.show_todos -%>
     <%- all_packages.each do |package| -%>
-      <%- filtered_todos = package.violations -%>
-      <%- if options.only_todo_types.any? -%>
-        <%- filtered_todos = filtered_todos.select { options.only_todo_types.include?(_1.type) } -%>
-      <%- end -%>
+      <%- filtered_todos = package.violations.select { options.only_todo_types.include?(EdgeTodoTypes.deserialize(_1.type)) } -%>
       <%- todos_by_package = filtered_todos.group_by(&:to_package_name) -%>
       <%- todos_by_package.keys.each do |todos_to_package| -%>
         <%- todo_types = todos_by_package[todos_to_package].group_by(&:type) -%>

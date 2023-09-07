@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 # typed: strict
 
+class EdgeTodoTypes < T::Enum
+  enums do
+    Dependency = new
+    Privacy = new
+    Architecture = new
+    Visibility = new
+  end
+end
+
 class FocusPackEdgeDirection < T::Enum
   enums do
     None = new
@@ -18,7 +27,7 @@ class Options < T::Struct
   prop :show_layers, T::Boolean, default: true
   prop :show_dependencies, T::Boolean, default: true
   prop :show_todos, T::Boolean, default: true
-  prop :only_todo_types, T::Array[String], default: []
+  prop :only_todo_types, T::Array[EdgeTodoTypes], default: EdgeTodoTypes.values
   prop :show_privacy, T::Boolean, default: true
   prop :show_teams, T::Boolean, default: true
 

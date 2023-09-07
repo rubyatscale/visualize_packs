@@ -65,7 +65,7 @@ module VisualizePacks
       options.show_layers ? nil : "hiding layers",
       options.show_dependencies ? nil : "hiding dependencies",
       options.show_todos ? nil : "hiding todos",
-      options.only_todo_types.empty? ? nil : "only #{limited_sentence(options.only_todo_types)} todos",
+      EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "only #{limited_sentence(options.only_todo_types.map &:serialize)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
       options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
@@ -133,7 +133,7 @@ module VisualizePacks
         todos_by_package&.keys&.each do |todos_to_package|
           todo_types = todos_by_package&& todos_by_package[todos_to_package]&.group_by(&:type)
           todo_types&.keys&.each do |todo_type|
-            if options.only_todo_types.empty? || options.only_todo_types.include?(todo_type)
+            if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo_type))
               if show_edge.call(package.name, todos_to_package)
                 key = "#{package.name}->#{todos_to_package}:#{todo_type}"
                 todo_counts[key] = todo_types && todo_types[todo_type]&.count
@@ -194,7 +194,7 @@ module VisualizePacks
       if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::In, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
         result += packages.select do
           |p| (p.violations || []).inject([]) do |res, todo|
-            res << todo.to_package_name if options.only_todo_types.empty? || options.only_todo_types.include?(todo.type)
+            res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
             res
           end.any? { |v| match_packs?(v, focus_pack) }
         end.map { |pack| pack.name }
@@ -205,7 +205,7 @@ module VisualizePacks
         end
         if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::Out, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
           result += (packages_by_name[p].violations || []).inject([]) do |res, todo|
-            res << todo.to_package_name if options.only_todo_types.empty? || options.only_todo_types.include?(todo.type)
+            res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
             res
           end
         end

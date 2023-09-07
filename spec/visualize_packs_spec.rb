@@ -286,12 +286,11 @@ RSpec.describe "VisualizePacks" do
 
     it "does not include counts from todo types that are not being shown" do
       @options.show_todos = true
-      @options.only_todo_types = %w(privacy architecture)
+      @options.only_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Architecture]
       @package = @package_with_todos.call({privacy: 3, dependency: 4, architecture: 2})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
     end
-
   end
 
   describe '.match_packs?' do
@@ -411,7 +410,7 @@ RSpec.describe "VisualizePacks" do
       it 'does not include non-focus packs with todos towards or from if the todo type is being filtered' do
         @options.focus_pack = ['packs/something']
         @options.show_todos = true
-        @options.only_todo_types = ['dependency']
+        @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
         @pack_s_todos = [@make_todo.call(:privacy, 'packs/something/a')]
         @pack_b_todos = [@make_todo.call(:privacy, 'packs/something')]
@@ -435,7 +434,7 @@ RSpec.describe "VisualizePacks" do
         @options.focus_pack = ['packs/something']
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
-        @options.only_todo_types = ['dependency']
+        @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
         @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a'), @make_todo.call(:privacy, 'packs/something_else/c')]
         @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
@@ -447,7 +446,7 @@ RSpec.describe "VisualizePacks" do
         @options.focus_pack = ['packs/something']
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::Out
-        @options.only_todo_types = ['dependency']
+        @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
         @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a')]
         @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
@@ -459,7 +458,7 @@ RSpec.describe "VisualizePacks" do
         @options.focus_pack = ['packs/something']
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::In
-        @options.only_todo_types = ['dependency']
+        @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
         @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a')]
         @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]

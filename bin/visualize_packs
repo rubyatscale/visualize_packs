@@ -9,19 +9,6 @@ require_relative '../lib/visualize_packs'
 
 options = Options.new
 
-supported_todo_types = %w[
-  privacy
-  architecture
-  visibility
-  dependency
-].sort.freeze
-
-def validated_list(o, valid_arguments)
-  list = o.to_s.split(",").uniq
-  raise OptionParser::InvalidArgument, o unless (list - valid_arguments).empty?
-  list
-end
-
 OptionParser.new do |opt|
   opt.on('--no-legend', "Don't show legend") { |o| options.show_legend = false }
 
@@ -32,14 +19,14 @@ OptionParser.new do |opt|
   opt.on('--no-dependency-arrows', "Don't show accepted dependencies") { |o| options.show_dependencies = false }
 
   opt.on('--no-todo-arrows', "Don't show pack todos") { |o| options.show_todos = false }
-  opt.on("--only-todo-types=", "Show only the selected types of todos. Comma-separated list of [#{supported_todo_types.join(', ')}]") { |o| options.only_todo_types = validated_list(o, supported_todo_types) }
+  opt.on("--only-todo-types=", "Show only the selected types of todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.only_todo_types = o.to_s.split(",").uniq.map { EdgeTodoTypes.deserialize(_1) } }
   opt.on('--no-privacy-boxes', "Don't show privacy enforcement box on a pack") { |o| options.show_privacy = false }
 
   opt.on('--no-nesting-arrows', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
   opt.on('--roll-nested-into-parent-packs', "Don't show nested packs (not counting root). Connect edges to top-level pack instead") { |o| options.roll_nested_into_parent_packs = true }
 
   opt.on('--focus-pack=', "Focus on a specific pack(s). Comma-separated list of packs. Wildcards supported: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
-  opt.on('--focus-pack-edge-mode=', "If focus-pack is set, this shows only between focussed packs (when set to none) or the edges into / out of / in and out of the focus packs to non-focus packs (which will be re-added to the graph). One of [none,all,in,out,inout]") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
+  opt.on('--focus-pack-edge-mode=', "If focus-pack is set, this shows only between focussed packs (when set to none) or the edges into / out of / in and out of the focus packs to non-focus packs (which will be re-added to the graph). One of #{FocusPackEdgeDirection.values.map &:serialize}") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
   opt.on('--exclude-packs=', "Exclude listed packs from diagram. If used with include you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
 
   opt.on('--remote-base-url=', "Link pack packs to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
