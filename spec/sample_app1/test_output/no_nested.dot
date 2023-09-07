@@ -173,11 +173,17 @@ digraph package_diagram {
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=3.25            ]
+        "packs/models/packs/model_a" -> "packs/models" [ color=blue constraint=false ]
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"
       A [ fontsize=12 shape=box label="package"]
       B [ fontsize=12 shape=box label="package"]
+      K [ fontsize=12 shape=box label="package"]
+      L [ fontsize=12 shape=box label="package"]
+      M [ fontsize=12 shape=box label="package"]
+      N [ fontsize=12 shape=box label="package"]
+
       C [ fontsize=12 shape=box label="package"]
       D [ fontsize=12 shape=box label="package"]
       E [ fontsize=12 shape=box label="package"]
@@ -186,14 +192,15 @@ digraph package_diagram {
       H [ fontsize=12 shape=box label="package"]
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
-      K [ fontsize=12 shape=box label="package"]
-      L [ fontsize=12 shape=box label="package"]
+
       A -> B [label="accepted dependency" color=darkgreen]
+      K -> L [label="nested package" color=purple penwidth=3]
+      M -> N [label="visibile to" color=darkgreen]
+
       C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
       E -> F [label="architecture todo" color=darkred style=dashed arrowhead=invodot]
       G -> H [label="visibility todo" color=darkred style=dashed arrowhead=obox]
       I -> J [label="dependency todo" color=darkred style=dashed arrowhead=odot]
-      K -> L [label="nested package" color=purple penwidth=3]
     }
   subgraph cluster_teams_legend {
     fontsize=16

@@ -15,6 +15,7 @@ OptionParser.new do |opt|
   opt.on('--no-dependency-arrows', "Don't show accepted dependency arrows") { |o| options.show_dependencies = false }
   opt.on('--no-privacy-boxes', "Don't show privacy enforcement box on a pack") { |o| options.show_privacy = false }
   opt.on('--no-layers', "Don't show architectural layers") { |o| options.show_layers = false }
+  opt.on('--no-visibility-arrows', "Don't show visibility arrows") { |o| options.show_visibility = false }
 
   opt.on('--no-todo-arrows', "Don't show pack todos") { |o| options.show_todos = false }
   opt.on("--only-todo-types=", "Show only the selected types of todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.only_todo_types = o.to_s.split(",").uniq.map { EdgeTodoTypes.deserialize(_1) } }
