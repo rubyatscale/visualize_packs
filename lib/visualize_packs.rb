@@ -71,6 +71,7 @@ module VisualizePacks
       options.show_visibility ? nil : "hiding visibility",
       options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
+      options.todos_guided_layout ? nil : "not guiding layout with todos",
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"

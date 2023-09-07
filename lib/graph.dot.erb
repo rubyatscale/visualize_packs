@@ -88,7 +88,7 @@ digraph package_diagram {
         <%- todo_types.keys.each do |todo_type| -%>
           <%- if show_edge.call(package.name, todos_to_package) -%>
             "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [ color=darkred style=dashed
-              <%- if options.show_dependencies -%>
+              <%- if options.show_dependencies || !options.todos_guided_layout -%>
                 constraint=false
               <%- end -%>
               # headlabel="<%= todo_type -%>"

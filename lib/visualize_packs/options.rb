@@ -42,5 +42,7 @@ class Options < T::Struct
   prop :roll_nested_into_parent_packs, T::Boolean, default: false
   prop :show_nested_relationships, T::Boolean, default: true
 
+  prop :todos_guided_layout, T::Boolean, default: true
+
   prop :remote_base_url, T.nilable(String)
 end

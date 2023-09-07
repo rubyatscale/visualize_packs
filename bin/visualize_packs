@@ -29,6 +29,8 @@ OptionParser.new do |opt|
   opt.on('--roll-nested-into-parent-packs', "Don't show nested packs (not counting root). Connect edges to top-level pack instead") { |o| options.roll_nested_into_parent_packs = true }
   opt.on('--no-nesting-arrows', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
 
+  opt.on('--no-todos-guided-layout', "Avoid guiding the layout based on todos when hiding dependencies.") { |o| options.todos_guided_layout = false }
+
   opt.on('--remote-base-url=', "Link pack packs to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
   opt.on_tail("-h", "--help", "Show this message") do
