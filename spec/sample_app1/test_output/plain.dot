@@ -173,8 +173,8 @@ digraph package_diagram {
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=3.25            ]
-        "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
-        "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
+          "packs/models" -> "packs/models/packs/model_a" [ color=purple penwidth=3 ]
+          "packs/models" -> "packs/models/packs/model_ab" [ color=purple penwidth=3 ]
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"
