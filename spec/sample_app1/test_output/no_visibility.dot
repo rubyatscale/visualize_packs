@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs - hiding nested packs</b><br/><font point-size='12'>Widest todo edge is 5 todos</font>>
+    label=<<b>sample_app1: All packs - hiding visibility</b><br/><font point-size='12'>Widest todo edge is 5 todos</font>>
     fontsize=18
   ]
   node [
@@ -35,6 +35,36 @@ digraph package_diagram {
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='16'><tr><td>
                   <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                     <tr> <td port='private'> packs/models </td> </tr>
+                  </table>
+                </td></tr></table>
+              >
+          ]
+        
+        "packs/models/packs/model_a" [
+            fontsize=12.0
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_a"
+
+              style=filled
+              fillcolor="#FFA9C5"
+            label= <
+                <table border='0' cellborder='1' cellspacing='0' cellpadding='16'><tr><td>
+                  <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
+                    <tr> <td port='private'> packs/models/packs/model_a </td> </tr>
+                  </table>
+                </td></tr></table>
+              >
+          ]
+        
+        "packs/models/packs/model_ab" [
+            fontsize=12.0
+              URL="https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app/packs/models/packs/model_ab"
+
+              style=filled
+              fillcolor="#FFA9C5"
+            label= <
+                <table border='0' cellborder='1' cellspacing='0' cellpadding='16'><tr><td>
+                  <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
+                    <tr> <td port='private'> packs/models/packs/model_ab </td> </tr>
                   </table>
                 </td></tr></table>
               >
@@ -76,6 +106,8 @@ digraph package_diagram {
         
     }
               "packs/models" -> "packs/utility" [ style=invis ]
+              "packs/models/packs/model_a" -> "packs/utility" [ style=invis ]
+              "packs/models/packs/model_ab" -> "packs/utility" [ style=invis ]
               "packs/ui" -> "packs/utility" [ style=invis ]
     subgraph NotInLayer {
       shape=box
@@ -100,7 +132,11 @@ digraph package_diagram {
               "packs/utility" -> "." [ style=invis ]
           "packs/models" -> "packs/utility" [ color=darkgreen ]
           "packs/models" -> "." [ color=darkgreen ]
-          "packs/ui" -> "packs/models" [ color=darkgreen ]
+          "packs/models/packs/model_a" -> "packs/utility" [ color=darkgreen ]
+          "packs/models/packs/model_a" -> "." [ color=darkgreen ]
+          "packs/models/packs/model_ab" -> "packs/utility" [ color=darkgreen ]
+          "packs/models/packs/model_ab" -> "." [ color=darkgreen ]
+          "packs/ui" -> "packs/models/packs/model_a" [ color=darkgreen ]
           "packs/ui" -> "packs/utility" [ color=darkgreen ]
             "packs/ui" -> "." [ color=darkred style=dashed
                 constraint=false
@@ -117,26 +153,28 @@ digraph package_diagram {
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=1.0            ]
-            "packs/ui" -> "packs/models" [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
                 constraint=false
               # headlabel="dependency"
                 arrowhead=odot
               penwidth=10.0            ]
-            "packs/ui" -> "packs/models":private [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a":private [ color=darkred style=dashed
                 constraint=false
               # headlabel="privacy"
                 arrowhead=crow
               penwidth=7.75            ]
-            "packs/ui" -> "packs/models" [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
                 constraint=false
               # headlabel="architecture"
                 arrowhead=invodot
               penwidth=5.5            ]
-            "packs/ui" -> "packs/models" [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
                 constraint=false
               # headlabel="visibility"
                 arrowhead=obox
               penwidth=3.25            ]
+          "packs/models" -> "packs/models/packs/model_a" [ color=purple ]
+          "packs/models" -> "packs/models/packs/model_ab" [ color=purple ]
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"

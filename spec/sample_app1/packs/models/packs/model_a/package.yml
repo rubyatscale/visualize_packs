@@ -1,7 +1,10 @@
 enforce_dependencies: true
 enforce_privacy: true
+enforce_visibility: true
 layer: app
 dependencies:
 - packs/utility
 - .
 owner: UI Team
+visible_to:
+- packs/models

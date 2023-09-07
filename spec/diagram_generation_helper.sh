@@ -23,6 +23,7 @@ test_names+=("no_dependencies"); test_params[${test_names[-1]}]="--no-dependency
 test_names+=("no_todos"); test_params[${test_names[-1]}]="--no-todo-arrows"
 test_names+=("no_privacy"); test_params[${test_names[-1]}]="--no-privacy-boxes"
 test_names+=("no_nested"); test_params[${test_names[-1]}]="--no-nesting-arrows"
+test_names+=("no_visibility"); test_params[${test_names[-1]}]="--no-visibility-arrows"
 
 test_names+=("only_todo_types"); test_params[${test_names[-1]}]="--only-todo-types=architecture,visibility"
 test_names+=("roll_nested_into_parent_packs"); test_params[${test_names[-1]}]="--roll-nested-into-parent-packs"

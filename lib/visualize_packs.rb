@@ -57,8 +57,8 @@ module VisualizePacks
   sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
   def self.diagram_title(options, max_todo_count)
     app_name = File.basename(Dir.pwd)
-    focus_edge_info = options.focus_pack.any? && options.show_only_edges_to_focus_pack != FocusPackEdgeDirection::All ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
-    focus_info = options.focus_pack.any? ? "Focus on #{limited_sentence(options.focus_pack)} (#{focus_edge_info})" : "All packs"
+    focus_edge_info = options.focus_pack && options.show_only_edges_to_focus_pack != FocusPackEdgeDirection::All ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
+    focus_info = options.focus_pack ? "Focus on #{limited_sentence(options.focus_pack)} (#{focus_edge_info})" : "All packs"
     skipped_info = 
     [
       options.show_legend ? nil : "hiding legend",
@@ -68,6 +68,7 @@ module VisualizePacks
       EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "only #{limited_sentence(options.only_todo_types.map &:serialize)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
+      options.show_visibility ? nil : "hiding visibility",
       options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
@@ -173,7 +174,7 @@ module VisualizePacks
     focus_pack = options.focus_pack
     exclude_packs = options.exclude_packs
 
-    return packages unless focus_pack.any? || exclude_packs.any?
+    return packages unless focus_pack || exclude_packs.any?
 
     nested_packages = all_nested_packages(packages.map { |p| p.name })
 
@@ -185,7 +186,7 @@ module VisualizePacks
     result = T.let([], T::Array[T.nilable(String)])
     result = packages.map { |pack| pack.name }
 
-    if !focus_pack.empty?
+    if focus_pack && !focus_pack.empty?
       result = []
       result += packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
       if options.show_dependencies
@@ -299,8 +300,8 @@ module VisualizePacks
     morphed_packages.reject { |p| nested_packages.keys.include?(p.name) }
   end
 
-  sig { params(pack: String, packs_name_with_wildcards: T::Array[String]).returns(T::Boolean) }
+  sig { params(pack: String, packs_name_with_wildcards: T.nilable(T::Array[String])).returns(T::Boolean) }
   def self.match_packs?(pack, packs_name_with_wildcards)
-    packs_name_with_wildcards.any? {|p| File.fnmatch(p, pack)}
+    !packs_name_with_wildcards || packs_name_with_wildcards.any? {|p| File.fnmatch(p, pack)}
   end
 end

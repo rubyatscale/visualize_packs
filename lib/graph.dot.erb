@@ -33,7 +33,7 @@ digraph package_diagram {
       <%- end -%>
       <%- grouped_packages[layer_name].each do |package| -%>
         "<%= package.name -%>" [
-            fontsize=<%= options.focus_pack.any? && options.focus_pack.any? {|p| File.fnmatch(p, package.name)} ? 18.0 : 12.0 -%>
+            fontsize=<%= options.focus_pack && options.focus_pack.any? {|p| File.fnmatch(p, package.name)} ? 18.0 : 12.0 -%>
             <%- if options.remote_base_url %>
               URL="<%= options.remote_base_url %>/<%= package.name == '.' ? '' : package.name -%>"
             <%- end %>
@@ -109,20 +109,32 @@ digraph package_diagram {
     <%- end -%>
   <%- end -%>
   <%- if options.show_nested_relationships -%>
-  <%- all_packages.each do |package| -%>
-    <%- all_packages.each do |nested_package| -%>
-      <%- if nested_package.name.include?("#{package.name}/") && !(nested_package.name == package.name) -%>
-        "<%= package.name -%>" -> "<%= nested_package.name -%>" [ color=purple penwidth=3 ]
+    <%- all_packages.each do |package| -%>
+      <%- all_packages.each do |nested_package| -%>
+        <%- if nested_package.name.include?("#{package.name}/") && !(nested_package.name == package.name) -%>
+          "<%= package.name -%>" -> "<%= nested_package.name -%>" [ color=purple ]
+        <%- end -%>
       <%- end -%>
     <%- end -%>
   <%- end -%>
-<%- end -%>
+  <%- if options.show_visibility -%>
+    <%- all_packages.each do |package| -%>
+      <%- (package.config['visible_to'] || []).each do |other_package_name|  -%>
+        "<%= package.name -%>" -> "<%= other_package_name -%>" [ color=blue constraint=false ]
+      <%- end -%>
+    <%- end -%>
+  <%- end -%>
   <%- if options.show_legend -%>
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"
       A [ fontsize=12 shape=box label="package"]
       B [ fontsize=12 shape=box label="package"]
+      K [ fontsize=12 shape=box label="package"]
+      L [ fontsize=12 shape=box label="package"]
+      M [ fontsize=12 shape=box label="package"]
+      N [ fontsize=12 shape=box label="package"]
+
       C [ fontsize=12 shape=box label="package"]
       D [ fontsize=12 shape=box label="package"]
       E [ fontsize=12 shape=box label="package"]
@@ -131,14 +143,15 @@ digraph package_diagram {
       H [ fontsize=12 shape=box label="package"]
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
-      K [ fontsize=12 shape=box label="package"]
-      L [ fontsize=12 shape=box label="package"]
+
       A -> B [label="accepted dependency" color=darkgreen]
+      K -> L [label="nested package" color=purple]
+      M -> N [label="visibile to" color=darkgreen]
+
       C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
       E -> F [label="architecture todo" color=darkred style=dashed arrowhead=invodot]
       G -> H [label="visibility todo" color=darkred style=dashed arrowhead=obox]
       I -> J [label="dependency todo" color=darkred style=dashed arrowhead=odot]
-      K -> L [label="nested package" color=purple penwidth=3]
     }
   <%- end -%>
   <%- if options.show_teams && all_team_names != [] -%>
