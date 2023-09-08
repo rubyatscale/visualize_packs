@@ -87,19 +87,19 @@ digraph package_diagram {
         <%- todo_types = todos_by_package[todos_to_package].group_by(&:type) -%>
         <%- todo_types.keys.each do |todo_type| -%>
           <%- if show_edge.call(package.name, todos_to_package) -%>
-            "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [ color=darkred style=dashed
+            "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [
               <%- if !options.use_todos_for_layout -%>
                 constraint=false
               <%- end -%>
               # headlabel="<%= todo_type -%>"
               <%- if todo_type == 'privacy' -%>
-                arrowhead=crow
+                <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>
               <%- elsif todo_type == 'architecture' -%>
-                arrowhead=invodot
+                <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>
               <%- elsif todo_type == 'visibility' -%>
-                arrowhead=obox
+                <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>
               <%- elsif todo_type == 'dependency' -%>
-                arrowhead=odot
+                <%= VisualizePacks::ArrowHead::DependencyTodo.serialize %>
               <%- end -%>
               penwidth=<%= todo_edge_width(todo_types[todo_type].count, max_todo_count) -%>
             ]
@@ -144,14 +144,14 @@ digraph package_diagram {
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
 
-      A -> B [label="accepted dependency" color=darkgreen]
-      K -> L [label="nested package" color=purple]
-      M -> N [label="visibile to" color=darkgreen]
+      A -> B [label="accepted dependency" <%= VisualizePacks::ArrowHead::ConfiguredDependency.serialize %>]
+      K -> L [label="nested package" <%= VisualizePacks::ArrowHead::ConfiguredNested.serialize %>]
+      M -> N [label="visibile to" <%= VisualizePacks::ArrowHead::ConfiguredVisibileTo.serialize %>]
 
-      C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
-      E -> F [label="architecture todo" color=darkred style=dashed arrowhead=invodot]
-      G -> H [label="visibility todo" color=darkred style=dashed arrowhead=obox]
-      I -> J [label="dependency todo" color=darkred style=dashed arrowhead=odot]
+      C -> D [label="privacy todo" <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>]
+      E -> F [label="architecture todo" <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>]
+      G -> H [label="visibility todo" <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>]
+      I -> J [label="dependency todo" <%= VisualizePacks::ArrowHead::DependencyTodo.serialize %>]
     }
   <%- end -%>
   <%- if options.show_teams && all_team_names != [] -%>
