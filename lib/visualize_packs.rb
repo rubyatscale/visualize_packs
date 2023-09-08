@@ -11,6 +11,18 @@ require 'visualize_packs/options'
 module VisualizePacks
   extend T::Sig
 
+  class ArrowHead < T::Enum
+    enums do
+      DependencyTodo = new('color=darkred style=dashed arrowhead=odiamond')
+      PrivacyTodo = new('color=darkred style=dashed arrowhead=crow')
+      ArchitectureTodo = new('color=darkred style=dashed arrowhead=obox')
+      VisibilityTodo = new('color=darkred style=dashed arrowhead=tee')
+      ConfiguredDependency = new('color=darkgreen')
+      ConfiguredVisibileTo = new('color=blue')
+      ConfiguredNested = new('color=purple')
+    end
+  end
+
   sig { params(options: Options, raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
   def self.package_graph!(options, raw_config, packages)
     all_packages = filtered(packages, options).compact.sort_by {|x| x.name }

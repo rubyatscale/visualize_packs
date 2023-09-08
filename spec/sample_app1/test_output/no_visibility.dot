@@ -138,40 +138,40 @@ digraph package_diagram {
           "packs/models/packs/model_ab" -> "." [ color=darkgreen ]
           "packs/ui" -> "packs/models/packs/model_a" [ color=darkgreen ]
           "packs/ui" -> "packs/utility" [ color=darkgreen ]
-            "packs/ui" -> "." [ color=darkred style=dashed
+            "packs/ui" -> "." [
                 constraint=false
               # headlabel="dependency"
-                arrowhead=odot
+color=darkred style=dashed arrowhead=odiamond
               penwidth=1.0            ]
-            "packs/ui" -> "." [ color=darkred style=dashed
+            "packs/ui" -> "." [
                 constraint=false
               # headlabel="architecture"
-                arrowhead=invodot
+color=darkred style=dashed arrowhead=obox
               penwidth=1.0            ]
-            "packs/ui" -> "." [ color=darkred style=dashed
+            "packs/ui" -> "." [
                 constraint=false
               # headlabel="visibility"
-                arrowhead=obox
+color=darkred style=dashed arrowhead=tee
               penwidth=1.0            ]
-            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a" [
                 constraint=false
               # headlabel="dependency"
-                arrowhead=odot
+color=darkred style=dashed arrowhead=odiamond
               penwidth=10.0            ]
-            "packs/ui" -> "packs/models/packs/model_a":private [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a":private [
                 constraint=false
               # headlabel="privacy"
-                arrowhead=crow
+color=darkred style=dashed arrowhead=crow
               penwidth=7.75            ]
-            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a" [
                 constraint=false
               # headlabel="architecture"
-                arrowhead=invodot
+color=darkred style=dashed arrowhead=obox
               penwidth=5.5            ]
-            "packs/ui" -> "packs/models/packs/model_a" [ color=darkred style=dashed
+            "packs/ui" -> "packs/models/packs/model_a" [
                 constraint=false
               # headlabel="visibility"
-                arrowhead=obox
+color=darkred style=dashed arrowhead=tee
               penwidth=3.25            ]
           "packs/models" -> "packs/models/packs/model_a" [ color=purple ]
           "packs/models" -> "packs/models/packs/model_ab" [ color=purple ]
@@ -180,28 +180,25 @@ digraph package_diagram {
       label="Edges Styles and Arrow Heads"
       A [ fontsize=12 shape=box label="package"]
       B [ fontsize=12 shape=box label="package"]
+      A -> B [label="accepted dependency" color=darkgreen]
       K [ fontsize=12 shape=box label="package"]
       L [ fontsize=12 shape=box label="package"]
-      M [ fontsize=12 shape=box label="package"]
-      N [ fontsize=12 shape=box label="package"]
-
+      K -> L [label="nested package" color=purple]
       C [ fontsize=12 shape=box label="package"]
       D [ fontsize=12 shape=box label="package"]
+      C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
+      E -> F [label="architecture todo" color=darkred style=dashed arrowhead=obox]
       G [ fontsize=12 shape=box label="package"]
       H [ fontsize=12 shape=box label="package"]
+      G -> H [label="visibility todo" color=darkred style=dashed arrowhead=tee]
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
-
-      A -> B [label="accepted dependency" color=darkgreen]
-      K -> L [label="nested package" color=purple]
-      M -> N [label="visibile to" color=darkgreen]
-
-      C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
-      E -> F [label="architecture todo" color=darkred style=dashed arrowhead=invodot]
-      G -> H [label="visibility todo" color=darkred style=dashed arrowhead=obox]
-      I -> J [label="dependency todo" color=darkred style=dashed arrowhead=odot]
+      I -> J [label="dependency todo" color=darkred style=dashed arrowhead=odiamond]
+      LEGEND_NODE_1 [ label="" peripheries=0 height=0 width=0 style=invis ]
+      LEGEND_NODE_2 [ label="" peripheries=0 height=0 width=0 style=invis ]
+      LEGEND_NODE_1 -> LEGEND_NODE_2 [ style=invis ]
     }
   subgraph cluster_teams_legend {
     fontsize=16
@@ -232,5 +229,5 @@ digraph package_diagram {
       ]
 
   }
-    J -> "Utility TeamUtility Team" [style=invis]
+    LEGEND_NODE_2 -> "Utility TeamUtility Team" [style=invis]
 }

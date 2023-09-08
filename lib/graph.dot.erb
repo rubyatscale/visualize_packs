@@ -87,19 +87,19 @@ digraph package_diagram {
         <%- todo_types = todos_by_package[todos_to_package].group_by(&:type) -%>
         <%- todo_types.keys.each do |todo_type| -%>
           <%- if show_edge.call(package.name, todos_to_package) -%>
-            "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [ color=darkred style=dashed
+            "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [
               <%- if !options.use_todos_for_layout -%>
                 constraint=false
               <%- end -%>
               # headlabel="<%= todo_type -%>"
               <%- if todo_type == 'privacy' -%>
-                arrowhead=crow
+                <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>
               <%- elsif todo_type == 'architecture' -%>
-                arrowhead=invodot
+                <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>
               <%- elsif todo_type == 'visibility' -%>
-                arrowhead=obox
+                <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>
               <%- elsif todo_type == 'dependency' -%>
-                arrowhead=odot
+                <%= VisualizePacks::ArrowHead::DependencyTodo.serialize %>
               <%- end -%>
               penwidth=<%= todo_edge_width(todo_types[todo_type].count, max_todo_count) -%>
             ]
@@ -128,30 +128,46 @@ digraph package_diagram {
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"
+      <%- if options.show_dependencies -%>
       A [ fontsize=12 shape=box label="package"]
       B [ fontsize=12 shape=box label="package"]
+      A -> B [label="accepted dependency" <%= VisualizePacks::ArrowHead::ConfiguredDependency.serialize %>]
+      <%- end -%>
+      <%- if options.show_nested_relationships -%>
       K [ fontsize=12 shape=box label="package"]
       L [ fontsize=12 shape=box label="package"]
+      K -> L [label="nested package" <%= VisualizePacks::ArrowHead::ConfiguredNested.serialize %>]
+      <%- end -%>
+      <%- if options.show_visibility -%>
       M [ fontsize=12 shape=box label="package"]
       N [ fontsize=12 shape=box label="package"]
-
+      M -> N [label="visibile to" <%= VisualizePacks::ArrowHead::ConfiguredVisibileTo.serialize %>]
+      <%- end -%>
+      <%- if options.show_todos -%>
+        <%- if options.only_todo_types.include?(EdgeTodoTypes::Privacy) -%>
       C [ fontsize=12 shape=box label="package"]
       D [ fontsize=12 shape=box label="package"]
+      C -> D [label="privacy todo" <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>]
+        <%- end -%>
+        <%- if options.only_todo_types.include?(EdgeTodoTypes::Architecture) -%>
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
+      E -> F [label="architecture todo" <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>]
+        <%- end -%>
+        <%- if options.only_todo_types.include?(EdgeTodoTypes::Visibility) -%>
       G [ fontsize=12 shape=box label="package"]
       H [ fontsize=12 shape=box label="package"]
+      G -> H [label="visibility todo" <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>]
+        <%- end -%>
+        <%- if options.only_todo_types.include?(EdgeTodoTypes::Dependency) -%>
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
-
-      A -> B [label="accepted dependency" color=darkgreen]
-      K -> L [label="nested package" color=purple]
-      M -> N [label="visibile to" color=darkgreen]
-
-      C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
-      E -> F [label="architecture todo" color=darkred style=dashed arrowhead=invodot]
-      G -> H [label="visibility todo" color=darkred style=dashed arrowhead=obox]
-      I -> J [label="dependency todo" color=darkred style=dashed arrowhead=odot]
+      I -> J [label="dependency todo" <%= VisualizePacks::ArrowHead::DependencyTodo.serialize %>]
+        <%- end -%>
+      <%- end -%>
+      LEGEND_NODE_1 [ label="" peripheries=0 height=0 width=0 style=invis ]
+      LEGEND_NODE_2 [ label="" peripheries=0 height=0 width=0 style=invis ]
+      LEGEND_NODE_1 -> LEGEND_NODE_2 [ style=invis ]
     }
   <%- end -%>
   <%- if options.show_teams && all_team_names != [] -%>
@@ -172,7 +188,7 @@ digraph package_diagram {
     <%- end -%>
   }
   <%- if options.show_legend -%>
-    J -> "<%= all_team_names.last %><%= all_team_names.last %>" [style=invis]
+    LEGEND_NODE_2 -> "<%= all_team_names.last %><%= all_team_names.last %>" [style=invis]
   <%- end -%>
   <%- end -%>
 }
