@@ -19,6 +19,7 @@ OptionParser.new do |opt|
 
   opt.on('--no-todo-arrows', "Don't show pack todos") { |o| options.show_todos = false }
   opt.on("--only-todo-types=", "Show only the selected types of todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.only_todo_types = o.to_s.split(",").uniq.map { EdgeTodoTypes.deserialize(_1) } }
+  opt.on("--use-todos-for-layout", "Show only the selected types of todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.use_todos_for_layout = true }
 
   opt.on('--no-teams', "Don't show team colors") { |o| options.show_teams = false }
 
