@@ -56,6 +56,8 @@ module VisualizePacks
 
   sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
   def self.diagram_title(options, max_todo_count)
+    return "<<b>#{options.title}</b>>" if options.title
+
     app_name = File.basename(Dir.pwd)
     focus_edge_info = options.focus_pack && options.show_only_edges_to_focus_pack != FocusPackEdgeDirection::All ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
     focus_info = options.focus_pack ? "Focus on #{limited_sentence(options.focus_pack)} (#{focus_edge_info})" : "All packs"

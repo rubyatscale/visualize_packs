@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>sample_app1: All packs - hiding layers, hiding dependencies, hiding todos, hiding privacy, hiding teams, hiding nested relationships</b>>
+    label=<<b>Hide everything</b>>
     fontsize=18
   ]
   node [
@@ -105,7 +105,6 @@ digraph package_diagram {
           ]
         
     }
-        "packs/models/packs/model_a" -> "packs/models" [ color=blue constraint=false ]
     subgraph cluster_legend {
       fontsize=16
       label="Edges Styles and Arrow Heads"
