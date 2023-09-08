@@ -19,7 +19,7 @@ test_names+=("no_legend"); test_params[${test_names[-1]}]="--no-legend"
 test_names+=("no_layers"); test_params[${test_names[-1]}]="--no-layers"
 test_names+=("no_teams"); test_params[${test_names[-1]}]="--no-teams"
 
-test_names+=("no_dependencies"); test_params[${test_names[-1]}]="--no-dependency-arrows"
+test_names+=("no_dependencies"); test_params[${test_names[-1]}]="--no-dependency-arrows --use-todos-for-layout"
 test_names+=("no_todos"); test_params[${test_names[-1]}]="--no-todo-arrows"
 test_names+=("no_privacy"); test_params[${test_names[-1]}]="--no-privacy-boxes"
 test_names+=("no_nested"); test_params[${test_names[-1]}]="--no-nesting-arrows"
