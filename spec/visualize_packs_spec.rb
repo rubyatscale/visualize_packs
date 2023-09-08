@@ -594,4 +594,57 @@ RSpec.describe "VisualizePacks" do
       end
     end
   end
+
+  describe '.diagram_title' do
+    context 'with a custom title from options' do
+      it "returns whatever is set" do
+        options = Options.new
+        options.title = "Some title"
+
+        expect(VisualizePacks.diagram_title(options, 42)).to eq("<<b>Some title</b>>")
+      end
+    end
+
+    context 'without a custom title from options' do
+      describe 'with basic options and nil max edge count' do
+        it "with " do
+          options = Options.new
+
+          expect(VisualizePacks.diagram_title(options, 0)).to eq(
+            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
+          )
+        end
+      end
+
+      describe 'with basic options and 0 max edge count' do
+        it "with " do
+          options = Options.new
+
+          expect(VisualizePacks.diagram_title(options, 0)).to eq(
+            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
+          )
+        end
+      end
+
+      describe 'with basic options and 1 max edge count' do
+        it "with " do
+          options = Options.new
+
+          expect(VisualizePacks.diagram_title(options, 1)).to eq(
+            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 1 todo</font>>"
+          )
+        end
+      end
+
+      describe 'with basic options and non-zero max edge count' do
+        it "with " do
+          options = Options.new
+
+          expect(VisualizePacks.diagram_title(options, 19)).to eq(
+            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 19 todos</font>>"
+          )
+        end
+      end
+    end
+  end
 end

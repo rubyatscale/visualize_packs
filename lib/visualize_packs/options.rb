@@ -44,4 +44,6 @@ class Options < T::Struct
   prop :show_nested_relationships, T::Boolean, default: true
 
   prop :remote_base_url, T.nilable(String)
+
+  prop :title, T.nilable(String), default: nil
 end

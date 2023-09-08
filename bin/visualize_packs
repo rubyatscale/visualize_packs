@@ -32,6 +32,8 @@ OptionParser.new do |opt|
 
   opt.on('--remote-base-url=STRING', "Link pack packs to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
+  opt.on('--title=STRING', "Set a custom diagram title") { |o| options.title = o }
+
   opt.on_tail("-h", "--help", "Show this message") do
     puts opt
     exit
