@@ -34,6 +34,13 @@ OptionParser.new do |opt|
 
   opt.on('--title=STRING', "Set a custom diagram title") { |o| options.title = o }
 
+  opt.on('-V', '--version', "Show version") do
+    spec_path = File.expand_path("../visualize_packs.gemspec", __dir__)
+    spec = Gem::Specification::load(spec_path)
+    puts "Version #{spec.version}"
+    exit
+  end
+
   opt.on_tail("-h", "--help", "Show this message") do
     puts opt
     exit
