@@ -204,12 +204,12 @@ module VisualizePacks
 
     if focus_pack && !focus_pack.empty?
       result = []
-      focus_packs = packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
-      result += focus_packs
+      focus_pack_name = packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
+      result += focus_pack_name
 
       if options.show_dependencies
-        dependents = dependents_of(packages, focus_packs)
-        dependencies = dependencies_of(packages, focus_packs)
+        dependents = dependents_of(packages, focus_pack_name)
+        dependencies = dependencies_of(packages, focus_pack_name)
         case options.show_only_edges_to_focus_pack
         when FocusPackEdgeDirection::All then
           result += dependents + dependencies
@@ -223,28 +223,27 @@ module VisualizePacks
         end
       end
 
-      if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::In, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
-        result += packages.select do
-          |p| (p.violations || []).inject([]) do |res, todo|
-            res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
-            res
-          end.any? { |v| match_packs?(v, focus_pack) }
-        end.map { |pack| pack.name }
-      end
-      packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }.each do |p|
-        if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::Out, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
-          result += (packages_by_name[p].violations || []).inject([]) do |res, todo|
-            res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
-            res
-          end
+      if options.show_todos
+        todos_out = todos_out(packages, focus_pack_name, options)
+        todos_in = todos_in(packages, focus_pack_name, options)
+        case options.show_only_edges_to_focus_pack
+        when FocusPackEdgeDirection::All then
+          result += todos_out + todos_in
+        when FocusPackEdgeDirection::None then
+        when FocusPackEdgeDirection::In then
+          result += todos_in
+        when FocusPackEdgeDirection::Out then
+          result += todos_out
+        when FocusPackEdgeDirection::InOut then
+          result += todos_out + todos_in
         end
       end
 
-      result = result.uniq
       parent_packs = result.inject([]) do |res, package_name|
         res << nested_packages[package_name]
         res
       end
+
       result = (result + parent_packs).uniq.compact
     end
 
@@ -347,5 +346,25 @@ module VisualizePacks
   sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
   def self.dependencies_of(all_packages, focus_packs_names)
     all_packages.select { |pack| pack.dependencies.any? { focus_packs_names.include?(_1) }}.map &:name
+  end
+
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String], options: Options).returns(T::Array[String]) }
+  def self.todos_in(all_packages, focus_packs_names, options)
+    all_packages.select do |p|
+      (p.violations || []).inject([]) do |res, todo|
+        res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
+        res
+      end.any? { |v| focus_packs_names.include?(v) }
+    end.map { |pack| pack.name }
+  end
+
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String], options: Options).returns(T::Array[String]) }
+  def self.todos_out(all_packages, focus_packs_names, options)
+    all_packages.inject([]) do |result, p|
+      focus_packs_names.include?(p.name) && (p.violations || []).each do |todo|
+        result << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
+      end
+      result
+    end
   end
 end
