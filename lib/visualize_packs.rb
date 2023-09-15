@@ -207,36 +207,20 @@ module VisualizePacks
       focus_pack_name = packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
       result += focus_pack_name
 
-      if options.show_dependencies
-        dependents = dependents_of(packages, focus_pack_name)
-        dependencies = dependencies_of(packages, focus_pack_name)
-        case options.show_only_edges_to_focus_pack
-        when FocusPackEdgeDirection::All then
-          result += dependents + dependencies
-        when FocusPackEdgeDirection::None then
-        when FocusPackEdgeDirection::In then
-          result += dependents
-        when FocusPackEdgeDirection::Out then
-          result += dependencies
-        when FocusPackEdgeDirection::InOut then
-          result += dependents + dependencies
-        end
-      end
+      dependents = options.show_dependencies ? dependents_on(packages, focus_pack_name) : []
+      dependencies = options.show_dependencies ? dependencies_of(packages, focus_pack_name) : []
+      todos_out = options.show_todos ? todos_out(packages, focus_pack_name, options) : []
+      todos_in = options.show_todos ? todos_in(packages, focus_pack_name, options) : []
 
-      if options.show_todos
-        todos_out = todos_out(packages, focus_pack_name, options)
-        todos_in = todos_in(packages, focus_pack_name, options)
-        case options.show_only_edges_to_focus_pack
-        when FocusPackEdgeDirection::All then
-          result += todos_out + todos_in
-        when FocusPackEdgeDirection::None then
-        when FocusPackEdgeDirection::In then
-          result += todos_in
-        when FocusPackEdgeDirection::Out then
-          result += todos_out
-        when FocusPackEdgeDirection::InOut then
-          result += todos_out + todos_in
-        end
+      case options.show_only_edges_to_focus_pack
+      when FocusPackEdgeDirection::All, FocusPackEdgeDirection::InOut then
+        result += dependents + dependencies + todos_out + todos_in
+      when FocusPackEdgeDirection::In then
+        result += dependents + todos_in
+      when FocusPackEdgeDirection::Out then
+        result += dependencies + todos_out 
+      when FocusPackEdgeDirection::None then
+        # nothing to do
       end
 
       parent_packs = result.inject([]) do |res, package_name|
@@ -334,7 +318,7 @@ module VisualizePacks
   end
 
   sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
-  def self.dependents_of(all_packages, focus_packs_names)
+  def self.dependents_on(all_packages, focus_packs_names)
     focus_packs = all_packages.select { focus_packs_names.include?(_1.name)}
     
     focus_packs.inject([]) do |result, pack|
