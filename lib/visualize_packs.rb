@@ -79,16 +79,18 @@ module VisualizePacks
       options.show_layers ? nil : "hiding layers",
       options.show_dependencies ? nil : "hiding dependencies",
       options.show_todos ? nil : "hiding todos",
-      EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "only #{limited_sentence(options.only_todo_types.map &:serialize)} todos",
       options.show_privacy ? nil : "hiding privacy",
       options.show_teams ? nil : "hiding teams",
       options.show_visibility ? nil : "hiding visibility",
       options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
       options.show_nested_relationships ? nil : "hiding nested relationships",
+      
+      EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "only #{limited_sentence(options.only_todo_types.map &:serialize)} todos",
+
       options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
     ].compact.join(', ').strip
     main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
-    sub_title = ""
+
     if options.show_todos && max_todo_count
       sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
     end
