@@ -482,7 +482,7 @@ RSpec.describe "VisualizePacks" do
   end
 
   describe '.show_edge_builder' do
-    subject {  VisualizePacks.show_edge_builder(@options, %w(a b c)) }
+    subject {  VisualizePacks.show_edge_builder(@options, %w(a b c d)) }
 
     it 'returns a proc' do
       @options = Options.new
@@ -491,106 +491,178 @@ RSpec.describe "VisualizePacks" do
       expect(subject).to be_a Proc
     end
 
-    context "when show_only_edges_to_focus_pack is not set" do
+    context "when show_only_edges_to_focus_pack is set to All" do
       before do
         @options = Options.new
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::All
+        @options.focus_pack = ['a', 'b']
       end
 
-      it "shows an edge IFF both start and end pack are in the list of packages" do
+      it "shows an edge IFF both nodes exist AND either starting or ending node are in focus" do
         expect(subject.call('a', 'b')).to be_truthy
         expect(subject.call('a', 'c')).to be_truthy
-        expect(subject.call('a', 'd')).to be_falsy
+        expect(subject.call('a', 'd')).to be_truthy
+        expect(subject.call('a', 'e')).to be_falsy
 
         expect(subject.call('b', 'a')).to be_truthy
         expect(subject.call('b', 'c')).to be_truthy
-        expect(subject.call('b', 'd')).to be_falsy
+        expect(subject.call('b', 'd')).to be_truthy
+        expect(subject.call('b', 'e')).to be_falsy
+
+        expect(subject.call('c', 'a')).to be_truthy
+        expect(subject.call('c', 'b')).to be_truthy
+        expect(subject.call('c', 'd')).to be_truthy
+        expect(subject.call('c', 'e')).to be_falsy
+
+        expect(subject.call('d', 'a')).to be_truthy
+        expect(subject.call('d', 'b')).to be_truthy
+        expect(subject.call('d', 'c')).to be_truthy
+        expect(subject.call('d', 'e')).to be_falsy
+
+        expect(subject.call('e', 'a')).to be_falsy
+        expect(subject.call('e', 'b')).to be_falsy
+        expect(subject.call('e', 'c')).to be_falsy
+        expect(subject.call('e', 'd')).to be_falsy
+      end
+    end
+
+    context "when show_only_edges_to_focus_pack i set to InOut" do
+      before do
+        @options = Options.new
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
+        @options.focus_pack = ['a', 'b']
+      end
+
+      it "shows an edge IFF both nodes exist and either the starting or ending node is in focus" do
+        expect(subject.call('a', 'b')).to be_truthy
+        expect(subject.call('a', 'c')).to be_truthy
+        expect(subject.call('a', 'd')).to be_truthy
+        expect(subject.call('a', 'e')).to be_falsy
+
+        expect(subject.call('b', 'a')).to be_truthy
+        expect(subject.call('b', 'c')).to be_truthy
+        expect(subject.call('b', 'd')).to be_truthy
+        expect(subject.call('b', 'e')).to be_falsy
 
         expect(subject.call('c', 'a')).to be_truthy
         expect(subject.call('c', 'b')).to be_truthy
         expect(subject.call('c', 'd')).to be_falsy
+        expect(subject.call('c', 'e')).to be_falsy
 
-        expect(subject.call('d', 'a')).to be_falsy
-        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'a')).to be_truthy
+        expect(subject.call('d', 'b')).to be_truthy
         expect(subject.call('d', 'c')).to be_falsy
+        expect(subject.call('d', 'e')).to be_falsy
+
+        expect(subject.call('e', 'a')).to be_falsy
+        expect(subject.call('e', 'b')).to be_falsy
+        expect(subject.call('e', 'c')).to be_falsy
+        expect(subject.call('e', 'd')).to be_falsy
       end
     end
 
-    context "when show_only_edges_to_focus_pack i set to in_out" do
-      before do
-        @options = Options.new
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
-        @options.focus_pack = ['a']
-      end
-
-      it "shows an edge IFF both start and end pack are in the list of packages and one of the packs is the focus pack " do
-        expect(subject.call('a', 'b')).to be_truthy
-        expect(subject.call('a', 'c')).to be_truthy
-        expect(subject.call('a', 'd')).to be_falsy
-
-        expect(subject.call('b', 'a')).to be_truthy
-        expect(subject.call('b', 'c')).to be_falsy
-        expect(subject.call('b', 'd')).to be_falsy
-
-        expect(subject.call('c', 'a')).to be_truthy
-        expect(subject.call('c', 'b')).to be_falsy
-        expect(subject.call('c', 'd')).to be_falsy
-
-        expect(subject.call('d', 'a')).to be_falsy
-        expect(subject.call('d', 'b')).to be_falsy
-        expect(subject.call('d', 'c')).to be_falsy
-      end
-    end
-
-    context "when show_only_edges_to_focus_pack i set to in" do
+    context "when show_only_edges_to_focus_pack i set to In" do
       before do
         @options = Options.new
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::In
-        @options.focus_pack = ['a']
+        @options.focus_pack = ['a', 'b']
       end
 
-      it "shows an edge IFF both start and end pack are in the list of packages and the arrow goes TOWARDS the focus pack" do
-        expect(subject.call('a', 'b')).to be_falsy
+      it "shows an edge IFF both nodes exist and the ending node is in focus" do
+        expect(subject.call('a', 'b')).to be_truthy
         expect(subject.call('a', 'c')).to be_falsy
         expect(subject.call('a', 'd')).to be_falsy
+        expect(subject.call('a', 'e')).to be_falsy
 
         expect(subject.call('b', 'a')).to be_truthy
         expect(subject.call('b', 'c')).to be_falsy
         expect(subject.call('b', 'd')).to be_falsy
+        expect(subject.call('b', 'e')).to be_falsy
 
         expect(subject.call('c', 'a')).to be_truthy
-        expect(subject.call('c', 'b')).to be_falsy
+        expect(subject.call('c', 'b')).to be_truthy
         expect(subject.call('c', 'd')).to be_falsy
+        expect(subject.call('c', 'e')).to be_falsy
 
-        expect(subject.call('d', 'a')).to be_falsy
-        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'a')).to be_truthy
+        expect(subject.call('d', 'b')).to be_truthy
         expect(subject.call('d', 'c')).to be_falsy
+        expect(subject.call('d', 'e')).to be_falsy
+
+        expect(subject.call('e', 'a')).to be_falsy
+        expect(subject.call('e', 'b')).to be_falsy
+        expect(subject.call('e', 'c')).to be_falsy
+        expect(subject.call('e', 'd')).to be_falsy
       end
     end
 
-    context "when show_only_edges_to_focus_pack i set to out" do
+    context "when show_only_edges_to_focus_pack i set to Out" do
       before do
         @options = Options.new
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::Out
-        @options.focus_pack = ['a']
+        @options.focus_pack = ['a', 'b']
       end
 
-      it "shows an edge IFF both start and end pack are in the list of packages and the arrow goes AWAY FROM the focus pack" do
+      it "shows an edge IFF both nodes exist and the starting node is in focus" do
         expect(subject.call('a', 'b')).to be_truthy
         expect(subject.call('a', 'c')).to be_truthy
-        expect(subject.call('a', 'd')).to be_falsy
+        expect(subject.call('a', 'd')).to be_truthy
+        expect(subject.call('a', 'e')).to be_falsy
 
-        expect(subject.call('b', 'a')).to be_falsy
-        expect(subject.call('b', 'c')).to be_falsy
-        expect(subject.call('b', 'd')).to be_falsy
+        expect(subject.call('b', 'a')).to be_truthy
+        expect(subject.call('b', 'c')).to be_truthy
+        expect(subject.call('b', 'd')).to be_truthy
+        expect(subject.call('b', 'e')).to be_falsy
 
         expect(subject.call('c', 'a')).to be_falsy
         expect(subject.call('c', 'b')).to be_falsy
         expect(subject.call('c', 'd')).to be_falsy
+        expect(subject.call('c', 'e')).to be_falsy
 
         expect(subject.call('d', 'a')).to be_falsy
         expect(subject.call('d', 'b')).to be_falsy
         expect(subject.call('d', 'c')).to be_falsy
+        expect(subject.call('d', 'e')).to be_falsy
+
+        expect(subject.call('e', 'a')).to be_falsy
+        expect(subject.call('e', 'b')).to be_falsy
+        expect(subject.call('e', 'c')).to be_falsy
+        expect(subject.call('e', 'd')).to be_falsy
+      end
+    end
+
+    context "when show_only_edges_to_focus_pack i set to None" do
+      before do
+        @options = Options.new
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
+        @options.focus_pack = ['a', 'b']
+      end
+
+      it "shows an edge IFF both nodes exist and are focus nodes" do
+        expect(subject.call('a', 'b')).to be_truthy
+        expect(subject.call('a', 'c')).to be_falsy
+        expect(subject.call('a', 'd')).to be_falsy
+        expect(subject.call('a', 'e')).to be_falsy
+
+        expect(subject.call('b', 'a')).to be_truthy
+        expect(subject.call('b', 'c')).to be_falsy
+        expect(subject.call('b', 'd')).to be_falsy
+        expect(subject.call('b', 'e')).to be_falsy
+
+        expect(subject.call('c', 'a')).to be_falsy
+        expect(subject.call('c', 'b')).to be_falsy
+        expect(subject.call('c', 'd')).to be_falsy
+        expect(subject.call('c', 'e')).to be_falsy
+
+        expect(subject.call('d', 'a')).to be_falsy
+        expect(subject.call('d', 'b')).to be_falsy
+        expect(subject.call('d', 'c')).to be_falsy
+        expect(subject.call('d', 'e')).to be_falsy
+
+        expect(subject.call('e', 'a')).to be_falsy
+        expect(subject.call('e', 'b')).to be_falsy
+        expect(subject.call('e', 'c')).to be_falsy
+        expect(subject.call('e', 'd')).to be_falsy
       end
     end
   end

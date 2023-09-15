@@ -115,6 +115,8 @@ module VisualizePacks
         case options.show_only_edges_to_focus_pack
         when FocusPackEdgeDirection::All then
           true
+        when FocusPackEdgeDirection::None then
+          match_packs?(start_node, options.focus_pack) && match_packs?(end_node, options.focus_pack)
         when FocusPackEdgeDirection::InOut then
           match_packs?(start_node, options.focus_pack) || match_packs?(end_node, options.focus_pack)
         when FocusPackEdgeDirection::In then
