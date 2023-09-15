@@ -387,6 +387,28 @@ RSpec.describe "VisualizePacks" do
         expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
       end
 
+      it 'does not include non-focus dependencies if dependencies are being shown but edge mode is set to none' do
+        @options.focus_pack = ['packs/something']
+        @options.show_dependencies = true
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
+
+        @pack_s_dependencies = ['packs/something/a']
+        @pack_b_dependencies = ['packs/something']
+
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+      end
+
+      it 'does not include non-focus dependents if dependencies are being shown but edge mode is set to none' do
+        @options.focus_pack = ['packs/something/a']
+        @options.show_dependencies = true
+        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
+
+        @pack_s_dependencies = []
+        @pack_b_dependencies = ['packs/something/a']
+
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a])
+      end
+
       it 'includes non-focus depdendents and dependees if dependencies are being shown' do
         @options.focus_pack = ['packs/something']
         @options.show_dependencies = true

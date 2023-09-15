@@ -204,10 +204,25 @@ module VisualizePacks
 
     if focus_pack && !focus_pack.empty?
       result = []
-      result += packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
+      focus_packs = packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
+      result += focus_packs
+
       if options.show_dependencies
-        result += packages.select { |p| p.dependencies.any? { |d| match_packs?(d, focus_pack) }}.map { |pack| pack.name }
+        dependents = dependents_of(packages, focus_packs)
+        dependencies = dependencies_of(packages, focus_packs)
+        case options.show_only_edges_to_focus_pack
+        when FocusPackEdgeDirection::All then
+          result += dependents + dependencies
+        when FocusPackEdgeDirection::None then
+        when FocusPackEdgeDirection::In then
+          result += dependents
+        when FocusPackEdgeDirection::Out then
+          result += dependencies
+        when FocusPackEdgeDirection::InOut then
+          result += dependents + dependencies
+        end
       end
+
       if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::In, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
         result += packages.select do
           |p| (p.violations || []).inject([]) do |res, todo|
@@ -217,9 +232,6 @@ module VisualizePacks
         end.map { |pack| pack.name }
       end
       packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }.each do |p|
-        if options.show_dependencies
-          result += packages_by_name[p].dependencies
-        end
         if options.show_todos && [FocusPackEdgeDirection::All, FocusPackEdgeDirection::Out, FocusPackEdgeDirection::InOut].include?(options.show_only_edges_to_focus_pack)
           result += (packages_by_name[p].violations || []).inject([]) do |res, todo|
             res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
@@ -227,6 +239,7 @@ module VisualizePacks
           end
         end
       end
+
       result = result.uniq
       parent_packs = result.inject([]) do |res, package_name|
         res << nested_packages[package_name]
@@ -319,5 +332,20 @@ module VisualizePacks
   sig { params(pack: String, packs_name_with_wildcards: T.nilable(T::Array[String])).returns(T::Boolean) }
   def self.match_packs?(pack, packs_name_with_wildcards)
     !packs_name_with_wildcards || packs_name_with_wildcards.any? {|p| File.fnmatch(p, pack)}
+  end
+
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
+  def self.dependents_of(all_packages, focus_packs_names)
+    focus_packs = all_packages.select { focus_packs_names.include?(_1.name)}
+    
+    focus_packs.inject([]) do |result, pack|
+      result += pack.dependencies
+      result
+    end.uniq
+  end
+
+  sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
+  def self.dependencies_of(all_packages, focus_packs_names)
+    all_packages.select { |pack| pack.dependencies.any? { focus_packs_names.include?(_1) }}.map &:name
   end
 end
