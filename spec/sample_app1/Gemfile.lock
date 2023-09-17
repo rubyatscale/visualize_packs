@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    visualize_packs (0.5.19)
+    visualize_packs (0.5.20)
       packs-specification
       parse_packwerk (>= 0.20.0)
       sorbet-runtime
