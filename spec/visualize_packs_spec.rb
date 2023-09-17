@@ -338,21 +338,21 @@ RSpec.describe "VisualizePacks" do
           violations: todos
         )
       }
-      @pack_s_dependencies = []
-      @pack_s_todos = []
-      @pack_b_dependencies = []
-      @pack_b_todos = []
+      @pack_a_dependencies = []
+      @pack_a_todos = []
+      @pack_2_dependencies = []
+      @pack_2_todos = []
     end
 
     let(:all_packs) {
-      @pack_s = @make_pack.call('packs/something', @pack_s_dependencies, @pack_s_todos)
-      @pack_a = @make_pack.call('packs/something/a')
-      @pack_b = @make_pack.call('packs/something/b', @pack_b_dependencies, @pack_b_todos)
-      @pack_c = @make_pack.call('packs/something_else/c')
-      @pack_d = @make_pack.call('packs/something_else/d')
-      @pack_e = @make_pack.call('packs/e')
+      @pack_a = @make_pack.call('packs/a', @pack_a_dependencies, @pack_a_todos)
+      @pack_1 = @make_pack.call('packs/a/1')
+      @pack_2 = @make_pack.call('packs/a/2', @pack_2_dependencies, @pack_2_todos)
+      @pack_3 = @make_pack.call('packs/b/3')
+      @pack_4 = @make_pack.call('packs/b/4')
+      @pack_c = @make_pack.call('packs/c')
 
-      [@pack_s, @pack_a, @pack_b, @pack_c, @pack_d, @pack_e]
+      [@pack_a, @pack_1, @pack_2, @pack_3, @pack_4, @pack_c]
     }
 
     it 'works with empty package lists' do
@@ -365,140 +365,140 @@ RSpec.describe "VisualizePacks" do
 
     context 'when using focus_pack' do
       it 'returns package lists filtered with a list of focus packages (possibly with wildcards)' do
-        @options.focus_pack = ['packs/something/a']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_s])
+        @options.focus_pack = ['packs/a/1']
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_1, @pack_a])
 
         @options.focus_pack = ['packs/*']
         expect(VisualizePacks.filtered(all_packs, @options)).to match_packs(all_packs)
       end
 
       it 'leaves parent packs in the result when filtering packages' do
-        @options.focus_pack = ['packs/something/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_b, @pack_s])
+        @options.focus_pack = ['packs/a/*']
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_1, @pack_2, @pack_a])
       end
 
       it 'does not include non-focus dependencies if dependencies are not being shown' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_dependencies = false
 
-        @pack_s_dependencies = ['packs/something/a']
-        @pack_b_dependencies = ['packs/something']
+        @pack_a_dependencies = ['packs/a/1']
+        @pack_2_dependencies = ['packs/a']
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
       end
 
       it 'does not include non-focus dependencies if dependencies are being shown but edge mode is set to none' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_dependencies = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
 
-        @pack_s_dependencies = ['packs/something/a']
-        @pack_b_dependencies = ['packs/something']
+        @pack_a_dependencies = ['packs/a/1']
+        @pack_2_dependencies = ['packs/a']
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
       end
 
       it 'does not include non-focus dependents if dependencies are being shown but edge mode is set to none' do
-        @options.focus_pack = ['packs/something/a']
+        @options.focus_pack = ['packs/a/1']
         @options.show_dependencies = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
 
-        @pack_s_dependencies = []
-        @pack_b_dependencies = ['packs/something/a']
+        @pack_a_dependencies = []
+        @pack_2_dependencies = ['packs/a/1']
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1])
       end
 
       it 'includes non-focus depdendents and dependees if dependencies are being shown' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_dependencies = true
 
-        @pack_s_dependencies = ['packs/something/a']
-        @pack_b_dependencies = ['packs/something']
+        @pack_a_dependencies = ['packs/a/1']
+        @pack_2_dependencies = ['packs/a']
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a, @pack_b])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1, @pack_2])
       end
 
       it 'does not include non-focus packs with todos towards or from if todos are not being shown' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_todos = false
 
-        @pack_s_todos = [@make_todo.call(:privacy, 'packs/something/a')]
-        @pack_b_todos = [@make_todo.call(:privacy, 'packs/something')]
+        @pack_a_todos = [@make_todo.call(:privacy, 'packs/a/1')]
+        @pack_2_todos = [@make_todo.call(:privacy, 'packs/a')]
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
       end
 
       it 'does not include non-focus packs with todos towards or from if the todo type is being filtered' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_todos = true
         @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
-        @pack_s_todos = [@make_todo.call(:privacy, 'packs/something/a')]
-        @pack_b_todos = [@make_todo.call(:privacy, 'packs/something')]
+        @pack_a_todos = [@make_todo.call(:privacy, 'packs/a/1')]
+        @pack_2_todos = [@make_todo.call(:privacy, 'packs/a')]
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
       end
 
       it 'does not include non-focus packs with todos from if the edge focus is set to None' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_dependencies = true
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
 
-        @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a'), @make_todo.call(:privacy, 'packs/something_else/c')]
-        @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
+        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1'), @make_todo.call(:privacy, 'packs/b/3')]
+        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
       end
 
       it 'includes non-focus packs with todos from if the todo type is being shown (for InOut)' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
         @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
-        @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a'), @make_todo.call(:privacy, 'packs/something_else/c')]
-        @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
+        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1'), @make_todo.call(:privacy, 'packs/b/3')]
+        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a, @pack_b])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1, @pack_2])
       end
 
       it 'includes non-focus packs with todos towards if the todo type is being shown IFF the direction is being shown (for Out)' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::Out
         @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
-        @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a')]
-        @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
+        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1')]
+        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_a])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1])
       end
 
       it 'includes non-focus packs with todos towards if the todo type is being shown IFF the direction is being shown (for In)' do
-        @options.focus_pack = ['packs/something']
+        @options.focus_pack = ['packs/a']
         @options.show_todos = true
         @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::In
         @options.only_todo_types = [EdgeTodoTypes::Dependency]
 
-        @pack_s_todos = [@make_todo.call(:dependency, 'packs/something/a')]
-        @pack_b_todos = [@make_todo.call(:dependency, 'packs/something')]
+        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1')]
+        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_b])
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_2])
       end
     end
 
     context 'when using exclude_packs' do
       it 'returns package lists filter with a list of excluded packages (possibly with wildcards)' do
-        @options.exclude_packs = ['packs/something/a']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_b, @pack_c, @pack_d, @pack_e])
+        @options.exclude_packs = ['packs/a/1']
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_2, @pack_3, @pack_4, @pack_c])
 
-        @options.exclude_packs = ['packs/something/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_s, @pack_c, @pack_d, @pack_e])
+        @options.exclude_packs = ['packs/a/*']
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_3, @pack_4, @pack_c])
 
-        @options.exclude_packs = ['packs/something', 'packs/something/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_c, @pack_d, @pack_e])
+        @options.exclude_packs = ['packs/a', 'packs/a/*']
+        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_3, @pack_4, @pack_c])
       end
     end
   end
