@@ -395,6 +395,7 @@ RSpec.describe "VisualizePacks" do
 
       #basic usage
       ['      ',   true_, false, 'dpav', 'a',  '     ', '               ',           nil,                    [], '      ', 'empty list works'],
+      [' 1234 ',   true_, false, 'dpav', 'a',  '     ', '               ',           nil,                    [], ' 1234 ', 'unfiltered list works (even if there are more nodes)'],
       ['a1234c',   true_, false, 'dpav', 'a',  '     ', '               ',           nil,                    [], 'a1234c', 'unfiltered list works'],
       # Filtering (including wildcards)
       ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',          %w(),                    [], '      ', 'Empty focus_pack array filters all nodes'],
