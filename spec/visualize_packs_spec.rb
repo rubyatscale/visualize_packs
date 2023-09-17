@@ -315,190 +315,139 @@ RSpec.describe "VisualizePacks" do
   end
 
   describe '.filtered' do
-    before do
-      @options = Options.new
-
-      @make_todo = ->(type, to_package_name) {
-        ParsePackwerk::Violation.new(
-          type: type.to_s,
-          to_package_name: to_package_name,
-          class_name: "SomeClass1",
-          files: ["some_file1"]
-        )
-      }
-      @make_pack = ->(name, dependencies = [], todos = []) {
-        ParsePackwerk::Package.new(
-          name: name,
-          enforce_dependencies: true,
-          enforce_privacy: false,
-          public_path: '',
-          metadata: {},
-          dependencies: dependencies,
-          config: {},
-          violations: todos
-        )
-      }
-      @pack_a_dependencies = []
-      @pack_a_todos = []
-      @pack_2_dependencies = []
-      @pack_2_todos = []
-    end
-
-    let(:all_packs) {
-      @pack_a = @make_pack.call('packs/a', @pack_a_dependencies, @pack_a_todos)
-      @pack_1 = @make_pack.call('packs/a/1')
-      @pack_2 = @make_pack.call('packs/a/2', @pack_2_dependencies, @pack_2_todos)
-      @pack_3 = @make_pack.call('packs/b/3')
-      @pack_4 = @make_pack.call('packs/b/4')
-      @pack_c = @make_pack.call('packs/c')
-
-      [@pack_a, @pack_1, @pack_2, @pack_3, @pack_4, @pack_c]
+    let(:pack_name_lookup) { 
+      { 
+        'a' => 'packs/a', 
+        '1' => 'packs/a/1', 
+        '2' => 'packs/a/2', 
+        '3' => 'packs/b/3', 
+        '4' => 'packs/b/4', 
+        'c' => 'packs/c' 
+      } 
+    }
+    let(:pack_lookup) {
+      { 
+        'a' => @pack_a, 
+        '1' => @pack_1, 
+        '2' => @pack_2, 
+        '3' => @pack_3, 
+        '4' => @pack_4, 
+        'c' => @pack_c 
+      } 
+    }
+    let(:edge_type_lookup) { 
+      { 
+        'd' => EdgeTodoTypes::Dependency, 
+        'p' => EdgeTodoTypes::Privacy, 
+        'a' => EdgeTodoTypes::Architecture, 
+        'v' => EdgeTodoTypes::Visibility 
+      } 
+    }
+    let(:edge_mode_lookup) { 
+      { 
+        'a' => FocusPackEdgeDirection::All, 
+        'i' => FocusPackEdgeDirection::In, 
+        'o' => FocusPackEdgeDirection::Out, 
+        'b' => FocusPackEdgeDirection::InOut, 
+        'n' => FocusPackEdgeDirection::None 
+      } 
     }
 
-    it 'works with empty package lists' do
-      expect(VisualizePacks.filtered([], @options)).to match_packs([])
-    end
+    let(:dependency_generate) { ->(str, node_name) { str.split(' ').map { _1[0] == node_name ? pack_name_lookup[_1[1]]: nil}.compact } }
 
-    it 'returns unfiltered package lists' do
-      expect(VisualizePacks.filtered(all_packs, @options)).to match_packs(all_packs)
-    end
+    let(:make_todo) { 
+      ->(type, to_package_name) { 
+        ParsePackwerk::Violation.new( 
+          type: type.serialize, 
+          to_package_name: to_package_name, 
+          class_name: "SomeClass1", 
+          files: ["some_file1"]
+        ) 
+      }
+    }
+    let(:todo_generate) { 
+      ->(str, node_name) { 
+        str.split(' ').map { _1[0] == node_name ? make_todo.(edge_type_lookup[_1[1]], pack_name_lookup[_1[2]]): nil}.compact 
+      } 
+    }
 
-    context 'when using focus_pack' do
-      it 'returns package lists filtered with a list of focus packages (possibly with wildcards)' do
-        @options.focus_pack = ['packs/a/1']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_1, @pack_a])
+    let(:make_pack) { 
+      ->(name, dependencies = [], todos = []) { 
+        ParsePackwerk::Package.new( 
+          name: name, 
+          enforce_dependencies: true, 
+          enforce_privacy: false, 
+          public_path: '', 
+          metadata: {}, 
+          dependencies: dependencies, 
+          config: {}, 
+          violations: todos
+        )
+      } 
+    }
 
-        @options.focus_pack = ['packs/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs(all_packs)
-      end
+    true_ = true
 
-      it 'leaves parent packs in the result when filtering packages' do
-        @options.focus_pack = ['packs/a/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_1, @pack_2, @pack_a])
-      end
+    cases = [
+      # packages        show_todos  edge_focus_mode            todos        focus_pack        exclude_packs    expectation   test_description
+      #         show_deps   only_todo_types    dependencies
+      # 0           1       2       3     4        5         6              7                          8            9
 
-      it 'does not include non-focus dependencies if dependencies are not being shown' do
-        @options.focus_pack = ['packs/a']
-        @options.show_dependencies = false
+      #basic usage
+      ['      ',   true_, false, 'dpav', 'a',  '     ', '               ',           nil,                    [], '      ', 'empty list works'],
+      ['a1234c',   true_, false, 'dpav', 'a',  '     ', '               ',           nil,                    [], 'a1234c', 'unfiltered list works'],
+      # Filtering (including wildcards)
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ', %w(packs/a/1),                    [], 'a1    ', 'basic filtering works'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',   %w(packs/*),                    [], 'a1234c', 'filtering with wildcard works'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ', %w(packs/a/*),                    [], 'a12   ', 'parent gets added when filtering'],
+      #Filtering + dependencies
+      ['a1234c',   false, true_, 'dpav', 'a',  'a1 2a', '               ',   %w(packs/a),                    [], 'a     ', 'dependency nodes not shown if dependency edges not shown'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  'a1 2a', '               ',   %w(packs/a),                    [], 'a12   ', 'dependency nodes shown if dependency edges shown'],
+      ['a1234c',   true_, true_, 'dpav', 'n',  'a1 2a', '               ',   %w(packs/a),                    [], 'a     ', 'dependency nodes not shown if edge mode none'],
+      ['a1234c',   true_, true_, 'dpav', 'o',  'a1 2a', '               ',   %w(packs/a),                    [], 'a1    ', 'only out dependency nodes shown if edge mode out'],
+      ['a1234c',   true_, true_, 'dpav', 'i',  'a1 2a', '               ',   %w(packs/a),                    [], 'a 2   ', 'only in dependency nodes shown if edge mode in'],
+      ['a1234c',   true_, true_, 'dpav', 'b',  'a1 2a', '               ',   %w(packs/a),                    [], 'a12   ', 'dependency nodes shown if edge mode inout'],
+      #Filtering + todos
+      ['a1234c',   true_, false, 'dpav', 'b',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a     ', 'todo nodes not shown if todos not shown'],
+      ['a1234c',   true_, true_, 'dpav', 'b',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a12   ', 'todo nodes shown if todos shown'],
+      ['a1234c',   true_, true_, 'dpav', 'b',  '     ', 'ad1 ap2 aa3 av4',   %w(packs/a),                    [], 'a1234 ', 'todo nodes shown for all todo types'],
+      ['a1234c',   true_, true_, 'd   ', 'b',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a     ', 'todo nodes not shown if todo type filtered'],
+      ['a1234c',   true_, true_, 'd   ', 'b',  '     ', '    ad1 ap1 2pa',   %w(packs/a),                    [], 'a1    ', 'todo nodes shown if specific todo type not filtered'],
+      ['a1234c',   true_, true_, 'dpav', 'n',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a     ', 'todo nodes not shown if edge mode none'],
+      ['a1234c',   true_, true_, 'dpav', 'o',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a1    ', 'only out todo nodes shown if edge mode out'],
+      ['a1234c',   true_, true_, 'dpav', 'i',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a 2   ', 'only in todo nodes shown if edge mode in'],
+      ['a1234c',   true_, true_, 'dpav', 'b',  '     ', '        ap1 2pa',   %w(packs/a),                    [], 'a12   ', 'todo nodes shown if edge mode inout'],
+      #Filtering + excluding (including wildcards)
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil,         %w(packs/a/1), 'a 234c', 'exclude_packs removes node'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil,         %w(packs/a/*), 'a  34c', 'exclude_packs with wildcard removes nodes'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil, %w(packs/a packs/a/*), '   34c', 'exclude_packs with multiple exludes works'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',   %w(packs/a),           %w(packs/a), '      ', 'exclude_packs exludes focus'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  'a1   ', '               ',   %w(packs/a),           %w(packs/a), ' 1    ', 'exclude_packs exludes focus but keeps dependency'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '            ad1',   %w(packs/a),           %w(packs/a), ' 1    ', 'exclude_packs exludes focus but keeps todo'],
+      #Filtering + dependencies + todos + excluding
+      ['a1234c',   true_, true_, ' pa ', 'o',  'a1 2a', '    ad3 4aa apc',   %w(packs/a),           %w(packs/a), ' 1   c', 'combination of todo filtering, edge mode, focus, and exclude works'],
+     ].each do |c|
+      
+      it "#{c[10]}" do
+        options = Options.new
+        options.focus_pack = c[7]
+        options.exclude_packs = c[8]
+        options.show_dependencies = c[1]
+        options.show_todos = c[2]
+        options.only_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] } 
+        options.show_only_edges_to_focus_pack = edge_mode_lookup[c[4]]
 
-        @pack_a_dependencies = ['packs/a/1']
-        @pack_2_dependencies = ['packs/a']
+        @pack_a = make_pack.(pack_name_lookup['a'], dependency_generate.(c[5], 'a'), todo_generate.(c[6], 'a'))
+        @pack_1 = make_pack.(pack_name_lookup['1'], dependency_generate.(c[5], '1'), todo_generate.(c[6], '1'))
+        @pack_2 = make_pack.(pack_name_lookup['2'], dependency_generate.(c[5], '2'), todo_generate.(c[6], '2'))
+        @pack_3 = make_pack.(pack_name_lookup['3'], dependency_generate.(c[5], '3'), todo_generate.(c[6], '3'))
+        @pack_4 = make_pack.(pack_name_lookup['4'], dependency_generate.(c[5], '4'), todo_generate.(c[6], '4'))
+        @pack_c = make_pack.(pack_name_lookup['c'], dependency_generate.(c[5], 'c'), todo_generate.(c[6], 'c'))
 
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
-      end
+        input_packages = c[0].gsub(' ', '').chars.map { pack_lookup[_1] } 
+        expected_output_packages =  c[9].gsub(' ', '').chars.map { pack_lookup[_1] } 
 
-      it 'does not include non-focus dependencies if dependencies are being shown but edge mode is set to none' do
-        @options.focus_pack = ['packs/a']
-        @options.show_dependencies = true
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
-
-        @pack_a_dependencies = ['packs/a/1']
-        @pack_2_dependencies = ['packs/a']
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
-      end
-
-      it 'does not include non-focus dependents if dependencies are being shown but edge mode is set to none' do
-        @options.focus_pack = ['packs/a/1']
-        @options.show_dependencies = true
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
-
-        @pack_a_dependencies = []
-        @pack_2_dependencies = ['packs/a/1']
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1])
-      end
-
-      it 'includes non-focus depdendents and dependees if dependencies are being shown' do
-        @options.focus_pack = ['packs/a']
-        @options.show_dependencies = true
-
-        @pack_a_dependencies = ['packs/a/1']
-        @pack_2_dependencies = ['packs/a']
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1, @pack_2])
-      end
-
-      it 'does not include non-focus packs with todos towards or from if todos are not being shown' do
-        @options.focus_pack = ['packs/a']
-        @options.show_todos = false
-
-        @pack_a_todos = [@make_todo.call(:privacy, 'packs/a/1')]
-        @pack_2_todos = [@make_todo.call(:privacy, 'packs/a')]
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
-      end
-
-      it 'does not include non-focus packs with todos towards or from if the todo type is being filtered' do
-        @options.focus_pack = ['packs/a']
-        @options.show_todos = true
-        @options.only_todo_types = [EdgeTodoTypes::Dependency]
-
-        @pack_a_todos = [@make_todo.call(:privacy, 'packs/a/1')]
-        @pack_2_todos = [@make_todo.call(:privacy, 'packs/a')]
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
-      end
-
-      it 'does not include non-focus packs with todos from if the edge focus is set to None' do
-        @options.focus_pack = ['packs/a']
-        @options.show_dependencies = true
-        @options.show_todos = true
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::None
-
-        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1'), @make_todo.call(:privacy, 'packs/b/3')]
-        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a])
-      end
-
-      it 'includes non-focus packs with todos from if the todo type is being shown (for InOut)' do
-        @options.focus_pack = ['packs/a']
-        @options.show_todos = true
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::InOut
-        @options.only_todo_types = [EdgeTodoTypes::Dependency]
-
-        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1'), @make_todo.call(:privacy, 'packs/b/3')]
-        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1, @pack_2])
-      end
-
-      it 'includes non-focus packs with todos towards if the todo type is being shown IFF the direction is being shown (for Out)' do
-        @options.focus_pack = ['packs/a']
-        @options.show_todos = true
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::Out
-        @options.only_todo_types = [EdgeTodoTypes::Dependency]
-
-        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1')]
-        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_1])
-      end
-
-      it 'includes non-focus packs with todos towards if the todo type is being shown IFF the direction is being shown (for In)' do
-        @options.focus_pack = ['packs/a']
-        @options.show_todos = true
-        @options.show_only_edges_to_focus_pack = FocusPackEdgeDirection::In
-        @options.only_todo_types = [EdgeTodoTypes::Dependency]
-
-        @pack_a_todos = [@make_todo.call(:dependency, 'packs/a/1')]
-        @pack_2_todos = [@make_todo.call(:dependency, 'packs/a')]
-
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_2])
-      end
-    end
-
-    context 'when using exclude_packs' do
-      it 'returns package lists filter with a list of excluded packages (possibly with wildcards)' do
-        @options.exclude_packs = ['packs/a/1']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_2, @pack_3, @pack_4, @pack_c])
-
-        @options.exclude_packs = ['packs/a/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_a, @pack_3, @pack_4, @pack_c])
-
-        @options.exclude_packs = ['packs/a', 'packs/a/*']
-        expect(VisualizePacks.filtered(all_packs, @options)).to match_packs([@pack_3, @pack_4, @pack_c])
+        expect(VisualizePacks.filtered(input_packages, options)).to match_packs(expected_output_packages)
       end
     end
   end
