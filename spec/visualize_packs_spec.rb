@@ -503,17 +503,17 @@ RSpec.describe "VisualizePacks" do
 
     context 'without a custom title from options' do
       describe 'with basic options and nil max edge count' do
-        it "with " do
+        it "doesn't show todo info" do
           options = Options.new
 
-          expect(VisualizePacks.diagram_title(options, 0)).to eq(
-            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
+          expect(VisualizePacks.diagram_title(options, nil)).to eq(
+            "<<b>All packs</b>>"
           )
         end
       end
 
       describe 'with basic options and 0 max edge count' do
-        it "with " do
+        it "shows max as 0" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 0)).to eq(
@@ -523,7 +523,7 @@ RSpec.describe "VisualizePacks" do
       end
 
       describe 'with basic options and 1 max edge count' do
-        it "with " do
+        it "shows max as 1" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 1)).to eq(
@@ -533,7 +533,7 @@ RSpec.describe "VisualizePacks" do
       end
 
       describe 'with basic options and non-zero max edge count' do
-        it "with " do
+        it "shows appropriate max" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 19)).to eq(
