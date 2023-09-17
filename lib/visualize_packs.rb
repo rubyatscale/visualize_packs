@@ -204,7 +204,7 @@ module VisualizePacks
     result = T.let([], T::Array[T.nilable(String)])
     result = packages.map { |pack| pack.name }
 
-    if focus_pack && !focus_pack.empty?
+    if focus_pack
       result = []
       focus_pack_name = packages.map { |pack| pack.name }.select { |p| match_packs?(p, focus_pack) }
       result += focus_pack_name
