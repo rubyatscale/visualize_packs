@@ -320,7 +320,7 @@ module VisualizePacks
   end
 
   sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
-  def self.dependents_on(all_packages, focus_packs_names)
+  def self.dependencies_of(all_packages, focus_packs_names)
     focus_packs = all_packages.select { focus_packs_names.include?(_1.name)}
     
     focus_packs.inject([]) do |result, pack|
@@ -330,7 +330,7 @@ module VisualizePacks
   end
 
   sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
-  def self.dependencies_of(all_packages, focus_packs_names)
+  def self.dependents_on(all_packages, focus_packs_names)
     all_packages.select { |pack| pack.dependencies.any? { focus_packs_names.include?(_1) }}.map &:name
   end
 
