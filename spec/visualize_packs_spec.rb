@@ -507,7 +507,7 @@ RSpec.describe "VisualizePacks" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 0)).to eq(
-            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
+            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
           )
         end
       end
@@ -517,7 +517,7 @@ RSpec.describe "VisualizePacks" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 0)).to eq(
-            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
+            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
           )
         end
       end
@@ -527,7 +527,7 @@ RSpec.describe "VisualizePacks" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 1)).to eq(
-            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 1 todo</font>>"
+            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 1 todo</font>>"
           )
         end
       end
@@ -537,7 +537,7 @@ RSpec.describe "VisualizePacks" do
           options = Options.new
 
           expect(VisualizePacks.diagram_title(options, 19)).to eq(
-            "<<b>visualize_packs: All packs</b><br/><font point-size='12'>Widest todo edge is 19 todos</font>>"
+            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 19 todos</font>>"
           )
         end
       end

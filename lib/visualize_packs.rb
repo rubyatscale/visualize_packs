@@ -70,26 +70,30 @@ module VisualizePacks
   def self.diagram_title(options, max_todo_count)
     return "<<b>#{options.title}</b>>" if options.title
 
-    app_name = File.basename(Dir.pwd)
-    focus_edge_info = options.focus_pack && options.show_only_edges_to_focus_pack != FocusPackEdgeDirection::All ? "showing only edges to/from focus pack" : "showing all edges between visible packs"
-    focus_info = options.focus_pack ? "Focus on #{limited_sentence(options.focus_pack)} (#{focus_edge_info})" : "All packs"
-    skipped_info = 
-    [
-      options.show_legend ? nil : "hiding legend",
-      options.show_layers ? nil : "hiding layers",
-      options.show_dependencies ? nil : "hiding dependencies",
-      options.show_todos ? nil : "hiding todos",
-      options.show_privacy ? nil : "hiding privacy",
-      options.show_teams ? nil : "hiding teams",
-      options.show_visibility ? nil : "hiding visibility",
-      options.roll_nested_into_parent_packs ? "hiding nested packs" : nil,
-      options.show_nested_relationships ? nil : "hiding nested relationships",
-      
-      EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "only #{limited_sentence(options.only_todo_types.map &:serialize)} todos",
+    focus_info = if options.focus_pack
+      "Focus on #{limited_sentence(options.focus_pack)} (Edge mode: #{options.show_only_edges_to_focus_pack.serialize})"
+    else 
+      "All packs"
+    end
 
-      options.exclude_packs.empty? ? nil : "excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
+    hidden_aspects = [
+      options.show_legend ? nil : "legend",
+      options.show_layers ? nil : "layers",
+      options.show_dependencies ? nil : "dependencies",
+      options.show_todos ? nil : "todos",
+      options.show_privacy ? nil : "privacy",
+      options.show_teams ? nil : "teams",
+      options.show_visibility ? nil : "visibility",
+      options.roll_nested_into_parent_packs ? "nested packs" : nil,
+      options.show_nested_relationships ? nil : "nested relationships",
     ].compact.join(', ').strip
-    main_title = "#{app_name}: #{focus_info}#{skipped_info != '' ? ' - ' + skipped_info : ''}"
+    hidden_aspects_title = hidden_aspects != '' ? "Hiding #{hidden_aspects}" : nil
+
+    todo_types = EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "Only #{options.only_todo_types.map &:serialize} todos",
+
+    exclusions = options.exclude_packs.empty? ? nil : "Excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
+
+    main_title = [focus_info, hidden_aspects_title, todo_types, exclusions].compact.join('. ')
 
     if options.show_todos && max_todo_count
       sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
