@@ -1,0 +1,13 @@
+inherit_from: ../../.rubocop.yml
+
+Packs/DocumentedPublicApis:
+  Enabled: false
+
+Packs/TypedPublicApis:
+  Enabled: false
+
+Packs/RootNamespaceIsPackName:
+  Enabled: true
+
+Packs/ClassMethodsAsPublicApis:
+  Enabled: true

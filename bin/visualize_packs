@@ -17,11 +17,12 @@ OptionParser.new do |opt|
   opt.on('--no-layers', "Don't show architectural layers") { |o| options.show_layers = false }
   opt.on('--no-visibility-arrows', "Don't show visibility arrows") { |o| options.show_visibility = false }
 
-  opt.on('--no-todo-edges', "Don't show pack todos") { |o| options.show_relationship_todos = false }
-  opt.on("--edge-todo-types=STRING", "Show only the selected types of todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.relationship_todo_types = o.to_s.split(",").uniq.map { EdgeTodoTypes.deserialize(_1) } }
-  opt.on("--use-todos-for-layout", "Show only the selected types of todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.use_relationship_todos_for_layout = true }
+  opt.on('--no-todo-edges', "Don't show todos for package relationships") { |o| options.show_relationship_todos = false }
+  opt.on("--edge-todo-types=STRING", "Show only the selected types of relationship todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.relationship_todo_types = o.to_s.split(",").uniq.map { EdgeTodoTypes.deserialize(_1) } }
+  opt.on("--use-edge-todos-for-layout", "Show only the selected types of relationship todos. Comma-separated list of #{EdgeTodoTypes.values.map &:serialize}") { |o| options.use_relationship_todos_for_layout = true }
 
   opt.on('--no-teams', "Don't show team colors") { |o| options.show_teams = false }
+  opt.on('--no-node-todos', "Don't show package-based todos") { |o| options.show_node_todos = false }
 
   opt.on('--focus-pack=STRING', "Focus on a specific pack(s). Comma-separated list of packs. Wildcards supported: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
   opt.on('--focus-pack-edge-mode=STRING', "If focus-pack is set, this shows only between focussed packs (when set to none) or the edges into / out of / in and out of the focus packs to non-focus packs (which will be re-added to the graph). One of #{FocusPackEdgeDirection.values.map &:serialize}") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }

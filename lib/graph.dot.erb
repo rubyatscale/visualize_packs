@@ -46,11 +46,18 @@ digraph package_diagram {
                   <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                     <tr> <td port='private'> <%= package.name -%> </td> </tr>
                   </table>
-                </td></tr></table>
+                  </td></tr>
+                  <%- if options.show_node_todos && node_protection.(package.name) != "" -%>
+                  <tr><td CELLPADDING='1' ALIGN='RIGHT'><%= node_protection.(package.name) %></td></tr>
+                  <%- end -%>
+                  </table>
               >
             <%- else -%><
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> <%= package.name -%> </td> </tr>
+                  <%- if options.show_node_todos && node_protection.(package.name) != "" -%>
+                  <tr><td CELLPADDING='1' ALIGN='RIGHT'><%= node_protection.(package.name) %></td></tr>
+                  <%- end -%>
                 </table>
               >
             <%- end -%>

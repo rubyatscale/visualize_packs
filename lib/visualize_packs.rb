@@ -31,6 +31,7 @@ module VisualizePacks
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
+    node_protection = package_based_todos_text_maker()
     max_todo_count = max_todo_count(all_packages, show_edge, options)
 
     title = diagram_title(options, max_todo_count)
@@ -80,9 +81,10 @@ module VisualizePacks
       options.show_legend ? nil : "legend",
       options.show_layers ? nil : "layers",
       options.show_dependencies ? nil : "dependencies",
-      options.show_relationship_todos ? nil : "todos",
+      options.show_relationship_todos ? nil : "edge todos",
       options.show_privacy ? nil : "privacy",
       options.show_teams ? nil : "teams",
+      options.show_node_todos ? nil : "node todos",
       options.show_visibility ? nil : "visibility",
       options.roll_nested_into_parent_packs ? "nested packs" : nil,
       options.show_nested_relationships ? nil : "nested relationships",
@@ -356,5 +358,36 @@ module VisualizePacks
       end
       result
     end
+  end
+
+  sig { params(protection: String, package_name: String, rubocop_config: T.untyped, rubocop_todo: T.untyped).returns(T.nilable(Integer)) }
+  def self.package_based_todos_for(protection, package_name, rubocop_config,  rubocop_todo)
+    raise ArgumentError unless ['Packs/ClassMethodsAsPublicApis', 'Packs/DocumentedPublicApis', 'Packs/RootNamespaceIsPackName', 'Packs/TypedPublicApis'].include?(protection)
+    return nil unless (rubocop_config&.dig(protection)&.dig('Enabled'))
+    
+    (rubocop_todo&.dig(protection)&.dig('Exclude') || []).inject(0) do |result, todo|
+      result += 1 if todo.start_with?("#{package_name}/")
+      result
+    end
+  end
+
+  sig { returns(T.untyped) }
+  def self.package_based_todos_text_maker
+    ->(package_name) {
+      [
+        'Packs/ClassMethodsAsPublicApis', 
+        'Packs/DocumentedPublicApis', 
+        'Packs/RootNamespaceIsPackName', 
+        'Packs/TypedPublicApis'
+      ].map do |protection|
+        rubocop_config = File.exist?("#{package_name}/.rubocop.yml") ? YAML.load_file("#{package_name}/.rubocop.yml") : {}
+        rubocop_todo = File.exist?(".rubocop_todo.yml") ? YAML.load_file(".rubocop_todo.yml") : {}
+
+        todo_value = package_based_todos_for(protection, package_name, rubocop_config,  rubocop_todo)
+        abbreviation = T.must(protection.split('/')[1]).chars[0]
+        
+        "#{abbreviation}: #{todo_value}" if todo_value
+      end.compact.join(", ")
+    }
   end
 end

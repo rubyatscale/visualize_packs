@@ -543,4 +543,103 @@ RSpec.describe "VisualizePacks" do
       end
     end
   end
+
+  describe '.package_based_todos_for' do
+    let(:full_rubocop) { YAML.load(<<~YAML) }
+      inherit_from: ../../.rubocop.yml
+
+      Packs/DocumentedPublicApis:
+        Enabled: #{@DocumentedPublicApis}
+      
+      Packs/TypedPublicApis:
+        Enabled: #{@TypedPublicApis}
+      
+      Packs/RootNamespaceIsPackName:
+        Enabled: #{@RootNamespaceIsPackName}
+      
+      Packs/ClassMethodsAsPublicApis:
+        Enabled: #{@ClassMethodsAsPublicApis}
+    YAML
+
+    let(:full_rubocop_todo) { YAML.load(<<~YML) }
+      Packs/ClassMethodsAsPublicApis:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+      Packs/DocumentedPublicApis:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+          - 'packs/b/something3'
+      Packs/RootNamespaceIsPackName:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+          - 'packs/b/something3'
+          - 'packs/b/something4'
+      Packs/TypedPublicApis:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+          - 'packs/b/something3'
+          - 'packs/b/something4'
+          - 'packs/b/something5'
+      YML
+
+      let(:empty_yaml) { YAML.load('') }
+
+    [
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/a', 'dtrc', :empty_yaml, 0],
+
+      ['                   Packs/Something', 'packs/a', 'dtrc', :full_rubocop_todo, :error],
+      ['Something/ClassMethodsAsPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, :error],
+
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/a', 'dtr ', :full_rubocop_todo, nil],
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/b', 'dtrc', :full_rubocop_todo, 2],
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+
+      ['        Packs/DocumentedPublicApis', 'packs/a', ' trc', :full_rubocop_todo, nil],
+      ['        Packs/DocumentedPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['        Packs/DocumentedPublicApis', 'packs/b', 'dtrc', :full_rubocop_todo, 3],
+      ['        Packs/DocumentedPublicApis', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+
+      ['     Packs/RootNamespaceIsPackName', 'packs/a', 'dt c', :full_rubocop_todo, nil],
+      ['     Packs/RootNamespaceIsPackName', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['     Packs/RootNamespaceIsPackName', 'packs/b', 'dtrc', :full_rubocop_todo, 4],
+      ['     Packs/RootNamespaceIsPackName', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+
+      ['             Packs/TypedPublicApis', 'packs/a', 'd rc', :full_rubocop_todo, nil],
+      ['             Packs/TypedPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['             Packs/TypedPublicApis', 'packs/b', 'dtrc', :full_rubocop_todo, 5],
+      ['             Packs/TypedPublicApis', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+    ].each do |test|
+      it "works for #{test.join(', ')}" do
+        protection = test[0].strip
+        pack_name = test[1].strip
+
+        @DocumentedPublicApis = test[2].include?('d')
+        @RootNamespaceIsPackName = test[2].include?('r')
+        @TypedPublicApis = test[2].include?('t')
+        @ClassMethodsAsPublicApis = test[2].include?('c')
+
+        rubocop_todo = test[3] == :full_rubocop_todo ? full_rubocop_todo : empty_yaml
+        expectation = test[4]
+
+        if expectation == :error
+          expect { VisualizePacks.package_based_todos_for(protection, pack_name, full_rubocop, rubocop_todo) }.to raise_exception(ArgumentError)
+        else
+          expect(VisualizePacks.package_based_todos_for(protection, pack_name, full_rubocop, rubocop_todo)).to eq(expectation)
+        end
+      end
+    end
+  end
 end
