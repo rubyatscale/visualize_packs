@@ -34,7 +34,8 @@ digraph package_diagram {
                   <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                     <tr> <td port='private'> packs/models </td> </tr>
                   </table>
-                </td></tr></table>
+                  </td></tr>
+                  </table>
               >
           ]
         
@@ -47,7 +48,9 @@ digraph package_diagram {
                   <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                     <tr> <td port='private'> packs/models/packs/model_a </td> </tr>
                   </table>
-                </td></tr></table>
+                  </td></tr>
+                  <tr><td CELLPADDING='1' ALIGN='RIGHT'>C: 1, R: 1</td></tr>
+                  </table>
               >
           ]
         
@@ -60,7 +63,9 @@ digraph package_diagram {
                   <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                     <tr> <td port='private'> packs/models/packs/model_ab </td> </tr>
                   </table>
-                </td></tr></table>
+                  </td></tr>
+                  <tr><td CELLPADDING='1' ALIGN='RIGHT'>D: 1, T: 1</td></tr>
+                  </table>
               >
           ]
         
@@ -90,6 +95,7 @@ digraph package_diagram {
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/utility </td> </tr>
+                  <tr><td CELLPADDING='1' ALIGN='RIGHT'>C: 1, D: 0, R: 1, T: 0</td></tr>
                 </table>
               >
           ]
