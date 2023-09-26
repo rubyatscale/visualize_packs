@@ -79,16 +79,16 @@ digraph package_diagram {
       <%- end -%>
     <%- end -%>
   <%- end -%>
-  <%- if options.show_todos -%>
+  <%- if options.show_relationship_todos -%>
     <%- all_packages.each do |package| -%>
-      <%- filtered_todos = package.violations.select { options.only_todo_types.include?(EdgeTodoTypes.deserialize(_1.type)) } -%>
+      <%- filtered_todos = package.violations.select { options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(_1.type)) } -%>
       <%- todos_by_package = filtered_todos.group_by(&:to_package_name) -%>
       <%- todos_by_package.keys.each do |todos_to_package| -%>
         <%- todo_types = todos_by_package[todos_to_package].group_by(&:type) -%>
         <%- todo_types.keys.each do |todo_type| -%>
           <%- if show_edge.call(package.name, todos_to_package) -%>
             "<%= package.name -%>" -> "<%= todos_to_package -%>"<%= todo_type == 'privacy' ? ':private' : '' -%> [
-              <%- if !options.use_todos_for_layout -%>
+              <%- if !options.use_relationship_todos_for_layout -%>
                 constraint=false
               <%- end -%>
               # headlabel="<%= todo_type -%>"
@@ -143,23 +143,23 @@ digraph package_diagram {
       N [ fontsize=12 shape=box label="package"]
       M -> N [label="visibile to" <%= VisualizePacks::ArrowHead::ConfiguredVisibileTo.serialize %>]
       <%- end -%>
-      <%- if options.show_todos -%>
-        <%- if options.only_todo_types.include?(EdgeTodoTypes::Privacy) -%>
+      <%- if options.show_relationship_todos -%>
+        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Privacy) -%>
       C [ fontsize=12 shape=box label="package"]
       D [ fontsize=12 shape=box label="package"]
       C -> D [label="privacy todo" <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>]
         <%- end -%>
-        <%- if options.only_todo_types.include?(EdgeTodoTypes::Architecture) -%>
+        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Architecture) -%>
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
       E -> F [label="architecture todo" <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>]
         <%- end -%>
-        <%- if options.only_todo_types.include?(EdgeTodoTypes::Visibility) -%>
+        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Visibility) -%>
       G [ fontsize=12 shape=box label="package"]
       H [ fontsize=12 shape=box label="package"]
       G -> H [label="visibility todo" <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>]
         <%- end -%>
-        <%- if options.only_todo_types.include?(EdgeTodoTypes::Dependency) -%>
+        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Dependency) -%>
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
       I -> J [label="dependency todo" <%= VisualizePacks::ArrowHead::DependencyTodo.serialize %>]

@@ -30,9 +30,9 @@ class Options < T::Struct
   prop :show_layers, T::Boolean, default: true
   prop :show_visibility, T::Boolean, default: true
 
-  prop :show_todos, T::Boolean, default: true
-  prop :only_todo_types, T::Array[EdgeTodoTypes], default: EdgeTodoTypes.values
-  prop :use_todos_for_layout, T::Boolean, default: false
+  prop :show_relationship_todos, T::Boolean, default: true
+  prop :relationship_todo_types, T::Array[EdgeTodoTypes], default: EdgeTodoTypes.values
+  prop :use_relationship_todos_for_layout, T::Boolean, default: false
 
   prop :show_teams, T::Boolean, default: true
 

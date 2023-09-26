@@ -25,7 +25,7 @@ test_names+=("no_privacy"); test_params[${test_names[-1]}]="--no-privacy-boxes"
 test_names+=("no_nested"); test_params[${test_names[-1]}]="--no-nesting-arrows"
 test_names+=("no_visibility"); test_params[${test_names[-1]}]="--no-visibility-arrows"
 
-test_names+=("only_todo_types"); test_params[${test_names[-1]}]="--only-todo-types=architecture,visibility"
+test_names+=("relationship_todo_types"); test_params[${test_names[-1]}]="--only-todo-types=architecture,visibility"
 test_names+=("roll_nested_into_parent_packs"); test_params[${test_names[-1]}]="--roll-nested-into-parent-packs"
 test_names+=("only_layers"); test_params[${test_names[-1]}]="--no-dependency-arrows --no-todo-arrows --no-privacy-boxes --no-teams --no-nesting-arrows"
 test_names+=("no_to_all"); test_params[${test_names[-1]}]="--title='Hide everything' --no-layers --no-visibility --no-dependency-arrows --no-todo-arrows --no-privacy-boxes --no-teams --no-nesting-arrows"

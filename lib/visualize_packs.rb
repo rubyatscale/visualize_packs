@@ -80,7 +80,7 @@ module VisualizePacks
       options.show_legend ? nil : "legend",
       options.show_layers ? nil : "layers",
       options.show_dependencies ? nil : "dependencies",
-      options.show_todos ? nil : "todos",
+      options.show_relationship_todos ? nil : "todos",
       options.show_privacy ? nil : "privacy",
       options.show_teams ? nil : "teams",
       options.show_visibility ? nil : "visibility",
@@ -89,13 +89,13 @@ module VisualizePacks
     ].compact.join(', ').strip
     hidden_aspects_title = hidden_aspects != '' ? "Hiding #{hidden_aspects}" : nil
 
-    todo_types = EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "Only #{options.only_todo_types.map &:serialize} todos",
+    todo_types = EdgeTodoTypes.values.size == options.relationship_todo_types.size ? nil : "Only #{options.relationship_todo_types.map &:serialize} todos",
 
     exclusions = options.exclude_packs.empty? ? nil : "Excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
 
     main_title = [focus_info, hidden_aspects_title, todo_types, exclusions].compact.join('. ')
 
-    if options.show_todos && max_todo_count
+    if options.show_relationship_todos && max_todo_count
       sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
     end
     "<<b>#{main_title}</b>#{sub_title}>"
@@ -150,13 +150,13 @@ module VisualizePacks
   sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean), options: Options).returns(T.nilable(Integer)) }
   def self.max_todo_count(all_packages, show_edge, options)
     todo_counts = {}
-    if options.show_todos
+    if options.show_relationship_todos
       all_packages.each do |package|
         todos_by_package = package.violations&.group_by(&:to_package_name)
         todos_by_package&.keys&.each do |todos_to_package|
           todo_types = todos_by_package&& todos_by_package[todos_to_package]&.group_by(&:type)
           todo_types&.keys&.each do |todo_type|
-            if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo_type))
+            if options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(todo_type))
               if show_edge.call(package.name, todos_to_package)
                 key = "#{package.name}->#{todos_to_package}:#{todo_type}"
                 todo_counts[key] = todo_types && todo_types[todo_type]&.count
@@ -215,8 +215,8 @@ module VisualizePacks
 
       dependents = options.show_dependencies ? dependents_on(packages, focus_pack_name) : []
       dependencies = options.show_dependencies ? dependencies_of(packages, focus_pack_name) : []
-      todos_out = options.show_todos ? todos_out(packages, focus_pack_name, options) : []
-      todos_in = options.show_todos ? todos_in(packages, focus_pack_name, options) : []
+      todos_out = options.show_relationship_todos ? todos_out(packages, focus_pack_name, options) : []
+      todos_in = options.show_relationship_todos ? todos_in(packages, focus_pack_name, options) : []
 
       case options.show_only_edges_to_focus_pack
       when FocusPackEdgeDirection::All, FocusPackEdgeDirection::InOut then
@@ -342,7 +342,7 @@ module VisualizePacks
   def self.todos_in(all_packages, focus_packs_names, options)
     all_packages.select do |p|
       (p.violations || []).inject([]) do |res, todo|
-        res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
+        res << todo.to_package_name if options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
         res
       end.any? { |v| focus_packs_names.include?(v) }
     end.map { |pack| pack.name }
@@ -352,7 +352,7 @@ module VisualizePacks
   def self.todos_out(all_packages, focus_packs_names, options)
     all_packages.inject([]) do |result, p|
       focus_packs_names.include?(p.name) && (p.violations || []).each do |todo|
-        result << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
+        result << todo.to_package_name if options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
       end
       result
     end

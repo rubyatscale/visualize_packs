@@ -264,29 +264,29 @@ RSpec.describe "VisualizePacks" do
     let(:show_edge) { VisualizePacks.show_edge_builder(@options, [@package.name, 'packs/b']) }
 
     it "is nil if todos aren't being shown" do
-      @options.show_todos = false
+      @options.show_relationship_todos = false
       @package = @package_with_todos.call({privacy: 1})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be nil
     end
 
     it "is nil if there aren't any todos" do
-      @options.show_todos = true
+      @options.show_relationship_todos = true
       @package = @package_with_todos.call({})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be nil
     end
 
     it "returns the highest number of todos found in shown package relationships" do
-      @options.show_todos = true
+      @options.show_relationship_todos = true
       @package = @package_with_todos.call({privacy: 3, dependency: 1})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
     end
 
     it "does not include counts from todo types that are not being shown" do
-      @options.show_todos = true
-      @options.only_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Architecture]
+      @options.show_relationship_todos = true
+      @options.relationship_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Architecture]
       @package = @package_with_todos.call({privacy: 3, dependency: 4, architecture: 2})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
@@ -389,8 +389,8 @@ RSpec.describe "VisualizePacks" do
     true_ = true
 
     cases = [
-      # packages        show_todos  edge_focus_mode            todos        focus_pack        exclude_packs    expectation   test_description
-      #         show_deps   only_todo_types    dependencies
+      # packages        show_relationship_todos  edge_focus_mode            todos        focus_pack        exclude_packs    expectation   test_description
+      #         show_deps   relationship_todo_types    dependencies
       # 0           1       2       3     4        5         6              7                          8            9
 
       #basic usage
@@ -436,8 +436,8 @@ RSpec.describe "VisualizePacks" do
         options.focus_pack = c[7]
         options.exclude_packs = c[8]
         options.show_dependencies = c[1]
-        options.show_todos = c[2]
-        options.only_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] } 
+        options.show_relationship_todos = c[2]
+        options.relationship_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] } 
         options.show_only_edges_to_focus_pack = edge_mode_lookup[c[4]]
 
         @pack_a = make_pack.(pack_name_lookup['a'], dependency_generate.(c[5], 'a'), todo_generate.(c[6], 'a'))
