@@ -264,29 +264,29 @@ RSpec.describe "VisualizePacks" do
     let(:show_edge) { VisualizePacks.show_edge_builder(@options, [@package.name, 'packs/b']) }
 
     it "is nil if todos aren't being shown" do
-      @options.show_todos = false
+      @options.show_relationship_todos = false
       @package = @package_with_todos.call({privacy: 1})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be nil
     end
 
     it "is nil if there aren't any todos" do
-      @options.show_todos = true
+      @options.show_relationship_todos = true
       @package = @package_with_todos.call({})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be nil
     end
 
     it "returns the highest number of todos found in shown package relationships" do
-      @options.show_todos = true
+      @options.show_relationship_todos = true
       @package = @package_with_todos.call({privacy: 3, dependency: 1})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
     end
 
     it "does not include counts from todo types that are not being shown" do
-      @options.show_todos = true
-      @options.only_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Architecture]
+      @options.show_relationship_todos = true
+      @options.relationship_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Architecture]
       @package = @package_with_todos.call({privacy: 3, dependency: 4, architecture: 2})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
@@ -389,8 +389,8 @@ RSpec.describe "VisualizePacks" do
     true_ = true
 
     cases = [
-      # packages        show_todos  edge_focus_mode            todos        focus_pack        exclude_packs    expectation   test_description
-      #         show_deps   only_todo_types    dependencies
+      # packages        show_relationship_todos  edge_focus_mode            todos        focus_pack        exclude_packs    expectation   test_description
+      #         show_deps   relationship_todo_types    dependencies
       # 0           1       2       3     4        5         6              7                          8            9
 
       #basic usage
@@ -436,8 +436,8 @@ RSpec.describe "VisualizePacks" do
         options.focus_pack = c[7]
         options.exclude_packs = c[8]
         options.show_dependencies = c[1]
-        options.show_todos = c[2]
-        options.only_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] } 
+        options.show_relationship_todos = c[2]
+        options.relationship_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] } 
         options.show_only_edges_to_focus_pack = edge_mode_lookup[c[4]]
 
         @pack_a = make_pack.(pack_name_lookup['a'], dependency_generate.(c[5], 'a'), todo_generate.(c[6], 'a'))
@@ -539,6 +539,105 @@ RSpec.describe "VisualizePacks" do
           expect(VisualizePacks.diagram_title(options, 19)).to eq(
             "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 19 todos</font>>"
           )
+        end
+      end
+    end
+  end
+
+  describe '.package_based_todos_for' do
+    let(:full_rubocop) { YAML.load(<<~YAML) }
+      inherit_from: ../../.rubocop.yml
+
+      Packs/DocumentedPublicApis:
+        Enabled: #{@DocumentedPublicApis}
+      
+      Packs/TypedPublicApis:
+        Enabled: #{@TypedPublicApis}
+      
+      Packs/RootNamespaceIsPackName:
+        Enabled: #{@RootNamespaceIsPackName}
+      
+      Packs/ClassMethodsAsPublicApis:
+        Enabled: #{@ClassMethodsAsPublicApis}
+    YAML
+
+    let(:full_rubocop_todo) { YAML.load(<<~YML) }
+      Packs/ClassMethodsAsPublicApis:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+      Packs/DocumentedPublicApis:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+          - 'packs/b/something3'
+      Packs/RootNamespaceIsPackName:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+          - 'packs/b/something3'
+          - 'packs/b/something4'
+      Packs/TypedPublicApis:
+        Exclude:
+          - 'packs/a/something'
+          - 'packs/aba/something'
+          - 'packs/b/something'
+          - 'packs/b/something2'
+          - 'packs/b/something3'
+          - 'packs/b/something4'
+          - 'packs/b/something5'
+      YML
+
+      let(:empty_yaml) { YAML.load('') }
+
+    [
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/a', 'dtrc', :empty_yaml, 0],
+
+      ['                   Packs/Something', 'packs/a', 'dtrc', :full_rubocop_todo, :error],
+      ['Something/ClassMethodsAsPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, :error],
+
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/a', 'dtr ', :full_rubocop_todo, nil],
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/b', 'dtrc', :full_rubocop_todo, 2],
+      ['    Packs/ClassMethodsAsPublicApis', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+
+      ['        Packs/DocumentedPublicApis', 'packs/a', ' trc', :full_rubocop_todo, nil],
+      ['        Packs/DocumentedPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['        Packs/DocumentedPublicApis', 'packs/b', 'dtrc', :full_rubocop_todo, 3],
+      ['        Packs/DocumentedPublicApis', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+
+      ['     Packs/RootNamespaceIsPackName', 'packs/a', 'dt c', :full_rubocop_todo, nil],
+      ['     Packs/RootNamespaceIsPackName', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['     Packs/RootNamespaceIsPackName', 'packs/b', 'dtrc', :full_rubocop_todo, 4],
+      ['     Packs/RootNamespaceIsPackName', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+
+      ['             Packs/TypedPublicApis', 'packs/a', 'd rc', :full_rubocop_todo, nil],
+      ['             Packs/TypedPublicApis', 'packs/a', 'dtrc', :full_rubocop_todo, 1],
+      ['             Packs/TypedPublicApis', 'packs/b', 'dtrc', :full_rubocop_todo, 5],
+      ['             Packs/TypedPublicApis', 'packs/c', 'dtrc', :full_rubocop_todo, 0],
+    ].each do |test|
+      it "works for #{test.join(', ')}" do
+        protection = test[0].strip
+        pack_name = test[1].strip
+
+        @DocumentedPublicApis = test[2].include?('d')
+        @RootNamespaceIsPackName = test[2].include?('r')
+        @TypedPublicApis = test[2].include?('t')
+        @ClassMethodsAsPublicApis = test[2].include?('c')
+
+        rubocop_todo = test[3] == :full_rubocop_todo ? full_rubocop_todo : empty_yaml
+        expectation = test[4]
+
+        if expectation == :error
+          expect { VisualizePacks.package_based_todos_for(protection, pack_name, full_rubocop, rubocop_todo) }.to raise_exception(ArgumentError)
+        else
+          expect(VisualizePacks.package_based_todos_for(protection, pack_name, full_rubocop, rubocop_todo)).to eq(expectation)
         end
       end
     end

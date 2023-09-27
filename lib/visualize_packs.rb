@@ -31,6 +31,7 @@ module VisualizePacks
 
     show_edge = show_edge_builder(options, all_package_names)
     node_color = node_color_builder()
+    node_protection = package_based_todos_text_maker()
     max_todo_count = max_todo_count(all_packages, show_edge, options)
 
     title = diagram_title(options, max_todo_count)
@@ -80,22 +81,23 @@ module VisualizePacks
       options.show_legend ? nil : "legend",
       options.show_layers ? nil : "layers",
       options.show_dependencies ? nil : "dependencies",
-      options.show_todos ? nil : "todos",
+      options.show_relationship_todos ? nil : "edge todos",
       options.show_privacy ? nil : "privacy",
       options.show_teams ? nil : "teams",
+      options.show_node_todos ? nil : "node todos",
       options.show_visibility ? nil : "visibility",
       options.roll_nested_into_parent_packs ? "nested packs" : nil,
       options.show_nested_relationships ? nil : "nested relationships",
     ].compact.join(', ').strip
     hidden_aspects_title = hidden_aspects != '' ? "Hiding #{hidden_aspects}" : nil
 
-    todo_types = EdgeTodoTypes.values.size == options.only_todo_types.size ? nil : "Only #{options.only_todo_types.map &:serialize} todos",
+    todo_types = EdgeTodoTypes.values.size == options.relationship_todo_types.size ? nil : "Only #{options.relationship_todo_types.map &:serialize} todos",
 
     exclusions = options.exclude_packs.empty? ? nil : "Excluding pack#{options.exclude_packs.size > 1 ? 's' : ''}: #{limited_sentence(options.exclude_packs)}",
 
     main_title = [focus_info, hidden_aspects_title, todo_types, exclusions].compact.join('. ')
 
-    if options.show_todos && max_todo_count
+    if options.show_relationship_todos && max_todo_count
       sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
     end
     "<<b>#{main_title}</b>#{sub_title}>"
@@ -150,13 +152,13 @@ module VisualizePacks
   sig { params(all_packages: T::Array[ParsePackwerk::Package], show_edge: T.proc.params(arg0: String, arg1: String).returns(T::Boolean), options: Options).returns(T.nilable(Integer)) }
   def self.max_todo_count(all_packages, show_edge, options)
     todo_counts = {}
-    if options.show_todos
+    if options.show_relationship_todos
       all_packages.each do |package|
         todos_by_package = package.violations&.group_by(&:to_package_name)
         todos_by_package&.keys&.each do |todos_to_package|
           todo_types = todos_by_package&& todos_by_package[todos_to_package]&.group_by(&:type)
           todo_types&.keys&.each do |todo_type|
-            if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo_type))
+            if options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(todo_type))
               if show_edge.call(package.name, todos_to_package)
                 key = "#{package.name}->#{todos_to_package}:#{todo_type}"
                 todo_counts[key] = todo_types && todo_types[todo_type]&.count
@@ -215,8 +217,8 @@ module VisualizePacks
 
       dependents = options.show_dependencies ? dependents_on(packages, focus_pack_name) : []
       dependencies = options.show_dependencies ? dependencies_of(packages, focus_pack_name) : []
-      todos_out = options.show_todos ? todos_out(packages, focus_pack_name, options) : []
-      todos_in = options.show_todos ? todos_in(packages, focus_pack_name, options) : []
+      todos_out = options.show_relationship_todos ? todos_out(packages, focus_pack_name, options) : []
+      todos_in = options.show_relationship_todos ? todos_in(packages, focus_pack_name, options) : []
 
       case options.show_only_edges_to_focus_pack
       when FocusPackEdgeDirection::All, FocusPackEdgeDirection::InOut then
@@ -342,7 +344,7 @@ module VisualizePacks
   def self.todos_in(all_packages, focus_packs_names, options)
     all_packages.select do |p|
       (p.violations || []).inject([]) do |res, todo|
-        res << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
+        res << todo.to_package_name if options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
         res
       end.any? { |v| focus_packs_names.include?(v) }
     end.map { |pack| pack.name }
@@ -352,9 +354,43 @@ module VisualizePacks
   def self.todos_out(all_packages, focus_packs_names, options)
     all_packages.inject([]) do |result, p|
       focus_packs_names.include?(p.name) && (p.violations || []).each do |todo|
-        result << todo.to_package_name if options.only_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
+        result << todo.to_package_name if options.relationship_todo_types.include?(EdgeTodoTypes.deserialize(todo.type))
       end
       result
     end
+  end
+
+  sig { params(protection: String, package_name: String, rubocop_config: T.any(NilClass, T::Boolean, T::Hash[String, T.untyped]), rubocop_todo: T.any(NilClass, T::Boolean, T::Hash[String, T.untyped])).returns(T.nilable(Integer)) }
+  def self.package_based_todos_for(protection, package_name, rubocop_config,  rubocop_todo)
+    rubocop_config = {} if rubocop_config.is_a?(TrueClass) || rubocop_config.is_a?(FalseClass) || rubocop_config.is_a?(NilClass)
+    rubocop_todo = {} if rubocop_todo.is_a?(TrueClass) || rubocop_todo.is_a?(FalseClass) || rubocop_todo.is_a?(NilClass)
+
+    raise ArgumentError unless ['Packs/ClassMethodsAsPublicApis', 'Packs/DocumentedPublicApis', 'Packs/RootNamespaceIsPackName', 'Packs/TypedPublicApis'].include?(protection)
+    return nil unless (rubocop_config.dig(protection)&.dig('Enabled'))
+    
+    (rubocop_todo.dig(protection)&.dig('Exclude') || []).inject(0) do |result, todo|
+      result += 1 if todo.start_with?("#{package_name}/")
+      result
+    end
+  end
+
+  sig { returns(T.untyped) }
+  def self.package_based_todos_text_maker
+    ->(package_name) {
+      [
+        'Packs/ClassMethodsAsPublicApis', 
+        'Packs/DocumentedPublicApis', 
+        'Packs/RootNamespaceIsPackName', 
+        'Packs/TypedPublicApis'
+      ].map do |protection|
+        rubocop_config = File.exist?("#{package_name}/.rubocop.yml") ? YAML.load_file("#{package_name}/.rubocop.yml") : {}
+        rubocop_todo = File.exist?(".rubocop_todo.yml") ? YAML.load_file(".rubocop_todo.yml") : {}
+
+        todo_value = package_based_todos_for(protection, package_name, rubocop_config,  rubocop_todo)
+        abbreviation = T.must(protection.split('/')[1]).chars[0]
+        
+        "#{abbreviation}: #{todo_value}" if todo_value
+      end.compact.join(", ")
+    }
   end
 end
