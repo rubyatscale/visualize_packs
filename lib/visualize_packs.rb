@@ -360,12 +360,15 @@ module VisualizePacks
     end
   end
 
-  sig { params(protection: String, package_name: String, rubocop_config: T.untyped, rubocop_todo: T.untyped).returns(T.nilable(Integer)) }
+  sig { params(protection: String, package_name: String, rubocop_config: T.any(NilClass, T::Boolean, T::Hash[String, T.untyped]), rubocop_todo: T.any(NilClass, T::Boolean, T::Hash[String, T.untyped])).returns(T.nilable(Integer)) }
   def self.package_based_todos_for(protection, package_name, rubocop_config,  rubocop_todo)
+    rubocop_config = {} if rubocop_config.is_a?(TrueClass) || rubocop_config.is_a?(FalseClass) || rubocop_config.is_a?(NilClass)
+    rubocop_todo = {} if rubocop_todo.is_a?(TrueClass) || rubocop_todo.is_a?(FalseClass) || rubocop_todo.is_a?(NilClass)
+
     raise ArgumentError unless ['Packs/ClassMethodsAsPublicApis', 'Packs/DocumentedPublicApis', 'Packs/RootNamespaceIsPackName', 'Packs/TypedPublicApis'].include?(protection)
-    return nil unless (rubocop_config&.dig(protection)&.dig('Enabled'))
+    return nil unless (rubocop_config.dig(protection)&.dig('Enabled'))
     
-    (rubocop_todo&.dig(protection)&.dig('Exclude') || []).inject(0) do |result, todo|
+    (rubocop_todo.dig(protection)&.dig('Exclude') || []).inject(0) do |result, todo|
       result += 1 if todo.start_with?("#{package_name}/")
       result
     end
