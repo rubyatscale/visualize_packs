@@ -108,11 +108,4 @@ digraph package_diagram {
           ]
         
     }
-    subgraph cluster_legend {
-      fontsize=16
-      label="Edges Styles and Arrow Heads"
-      LEGEND_NODE_1 [ label="" peripheries=0 height=0 width=0 style=invis ]
-      LEGEND_NODE_2 [ label="" peripheries=0 height=0 width=0 style=invis ]
-      LEGEND_NODE_1 -> LEGEND_NODE_2 [ style=invis ]
-    }
 }

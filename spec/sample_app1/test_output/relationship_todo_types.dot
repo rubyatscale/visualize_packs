@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 3 todos</font>>
+    label=<<b>Show only architecture and visibility todos</b>>
     fontsize=18
   ]
   node [
