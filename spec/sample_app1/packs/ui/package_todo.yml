@@ -9,39 +9,40 @@
 .:
   "::SomeClass":
     violations:
-    - dependency
-    - architecture
-    - visibility
+    - nested_visibility
     files:
     - file_a
+packs/utility:
+  "::SomeClass1":
+    violations:
+    - visibility
+    files:
+    - file_b
+packs/models:
+  "::SomeClass1":
+    violations:
+    - architecture
+    files:
+    - file_b
 packs/models/packs/model_a:
   "::SomeClass1":
     violations:
     - dependency
-    - privacy
-    - architecture
-    - visibility
     files:
     - file_b
   "::SomeClass2":
     violations:
     - dependency
-    - privacy
-    - architecture
-    - visibility
     files:
     - file_c
   "::SomeClass3":
     violations:
     - dependency
-    - privacy
-    - architecture
     files:
     - file_d
   "::SomeClass4":
     violations:
     - dependency
-    - privacy
     files:
     - file_e
   "::SomeClass5":
@@ -49,3 +50,19 @@ packs/models/packs/model_a:
     - dependency
     files:
     - file_f
+packs/models/packs/model_ab:
+  "::SomeClass1":
+    violations:
+    - privacy
+    files:
+    - file_b
+  "::SomeClass2":
+    violations:
+    - privacy
+    files:
+    - file_c
+  "::SomeClass3":
+    violations:
+    - privacy
+    files:
+    - file_d
