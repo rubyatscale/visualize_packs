@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 #typed: strict
 
-require "pathname"
 require "optparse"
-require "ostruct"
 
 class OptionsParser
   extend T::Sig

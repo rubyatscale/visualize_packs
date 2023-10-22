@@ -37,7 +37,7 @@ module VisualizePacks
     node_protection = package_based_todos_text_maker()
     max_todo_count = max_todo_count(all_packages, show_edge, options)
 
-    title = diagram_title(options, max_todo_count)
+    title = diagram_title(args, options, max_todo_count)
 
     architecture_layers = (raw_config['architecture_layers'] || []) + ["NotInLayer"]
     grouped_packages = architecture_layers.inject({}) do |result, key|
@@ -70,9 +70,22 @@ module VisualizePacks
     package.config.dig("metadata", "owner") || package.config["owner"]
   end
 
-  sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
-  def self.diagram_title(options, max_todo_count)
-    return "<<b>#{options.title}</b>>" if options.title
+  sig { params(args: T::Array[String], options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
+  def self.diagram_title(args, options, max_todo_count)
+    sub_title1_length = 0
+    options_to_display = args.inject('') do |result, item|
+      sub_title1_length += item.length
+      if sub_title1_length > 90
+        sub_title1_length = 0
+        result += "<br/>#{item}"
+      else
+        result += " #{item}"
+      end
+      result
+    end
+    sub_title1 = "<br/>#{options_to_display}"
+
+    return "<<b>#{options.title}</b>#{sub_title1}>" if options.title
 
     focus_info = if options.focus_pack
       "Focus on #{limited_sentence(options.focus_pack)} (Edge mode: #{options.show_only_edges_to_focus_pack.serialize})"
@@ -101,9 +114,9 @@ module VisualizePacks
     main_title = [focus_info, hidden_aspects_title, todo_types, exclusions].compact.join('. ')
 
     if options.show_relationship_todos && max_todo_count
-      sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
+      sub_title2 = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
     end
-    "<<b>#{main_title}</b>#{sub_title}>"
+    "<<b>#{main_title}</b>#{sub_title1}#{sub_title2}>"
   end
 
   sig { params(list: T.nilable(T::Array[String])).returns(T.nilable(String)) }

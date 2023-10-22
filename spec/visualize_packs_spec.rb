@@ -497,7 +497,7 @@ RSpec.describe "VisualizePacks" do
         options = Options.new
         options.title = "Some title"
 
-        expect(VisualizePacks.diagram_title(options, 42)).to eq("<<b>Some title</b>>")
+        expect(VisualizePacks.diagram_title(["args"], options, 42)).to eq("<<b>Some title</b><br/> args>")
       end
     end
 
@@ -506,9 +506,7 @@ RSpec.describe "VisualizePacks" do
         it "doesn't show todo info" do
           options = Options.new
 
-          expect(VisualizePacks.diagram_title(options, nil)).to eq(
-            "<<b>All packs</b>>"
-          )
+          expect(VisualizePacks.diagram_title(["args"], options, nil)).to eq("<<b>All packs</b><br/> args>")
         end
       end
 
@@ -516,8 +514,8 @@ RSpec.describe "VisualizePacks" do
         it "shows max as 0" do
           options = Options.new
 
-          expect(VisualizePacks.diagram_title(options, 0)).to eq(
-            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
+          expect(VisualizePacks.diagram_title(["args"], options, 0)).to eq(
+            "<<b>All packs</b><br/> args<br/><font point-size='12'>Widest todo edge is 0 todo</font>>"
           )
         end
       end
@@ -526,8 +524,8 @@ RSpec.describe "VisualizePacks" do
         it "shows max as 1" do
           options = Options.new
 
-          expect(VisualizePacks.diagram_title(options, 1)).to eq(
-            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 1 todo</font>>"
+          expect(VisualizePacks.diagram_title(["args"], options, 1)).to eq(
+            "<<b>All packs</b><br/> args<br/><font point-size='12'>Widest todo edge is 1 todo</font>>"
           )
         end
       end
@@ -536,10 +534,24 @@ RSpec.describe "VisualizePacks" do
         it "shows appropriate max" do
           options = Options.new
 
-          expect(VisualizePacks.diagram_title(options, 19)).to eq(
-            "<<b>All packs</b><br/><font point-size='12'>Widest todo edge is 19 todos</font>>"
+          expect(VisualizePacks.diagram_title(["args"], options, 19)).to eq(
+            "<<b>All packs</b><br/> args<br/><font point-size='12'>Widest todo edge is 19 todos</font>>"
           )
         end
+      end
+    end
+
+    describe "args subtitle" do
+      it "is broken up if it is very very long" do
+        options = Options.new
+
+        diagram_title = VisualizePacks.diagram_title(
+          ['--title=Hide everything', '--no-node-todos', '--no-legend', '--no-layers', '--no-visibility', '--no-dependency-arrows', '--no-todo-edges', '--no-privacy-boxes', '--no-teams', '--no-nesting-arrows', '--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app'], 
+          options, 
+          nil)
+        expect(diagram_title).to eq(
+            "<<b>All packs</b><br/> --title=Hide everything --no-node-todos --no-legend --no-layers --no-visibility<br/>--no-dependency-arrows --no-todo-edges --no-privacy-boxes --no-teams --no-nesting-arrows<br/>--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app>"
+          )
       end
     end
   end
