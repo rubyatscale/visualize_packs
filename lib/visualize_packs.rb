@@ -7,6 +7,7 @@ require 'parse_packwerk'
 require 'digest/md5'
 
 require 'visualize_packs/options'
+require 'visualize_packs/options_parser'
 
 module VisualizePacks
   extend T::Sig
@@ -23,8 +24,10 @@ module VisualizePacks
     end
   end
 
-  sig { params(options: Options, raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
-  def self.package_graph!(options, raw_config, packages)
+  sig { params(args: T::Array[String], raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
+  def self.package_graph!(args, raw_config, packages)
+    options = OptionsParser.parse(args)
+
     all_packages = filtered(packages, options).compact.sort_by {|x| x.name }
     all_packages = remove_nested_packs(all_packages, options)
     all_package_names = all_packages.map &:name
