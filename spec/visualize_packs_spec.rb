@@ -497,7 +497,7 @@ RSpec.describe "VisualizePacks" do
         options = Options.new
         options.title = "Some title"
 
-        expect(VisualizePacks.diagram_title(["args"], options, 42)).to eq("<<b>Some title</b><br/> args>")
+        expect(VisualizePacks.diagram_title(["args"], options, 42)).to eq("<<b>Some title</b>>")
       end
     end
 

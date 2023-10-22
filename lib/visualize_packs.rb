@@ -73,6 +73,8 @@ module VisualizePacks
 
   sig { params(args: T::Array[String], options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
   def self.diagram_title(args, options, max_todo_count)
+    return "<<b>#{options.title}</b>>" if options.title
+
     sub_title1_length = 0
     options_to_display = args.inject('') do |result, item|
       sub_title1_length += item.length
@@ -86,7 +88,6 @@ module VisualizePacks
     end
     sub_title1 = "<br/>#{options_to_display}"
 
-    return "<<b>#{options.title}</b>#{sub_title1}>" if options.title
 
     focus_info = if options.focus_pack
       "Focus on #{limited_sentence(options.focus_pack)} (Edge mode: #{options.show_only_edges_to_focus_pack.serialize})"
