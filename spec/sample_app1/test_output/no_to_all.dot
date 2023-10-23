@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>Hide everything</b>>
+    label=<<b>custom title: Hide everything</b>>
     fontsize=18
   ]
   node [
@@ -42,7 +42,6 @@ digraph package_diagram {
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/models/packs/model_a </td> </tr>
-                  <tr><td CELLPADDING='1' ALIGN='RIGHT'>C: 1, R: 1</td></tr>
                 </table>
               >
           ]
@@ -54,7 +53,6 @@ digraph package_diagram {
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/models/packs/model_ab </td> </tr>
-                  <tr><td CELLPADDING='1' ALIGN='RIGHT'>D: 1, T: 1</td></tr>
                 </table>
               >
           ]
@@ -84,7 +82,6 @@ digraph package_diagram {
             label= <
                 <table border='0' cellborder='1' cellspacing='0' cellpadding='4'>
                   <tr> <td align='left'> packs/utility </td> </tr>
-                  <tr><td CELLPADDING='1' ALIGN='RIGHT'>C: 1, D: 0, R: 1, T: 0</td></tr>
                 </table>
               >
           ]
