@@ -7,6 +7,7 @@ require 'parse_packwerk'
 require 'digest/md5'
 
 require 'visualize_packs/options'
+require 'visualize_packs/options_parser'
 
 module VisualizePacks
   extend T::Sig
@@ -17,14 +18,17 @@ module VisualizePacks
       PrivacyTodo = new('color=darkred style=dashed arrowhead=crow')
       ArchitectureTodo = new('color=darkred style=dashed arrowhead=obox')
       VisibilityTodo = new('color=darkred style=dashed arrowhead=tee')
+      FolderVisibilityTodo = new('color=darkred style=dashed arrowhead=odot')
       ConfiguredDependency = new('color=darkgreen')
       ConfiguredVisibileTo = new('color=blue')
       ConfiguredNested = new('color=purple')
     end
   end
 
-  sig { params(options: Options, raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
-  def self.package_graph!(options, raw_config, packages)
+  sig { params(args: T::Array[String], raw_config: T::Hash[String, T.untyped], packages: T::Array[ParsePackwerk::Package]).returns(String) }
+  def self.package_graph!(args, raw_config, packages)
+    options = OptionsParser.parse(args)
+
     all_packages = filtered(packages, options).compact.sort_by {|x| x.name }
     all_packages = remove_nested_packs(all_packages, options)
     all_package_names = all_packages.map &:name
@@ -34,7 +38,7 @@ module VisualizePacks
     node_protection = package_based_todos_text_maker()
     max_todo_count = max_todo_count(all_packages, show_edge, options)
 
-    title = diagram_title(options, max_todo_count)
+    title = diagram_title(args, options, max_todo_count)
 
     architecture_layers = (raw_config['architecture_layers'] || []) + ["NotInLayer"]
     grouped_packages = architecture_layers.inject({}) do |result, key|
@@ -67,9 +71,23 @@ module VisualizePacks
     package.config.dig("metadata", "owner") || package.config["owner"]
   end
 
-  sig { params(options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
-  def self.diagram_title(options, max_todo_count)
+  sig { params(args: T::Array[String], options: Options, max_todo_count: T.nilable(Integer)).returns(String) }
+  def self.diagram_title(args, options, max_todo_count)
     return "<<b>#{options.title}</b>>" if options.title
+
+    sub_title1_length = 0
+    options_to_display = args.inject('') do |result, item|
+      sub_title1_length += item.length
+      if sub_title1_length > 90
+        sub_title1_length = 0
+        result += "<br/>#{item}"
+      else
+        result += " #{item}"
+      end
+      result
+    end
+    sub_title1 = "<br/>#{options_to_display}"
+
 
     focus_info = if options.focus_pack
       "Focus on #{limited_sentence(options.focus_pack)} (Edge mode: #{options.show_only_edges_to_focus_pack.serialize})"
@@ -98,9 +116,9 @@ module VisualizePacks
     main_title = [focus_info, hidden_aspects_title, todo_types, exclusions].compact.join('. ')
 
     if options.show_relationship_todos && max_todo_count
-      sub_title = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
+      sub_title2 = "<br/><font point-size='12'>Widest todo edge is #{max_todo_count} todo#{max_todo_count > 1 ? 's' : ''}</font>"
     end
-    "<<b>#{main_title}</b>#{sub_title}>"
+    "<<b>#{main_title}</b>#{sub_title1}#{sub_title2}>"
   end
 
   sig { params(list: T.nilable(T::Array[String])).returns(T.nilable(String)) }

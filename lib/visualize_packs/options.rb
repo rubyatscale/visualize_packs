@@ -7,6 +7,7 @@ class EdgeTodoTypes < T::Enum
     Privacy = new
     Architecture = new
     Visibility = new
+    Folder_Visibility = new
   end
 end
 
