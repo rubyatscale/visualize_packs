@@ -337,10 +337,11 @@ RSpec.describe "VisualizePacks" do
     }
     let(:edge_type_lookup) { 
       { 
-        'd' => EdgeTodoTypes::Dependency, 
-        'p' => EdgeTodoTypes::Privacy, 
-        'a' => EdgeTodoTypes::Architecture, 
-        'v' => EdgeTodoTypes::Visibility 
+        'd' => EdgeTodoTypes::Dependency,
+        'p' => EdgeTodoTypes::Privacy,
+        'a' => EdgeTodoTypes::Architecture,
+        'v' => EdgeTodoTypes::Visibility,
+        'f' => EdgeTodoTypes::Folder_Visibility
       } 
     }
     let(:edge_mode_lookup) { 

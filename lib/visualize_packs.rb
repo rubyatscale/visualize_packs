@@ -18,7 +18,7 @@ module VisualizePacks
       PrivacyTodo = new('color=darkred style=dashed arrowhead=crow')
       ArchitectureTodo = new('color=darkred style=dashed arrowhead=obox')
       VisibilityTodo = new('color=darkred style=dashed arrowhead=tee')
-      NestedVisibilityTodo = new('color=darkred style=dashed arrowhead=odot')
+      FolderVisibilityTodo = new('color=darkred style=dashed arrowhead=odot')
       ConfiguredDependency = new('color=darkgreen')
       ConfiguredVisibileTo = new('color=blue')
       ConfiguredNested = new('color=purple')

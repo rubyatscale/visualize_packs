@@ -105,8 +105,8 @@ digraph package_diagram {
                 <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>
               <%- elsif todo_type == 'visibility' -%>
                 <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>
-              <%- elsif todo_type == 'nested_visibility' -%>
-                <%= VisualizePacks::ArrowHead::NestedVisibilityTodo.serialize %>
+              <%- elsif todo_type == 'folder_visibility' -%>
+                <%= VisualizePacks::ArrowHead::FolderVisibilityTodo.serialize %>
               <%- elsif todo_type == 'dependency' -%>
                 <%= VisualizePacks::ArrowHead::DependencyTodo.serialize %>
               <%- end -%>
@@ -168,10 +168,10 @@ digraph package_diagram {
       H [ fontsize=12 shape=box label="package"]
       G -> H [label="visibility todo" <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>]
         <%- end -%>
-        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Nested_Visibility) -%>
+        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Folder_Visibility) -%>
       I [ fontsize=12 shape=box label="package"]
       J [ fontsize=12 shape=box label="package"]
-      I -> J [label="nested visibility todo" <%= VisualizePacks::ArrowHead::NestedVisibilityTodo.serialize %>]
+      I -> J [label="folder visibility todo" <%= VisualizePacks::ArrowHead::FolderVisibilityTodo.serialize %>]
         <%- end -%>
         <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Dependency) -%>
       K [ fontsize=12 shape=box label="package"]

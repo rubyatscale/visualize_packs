@@ -9,7 +9,7 @@
 .:
   "::SomeClass":
     violations:
-    - nested_visibility
+    - folder_visibility
     files:
     - file_a
 packs/utility:
