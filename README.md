@@ -13,13 +13,13 @@ bundle exec visualize_packs > packs.dot && dot packs.dot -Tpng -o packs.png && o
 This will generate a local dependency diagram for every pack in your app
 
 ```
-find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs -I % sh -c "bundle exec visualize_packs --only=% > %/packs.dot && dot %/packs.dot -Tpng -o %/packs.png"
+find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs -I % sh -c "bundle exec visualize_packs --focus-pack=% > %/packs.dot && dot %/packs.dot -Tpng -o %/packs.png"
 ```
 
 If your app is large and has many packages and todos, the above graphs will likely be too big. Try this version to get only the edges to and from the focus package for each diagram:
 
 ```
-find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs -I % sh -c "bundle exec visualize_packs --only=% --focus-pack-edge-mode=inout > %/packs.dot && dot %/packs.dot -Tpng -o %/packs.png"
+find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs -I % sh -c "bundle exec visualize_packs ---focus-pack=% --focus-pack-edge-mode=inout > %/packs.dot && dot %/packs.dot -Tpng -o %/packs.png"
 ```
 
 
