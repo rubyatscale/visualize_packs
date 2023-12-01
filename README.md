@@ -1,9 +1,11 @@
 # visualize_packs
+
 Visualize_packs helps you visualize the structure, intended and actual, of your package-based Ruby application.
 
 This gem takes a minimal approach in that it only outputs a graph in the format of [graphviz](https://graphviz.org/)' [dot language](https://graphviz.org/doc/info/lang.html). Install graphviz and use one of the chains of commands from below to generate full or partial images of the graphs of your application.
 
 ## Visualize your entire application
+
 ```
 bundle exec visualize_packs > packs.dot && dot packs.dot -Tpng -o packs.png && open packs.png
 ```
@@ -19,9 +21,8 @@ find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs 
 If your app is large and has many packages and todos, the above graphs will likely be too big. Try this version to get only the edges to and from the focus package for each diagram:
 
 ```
-find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs -I % sh -c "bundle exec visualize_packs ---focus-pack=% --focus-pack-edge-mode=inout > %/packs.dot && dot %/packs.dot -Tpng -o %/packs.png"
+find . -iname 'package.yml' | sed 's/\/package.yml//g' | sed 's/\.\///' | xargs -I % sh -c "bundle exec visualize_packs --focus-pack=% --focus-pack-edge-mode=inout > %/packs.dot && dot %/packs.dot -Tpng -o %/packs.png"
 ```
-
 
 ## Get help
 
