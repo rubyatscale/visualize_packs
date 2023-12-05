@@ -20,7 +20,7 @@ module VisualizePacks
       VisibilityTodo = new('color=darkred style=dashed arrowhead=tee')
       FolderVisibilityTodo = new('color=darkred style=dashed arrowhead=odot')
       ConfiguredDependency = new('color=darkgreen')
-      ConfiguredVisibileTo = new('color=blue')
+      ConfiguredVisibleTo = new('color=blue')
       ConfiguredNested = new('color=purple')
     end
   end
