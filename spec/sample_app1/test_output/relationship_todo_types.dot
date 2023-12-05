@@ -168,7 +168,7 @@ color=darkred style=dashed arrowhead=obox
       M -> N [label="nested package" color=purple]
       O [ fontsize=12 shape=box label="package"]
       P [ fontsize=12 shape=box label="package"]
-      O -> P [label="visibile to" color=blue]
+      O -> P [label="visible to" color=blue]
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
       E -> F [label="architecture todo" color=darkred style=dashed arrowhead=obox]

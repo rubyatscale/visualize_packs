@@ -150,7 +150,7 @@ digraph package_diagram {
       <%- if options.show_visibility -%>
       O [ fontsize=12 shape=box label="package"]
       P [ fontsize=12 shape=box label="package"]
-      O -> P [label="visibile to" <%= VisualizePacks::ArrowHead::ConfiguredVisibileTo.serialize %>]
+      O -> P [label="visible to" <%= VisualizePacks::ArrowHead::ConfiguredVisibleTo.serialize %>]
       <%- end -%>
       <%- if options.show_relationship_todos -%>
         <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Privacy) -%>
