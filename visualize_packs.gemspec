@@ -23,8 +23,9 @@ Gem::Specification.new do |spec|
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir['README.md', 'lib/**/*', "bin/**/*"]
   spec.require_paths = ['lib']
-  spec.required_ruby_version = '>= 2.6'
+  spec.required_ruby_version = '>= 2.7'
 
+  spec.add_dependency 'bigdecimal'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency "rspec", "~> 3.12"
   spec.add_development_dependency 'sorbet'
