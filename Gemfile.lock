@@ -42,6 +42,11 @@ GEM
     sorbet (0.5.10969)
       sorbet-static (= 0.5.10969)
     sorbet-runtime (0.5.10969)
+    sorbet-static (0.5.10969-universal-darwin-14)
+    sorbet-static (0.5.10969-universal-darwin-15)
+    sorbet-static (0.5.10969-universal-darwin-16)
+    sorbet-static (0.5.10969-universal-darwin-17)
+    sorbet-static (0.5.10969-universal-darwin-18)
     sorbet-static (0.5.10969-universal-darwin-19)
     sorbet-static (0.5.10969-universal-darwin-20)
     sorbet-static (0.5.10969-universal-darwin-21)
@@ -73,10 +78,7 @@ GEM
       yard (>= 0.9)
 
 PLATFORMS
-  arm64-darwin-20
-  arm64-darwin-21
-  arm64-darwin-22
-  x86_64-darwin-19
+  universal-darwin
   x86_64-linux
 
 DEPENDENCIES
