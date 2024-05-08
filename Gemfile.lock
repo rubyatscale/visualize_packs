@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     visualize_packs (0.5.23)
+      bigdecimal
       packs-specification
       parse_packwerk (>= 0.20.0)
       sorbet-runtime
@@ -10,6 +11,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
+    bigdecimal (3.1.8)
     diff-lcs (1.5.0)
     netrc (0.11.0)
     packs-specification (0.0.10)
