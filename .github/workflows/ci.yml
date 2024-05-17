@@ -8,12 +8,9 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 2.7
-          # See comment comes from https://github.com/ruby/setup-ruby#matrix-of-ruby-versions
-          # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-          - '3.0'
           - 3.1
-          - head
+          - 3.2
+          - 3.3
     env:
       BUNDLE_GEMFILE: Gemfile
     name: "RSpec tests: Ruby ${{ matrix.ruby }}"
@@ -31,12 +28,9 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 2.7
-          # See comment comes from https://github.com/ruby/setup-ruby#matrix-of-ruby-versions
-          # Due to https://github.com/actions/runner/issues/849, we have to use quotes for '3.0'
-          - '3.0'
           - 3.1
-          - head
+          - 3.2
+          - 3.3
     env:
       BUNDLE_GEMFILE: Gemfile
     name: "Visual Regression Suite: Ruby ${{ matrix.ruby }}"
