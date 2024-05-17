@@ -16,7 +16,7 @@ module VisualizePacks
     enums do
       DependencyTodo = new('color=darkred style=dashed arrowhead=odiamond')
       PrivacyTodo = new('color=darkred style=dashed arrowhead=crow')
-      ArchitectureTodo = new('color=darkred style=dashed arrowhead=obox')
+      LayerTodo = new('color=darkred style=dashed arrowhead=obox')
       VisibilityTodo = new('color=darkred style=dashed arrowhead=tee')
       FolderVisibilityTodo = new('color=darkred style=dashed arrowhead=odot')
       ConfiguredDependency = new('color=darkgreen')
@@ -40,18 +40,18 @@ module VisualizePacks
 
     title = diagram_title(args, options, max_todo_count)
 
-    architecture_layers = (raw_config['architecture_layers'] || []) + ["NotInLayer"]
-    grouped_packages = architecture_layers.inject({}) do |result, key|
+    layers = (raw_config['layers'] || []) + ["NotInLayer"]
+    grouped_packages = layers.inject({}) do |result, key|
       result[key] = []
       result
     end
 
     all_packages.each do |package|
       key = package.config['layer'] || "NotInLayer"
-      if architecture_layers.include?(key)
+      if layers.include?(key)
         grouped_packages[key] << package
       else
-        raise RuntimeError, "Package #{package.name} has architecture layer key #{key}. Known layers are only #{architecture_layers.join(", ")}"
+        raise RuntimeError, "Package #{package.name} has layer key #{key}. Known layers are only #{layers.join(", ")}"
       end
     end
 
@@ -64,7 +64,7 @@ module VisualizePacks
     template.result(binding)
   end
 
-  private 
+  private
 
   sig { params(package: ParsePackwerk::Package).returns(T.nilable(String)) }
   def self.code_owner(package)
@@ -91,7 +91,7 @@ module VisualizePacks
 
     focus_info = if options.focus_pack
       "Focus on #{limited_sentence(options.focus_pack)} (Edge mode: #{options.show_only_edges_to_focus_pack.serialize})"
-    else 
+    else
       "All packs"
     end
 
@@ -135,8 +135,8 @@ module VisualizePacks
   sig { params(options: Options, all_package_names: T::Array[String]).returns(T.proc.params(arg0: String, arg1: String).returns(T::Boolean)) }
   def self.show_edge_builder(options, all_package_names)
     return lambda do |start_node, end_node|
-      all_package_names.include?(start_node) && 
-      all_package_names.include?(end_node) && 
+      all_package_names.include?(start_node) &&
+      all_package_names.include?(end_node) &&
       (
         case options.show_only_edges_to_focus_pack
         when FocusPackEdgeDirection::All then
@@ -224,7 +224,7 @@ module VisualizePacks
       res[p.name] = p
       res
     end
- 
+
     result = T.let([], T::Array[T.nilable(String)])
     result = packages.map { |pack| pack.name }
 
@@ -244,7 +244,7 @@ module VisualizePacks
       when FocusPackEdgeDirection::In then
         result += dependents + todos_in
       when FocusPackEdgeDirection::Out then
-        result += dependencies + todos_out 
+        result += dependencies + todos_out
       when FocusPackEdgeDirection::None then
         # nothing to do
       end
@@ -314,9 +314,9 @@ module VisualizePacks
 
         morphed_todos = T.must(package.violations).map do |v|
           ParsePackwerk::Violation.new(
-            type: v.type, 
-            to_package_name: nested_packages[v.to_package_name] || v.to_package_name, 
-            class_name: v.class_name, 
+            type: v.type,
+            to_package_name: nested_packages[v.to_package_name] || v.to_package_name,
+            class_name: v.class_name,
             files: v.files
           )
         end.reject { |v| v.to_package_name == package.name }
@@ -346,7 +346,7 @@ module VisualizePacks
   sig { params(all_packages: T::Array[ParsePackwerk::Package], focus_packs_names: T::Array[String]).returns(T::Array[String]) }
   def self.dependencies_of(all_packages, focus_packs_names)
     focus_packs = all_packages.select { focus_packs_names.include?(_1.name)}
-    
+
     focus_packs.inject([]) do |result, pack|
       result += pack.dependencies
       result
@@ -385,7 +385,7 @@ module VisualizePacks
 
     raise ArgumentError unless ['Packs/ClassMethodsAsPublicApis', 'Packs/DocumentedPublicApis', 'Packs/RootNamespaceIsPackName', 'Packs/TypedPublicApis'].include?(protection)
     return nil unless (rubocop_config.dig(protection)&.dig('Enabled'))
-    
+
     (rubocop_todo.dig(protection)&.dig('Exclude') || []).inject(0) do |result, todo|
       result += 1 if todo.start_with?("#{package_name}/")
       result
@@ -396,9 +396,9 @@ module VisualizePacks
   def self.package_based_todos_text_maker
     ->(package_name) {
       [
-        'Packs/ClassMethodsAsPublicApis', 
-        'Packs/DocumentedPublicApis', 
-        'Packs/RootNamespaceIsPackName', 
+        'Packs/ClassMethodsAsPublicApis',
+        'Packs/DocumentedPublicApis',
+        'Packs/RootNamespaceIsPackName',
         'Packs/TypedPublicApis'
       ].map do |protection|
         rubocop_config = File.exist?("#{package_name}/.rubocop.yml") ? YAML.load_file("#{package_name}/.rubocop.yml") : {}
@@ -406,7 +406,7 @@ module VisualizePacks
 
         todo_value = package_based_todos_for(protection, package_name, rubocop_config,  rubocop_todo)
         abbreviation = T.must(protection.split('/')[1]).chars[0]
-        
+
         "#{abbreviation}: #{todo_value}" if todo_value
       end.compact.join(", ")
     }

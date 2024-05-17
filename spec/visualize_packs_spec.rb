@@ -9,7 +9,7 @@ RSpec.describe "VisualizePacks" do
   describe ".all_nested_packages" do
     it "has an empty result if there are no nested packs" do
       input = %w(. packs/a packs/b )
-      expected_output = {} 
+      expected_output = {}
 
       expect(VisualizePacks.all_nested_packages(input)).to eq(expected_output)
     end
@@ -20,7 +20,7 @@ RSpec.describe "VisualizePacks" do
         "packs/a/z" => "packs/a",
         "packs/b/packs/x" => "packs/b",
         "packs/b/packs/y" => "packs/b"
-      } 
+      }
 
       expect(VisualizePacks.all_nested_packages(input)).to eq(expected_output)
     end
@@ -31,7 +31,7 @@ RSpec.describe "VisualizePacks" do
       expected_output = {
         "packs/a/b" => "packs/a",
         "packs/a/b/c" => "packs/a",
-      } 
+      }
 
       expect(VisualizePacks.all_nested_packages(input)).to eq(expected_output)
     end
@@ -45,21 +45,22 @@ RSpec.describe "VisualizePacks" do
         enforce_privacy: false,
         public_path: 'app/public',
         metadata: {},
+        violations: [],
         dependencies: ['packs/b', 'packs/b/nested', 'packs/a/nested'],
         config: {enforce_dependencies: true, enforce_privacy: true},
       )
       allow(top_level_a).to receive(:violations) do
         [
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/b", 
-            class_name: "SomeClass1", 
+            type: 'privacy',
+            to_package_name: "packs/b",
+            class_name: "SomeClass1",
             files: ["some_file1"]
           ),
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/b/nested", 
-            class_name: "SomeClass2", 
+            type: 'privacy',
+            to_package_name: "packs/b/nested",
+            class_name: "SomeClass2",
             files: ["some_file2"]
           ),
         ]
@@ -70,21 +71,22 @@ RSpec.describe "VisualizePacks" do
         enforce_privacy: false,
         public_path: 'app/public',
         metadata: {},
+        violations: [],
         dependencies: ['packs/a', 'packs/b'],
         config: {enforce_dependencies: true, enforce_privacy: true},
       )
       allow(nested_a).to receive(:violations) do
         [
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/b", 
-            class_name: "SomeClass7", 
+            type: 'privacy',
+            to_package_name: "packs/b",
+            class_name: "SomeClass7",
             files: ["some_file7"]
           ),
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/b/nested", 
-            class_name: "SomeClass8", 
+            type: 'privacy',
+            to_package_name: "packs/b/nested",
+            class_name: "SomeClass8",
             files: ["some_file8"]
           ),
         ]
@@ -96,15 +98,16 @@ RSpec.describe "VisualizePacks" do
         enforce_privacy: false,
         public_path: 'app/public',
         metadata: {},
+        violations: [],
         dependencies: ['packs/b/nested'],
         config: {enforce_dependencies: true, enforce_privacy: true},
       )
       allow(top_level_b).to receive(:violations) do
         [
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/b/nested", 
-            class_name: "SomeClass4", 
+            type: 'privacy',
+            to_package_name: "packs/b/nested",
+            class_name: "SomeClass4",
             files: ["some_file4"]
           ),
         ]
@@ -116,21 +119,22 @@ RSpec.describe "VisualizePacks" do
         enforce_privacy: false,
         public_path: 'app/public',
         metadata: {},
+        violations: [],
         dependencies: ['packs/a', 'packs/b'],
         config: {enforce_dependencies: true, enforce_privacy: true},
       )
       allow(nested_b).to receive(:violations) do
         [
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/a", 
-            class_name: "SomeClass5", 
+            type: 'privacy',
+            to_package_name: "packs/a",
+            class_name: "SomeClass5",
             files: ["some_file5"]
           ),
           ParsePackwerk::Violation.new(
-            type: 'privacy', 
-            to_package_name: "packs/b", 
-            class_name: "SomeClass6", 
+            type: 'privacy',
+            to_package_name: "packs/b",
+            class_name: "SomeClass6",
             files: ["some_file6"]
           ),
         ]
@@ -151,30 +155,30 @@ RSpec.describe "VisualizePacks" do
       expect(new_top_level_a.dependencies).to eq ['packs/b']
       expect(new_top_level_a.violations.map(&:inspect)).to eq [
         ParsePackwerk::Violation.new(
-          type: 'privacy', 
-          to_package_name: "packs/b", 
-          class_name: "SomeClass1", 
+          type: 'privacy',
+          to_package_name: "packs/b",
+          class_name: "SomeClass1",
           files: ["some_file1"]
         ),
         ParsePackwerk::Violation.new(
-          type: 'privacy', 
+          type: 'privacy',
           to_package_name: "packs/b", ## this is no longer pointing to the nested package!
-          class_name: "SomeClass2", 
+          class_name: "SomeClass2",
           files: ["some_file2"]
         ),
 
         # violations from the nested package
 
         ParsePackwerk::Violation.new(
-          type: 'privacy', 
-          to_package_name: "packs/b", 
-          class_name: "SomeClass7", 
+          type: 'privacy',
+          to_package_name: "packs/b",
+          class_name: "SomeClass7",
           files: ["some_file7"]
         ),
         ParsePackwerk::Violation.new(
-          type: 'privacy', 
+          type: 'privacy',
           to_package_name: "packs/b", ## this is no longer pointing to the nested package!
-          class_name: "SomeClass8", 
+          class_name: "SomeClass8",
           files: ["some_file8"]
         ),
       ].map(&:inspect)
@@ -185,9 +189,9 @@ RSpec.describe "VisualizePacks" do
 
       expect(new_top_level_b.violations.map(&:inspect)).to eq [
         ParsePackwerk::Violation.new(
-          type: 'privacy', 
-          to_package_name: "packs/a", 
-          class_name: "SomeClass5", 
+          type: 'privacy',
+          to_package_name: "packs/a",
+          class_name: "SomeClass5",
           files: ["some_file5"]
         ),
       ].map(&:inspect)
@@ -241,6 +245,7 @@ RSpec.describe "VisualizePacks" do
           public_path: 'app/public',
           metadata: {},
           dependencies: [],
+          violations: [],
           config: {},
         )
         allow(x).to receive(:violations) do
@@ -286,8 +291,8 @@ RSpec.describe "VisualizePacks" do
 
     it "does not include counts from todo types that are not being shown" do
       @options.show_relationship_todos = true
-      @options.relationship_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Architecture]
-      @package = @package_with_todos.call({privacy: 3, dependency: 4, architecture: 2})
+      @options.relationship_todo_types = [EdgeTodoTypes::Privacy, EdgeTodoTypes::Layer]
+      @package = @package_with_todos.call({privacy: 3, dependency: 4, layer: 2})
 
       expect(VisualizePacks.max_todo_count([@package], show_edge, @options)).to be 3
     end
@@ -315,76 +320,76 @@ RSpec.describe "VisualizePacks" do
   end
 
   describe '.filtered' do
-    let(:pack_name_lookup) { 
-      { 
-        'a' => 'packs/a', 
-        '1' => 'packs/a/1', 
-        '2' => 'packs/a/2', 
-        '3' => 'packs/b/3', 
-        '4' => 'packs/b/4', 
-        'c' => 'packs/c' 
-      } 
+    let(:pack_name_lookup) {
+      {
+        'a' => 'packs/a',
+        '1' => 'packs/a/1',
+        '2' => 'packs/a/2',
+        '3' => 'packs/b/3',
+        '4' => 'packs/b/4',
+        'c' => 'packs/c'
+      }
     }
     let(:pack_lookup) {
-      { 
-        'a' => @pack_a, 
-        '1' => @pack_1, 
-        '2' => @pack_2, 
-        '3' => @pack_3, 
-        '4' => @pack_4, 
-        'c' => @pack_c 
-      } 
+      {
+        'a' => @pack_a,
+        '1' => @pack_1,
+        '2' => @pack_2,
+        '3' => @pack_3,
+        '4' => @pack_4,
+        'c' => @pack_c
+      }
     }
-    let(:edge_type_lookup) { 
-      { 
+    let(:edge_type_lookup) {
+      {
         'd' => EdgeTodoTypes::Dependency,
         'p' => EdgeTodoTypes::Privacy,
-        'a' => EdgeTodoTypes::Architecture,
+        'a' => EdgeTodoTypes::Layer,
         'v' => EdgeTodoTypes::Visibility,
         'f' => EdgeTodoTypes::Folder_Visibility
-      } 
+      }
     }
-    let(:edge_mode_lookup) { 
-      { 
-        'a' => FocusPackEdgeDirection::All, 
-        'i' => FocusPackEdgeDirection::In, 
-        'o' => FocusPackEdgeDirection::Out, 
-        'b' => FocusPackEdgeDirection::InOut, 
-        'n' => FocusPackEdgeDirection::None 
-      } 
+    let(:edge_mode_lookup) {
+      {
+        'a' => FocusPackEdgeDirection::All,
+        'i' => FocusPackEdgeDirection::In,
+        'o' => FocusPackEdgeDirection::Out,
+        'b' => FocusPackEdgeDirection::InOut,
+        'n' => FocusPackEdgeDirection::None
+      }
     }
 
     let(:dependency_generate) { ->(str, node_name) { str.split(' ').map { _1[0] == node_name ? pack_name_lookup[_1[1]]: nil}.compact } }
 
-    let(:make_todo) { 
-      ->(type, to_package_name) { 
-        ParsePackwerk::Violation.new( 
-          type: type.serialize, 
-          to_package_name: to_package_name, 
-          class_name: "SomeClass1", 
+    let(:make_todo) {
+      ->(type, to_package_name) {
+        ParsePackwerk::Violation.new(
+          type: type.serialize,
+          to_package_name: to_package_name,
+          class_name: "SomeClass1",
           files: ["some_file1"]
-        ) 
+        )
       }
     }
-    let(:todo_generate) { 
-      ->(str, node_name) { 
-        str.split(' ').map { _1[0] == node_name ? make_todo.(edge_type_lookup[_1[1]], pack_name_lookup[_1[2]]): nil}.compact 
-      } 
+    let(:todo_generate) {
+      ->(str, node_name) {
+        str.split(' ').map { _1[0] == node_name ? make_todo.(edge_type_lookup[_1[1]], pack_name_lookup[_1[2]]): nil}.compact
+      }
     }
 
-    let(:make_pack) { 
-      ->(name, dependencies = [], todos = []) { 
-        ParsePackwerk::Package.new( 
-          name: name, 
-          enforce_dependencies: true, 
-          enforce_privacy: false, 
-          public_path: '', 
-          metadata: {}, 
-          dependencies: dependencies, 
-          config: {}, 
+    let(:make_pack) {
+      ->(name, dependencies = [], todos = []) {
+        ParsePackwerk::Package.new(
+          name: name,
+          enforce_dependencies: true,
+          enforce_privacy: false,
+          public_path: '',
+          metadata: {},
+          dependencies: dependencies,
+          config: {},
           violations: todos
         )
-      } 
+      }
     }
 
     true_ = true
@@ -431,14 +436,14 @@ RSpec.describe "VisualizePacks" do
       #Filtering + dependencies + todos + excluding
       ['a1234c',   true_, true_, ' pa ', 'o',  'a1 2a', '    ad3 4aa apc',   %w(packs/a),           %w(packs/a), ' 1   c', 'combination of todo filtering, edge mode, focus, and exclude works'],
      ].each do |c|
-      
+
       it "#{c[10]}" do
         options = Options.new
         options.focus_pack = c[7]
         options.exclude_packs = c[8]
         options.show_dependencies = c[1]
         options.show_relationship_todos = c[2]
-        options.relationship_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] } 
+        options.relationship_todo_types = c[3].gsub(' ', '').chars.map { edge_type_lookup[_1] }
         options.show_only_edges_to_focus_pack = edge_mode_lookup[c[4]]
 
         @pack_a = make_pack.(pack_name_lookup['a'], dependency_generate.(c[5], 'a'), todo_generate.(c[6], 'a'))
@@ -448,8 +453,8 @@ RSpec.describe "VisualizePacks" do
         @pack_4 = make_pack.(pack_name_lookup['4'], dependency_generate.(c[5], '4'), todo_generate.(c[6], '4'))
         @pack_c = make_pack.(pack_name_lookup['c'], dependency_generate.(c[5], 'c'), todo_generate.(c[6], 'c'))
 
-        input_packages = c[0].gsub(' ', '').chars.map { pack_lookup[_1] } 
-        expected_output_packages =  c[9].gsub(' ', '').chars.map { pack_lookup[_1] } 
+        input_packages = c[0].gsub(' ', '').chars.map { pack_lookup[_1] }
+        expected_output_packages =  c[9].gsub(' ', '').chars.map { pack_lookup[_1] }
 
         expect(VisualizePacks.filtered(input_packages, options)).to match_packs(expected_output_packages)
       end
@@ -547,8 +552,8 @@ RSpec.describe "VisualizePacks" do
         options = Options.new
 
         diagram_title = VisualizePacks.diagram_title(
-          ['--title=Hide everything', '--no-node-todos', '--no-legend', '--no-layers', '--no-visibility', '--no-dependency-arrows', '--no-todo-edges', '--no-privacy-boxes', '--no-teams', '--no-nesting-arrows', '--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app'], 
-          options, 
+          ['--title=Hide everything', '--no-node-todos', '--no-legend', '--no-layers', '--no-visibility', '--no-dependency-arrows', '--no-todo-edges', '--no-privacy-boxes', '--no-teams', '--no-nesting-arrows', '--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app'],
+          options,
           nil)
         expect(diagram_title).to eq(
             "<<b>All packs</b><br/> --title=Hide everything --no-node-todos --no-legend --no-layers --no-visibility<br/>--no-dependency-arrows --no-todo-edges --no-privacy-boxes --no-teams --no-nesting-arrows<br/>--remote-base-url=https://github.com/rubyatscale/visualize_packwerk/tree/main/spec/sample_app>"
@@ -563,13 +568,13 @@ RSpec.describe "VisualizePacks" do
 
       Packs/DocumentedPublicApis:
         Enabled: #{@DocumentedPublicApis}
-      
+
       Packs/TypedPublicApis:
         Enabled: #{@TypedPublicApis}
-      
+
       Packs/RootNamespaceIsPackName:
         Enabled: #{@RootNamespaceIsPackName}
-      
+
       Packs/ClassMethodsAsPublicApis:
         Enabled: #{@ClassMethodsAsPublicApis}
     YAML
