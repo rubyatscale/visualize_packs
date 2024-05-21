@@ -5,7 +5,7 @@ class EdgeTodoTypes < T::Enum
   enums do
     Dependency = new
     Privacy = new
-    Architecture = new
+    Layer = new
     Visibility = new
     Folder_Visibility = new
   end

@@ -21,7 +21,7 @@ packs/utility:
 packs/models:
   "::SomeClass1":
     violations:
-    - architecture
+    - layer
     files:
     - file_b
 packs/models/packs/model_a:

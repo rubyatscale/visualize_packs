@@ -5,7 +5,7 @@ digraph package_diagram {
     fontname="Helvetica,Arial,sans-serif"
     dpi=100
     layout=dot
-    label=<<b>Show only architecture and visibility todos</b>>
+    label=<<b>Show only layer and visibility todos</b>>
     fontsize=18
   ]
   node [
@@ -151,7 +151,7 @@ color=darkred style=dashed arrowhead=tee
               penwidth=1            ]
             "packs/ui" -> "packs/models" [
                 constraint=false
-              # headlabel="architecture"
+              # headlabel="layer"
 color=darkred style=dashed arrowhead=obox
               penwidth=1            ]
           "packs/models" -> "packs/models/packs/model_a" [ color=purple ]
@@ -171,7 +171,7 @@ color=darkred style=dashed arrowhead=obox
       O -> P [label="visible to" color=blue]
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
-      E -> F [label="architecture todo" color=darkred style=dashed arrowhead=obox]
+      E -> F [label="layer todo" color=darkred style=dashed arrowhead=obox]
       G [ fontsize=12 shape=box label="package"]
       H [ fontsize=12 shape=box label="package"]
       G -> H [label="visibility todo" color=darkred style=dashed arrowhead=tee]

@@ -92,7 +92,7 @@ color=darkred style=dashed arrowhead=odiamond
       C -> D [label="privacy todo" color=darkred style=dashed arrowhead=crow]
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
-      E -> F [label="architecture todo" color=darkred style=dashed arrowhead=obox]
+      E -> F [label="layer todo" color=darkred style=dashed arrowhead=obox]
       G [ fontsize=12 shape=box label="package"]
       H [ fontsize=12 shape=box label="package"]
       G -> H [label="visibility todo" color=darkred style=dashed arrowhead=tee]

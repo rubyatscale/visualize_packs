@@ -18,7 +18,7 @@ digraph package_diagram {
     style=filled
     shape=plain
   ]
-  <%- architecture_layers.each_with_index do |layer_name, index| -%>
+  <%- layers.each_with_index do |layer_name, index| -%>
     subgraph <%= layer_name -%> {
       shape=box
       color=darkgrey
@@ -68,7 +68,7 @@ digraph package_diagram {
     <%- grouped_packages[layer_name].each do |package| -%>
       <%- if options.show_layers -%>
         <%- if index > 0 -%>
-          <%- grouped_packages[raw_config['architecture_layers'][index - 1]].each do |upper_layer_node| -%>
+          <%- grouped_packages[raw_config['layers'][index - 1]].each do |upper_layer_node| -%>
             <%- if all_package_names.include?(upper_layer_node.name) && all_package_names.include?(package.name) -%>
               "<%= upper_layer_node.name -%>" -> "<%= package.name -%>" [ style=invis ]
             <%- end -%>
@@ -101,8 +101,8 @@ digraph package_diagram {
               # headlabel="<%= todo_type -%>"
               <%- if todo_type == 'privacy' -%>
                 <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>
-              <%- elsif todo_type == 'architecture' -%>
-                <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>
+              <%- elsif todo_type == 'layer' -%>
+                <%= VisualizePacks::ArrowHead::LayerTodo.serialize %>
               <%- elsif todo_type == 'visibility' -%>
                 <%= VisualizePacks::ArrowHead::VisibilityTodo.serialize %>
               <%- elsif todo_type == 'folder_visibility' -%>
@@ -158,10 +158,10 @@ digraph package_diagram {
       D [ fontsize=12 shape=box label="package"]
       C -> D [label="privacy todo" <%= VisualizePacks::ArrowHead::PrivacyTodo.serialize %>]
         <%- end -%>
-        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Architecture) -%>
+        <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Layer) -%>
       E [ fontsize=12 shape=box label="package"]
       F [ fontsize=12 shape=box label="package"]
-      E -> F [label="architecture todo" <%= VisualizePacks::ArrowHead::ArchitectureTodo.serialize %>]
+      E -> F [label="layer todo" <%= VisualizePacks::ArrowHead::LayerTodo.serialize %>]
         <%- end -%>
         <%- if options.relationship_todo_types.include?(EdgeTodoTypes::Visibility) -%>
       G [ fontsize=12 shape=box label="package"]
