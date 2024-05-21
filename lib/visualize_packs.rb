@@ -159,11 +159,11 @@ module VisualizePacks
     return lambda do |text|
       return unless text
       hash_value = Digest::SHA256.hexdigest(text.encode('utf-8'))
-      color_code = hash_value[0, 6]
-      r = color_code[0, 2].to_i(16) % 128 + 128
-      g = color_code[2, 2].to_i(16) % 128 + 128
-      b = color_code[4, 2].to_i(16) % 128 + 128
-      hex = "#%02X%02X%02X" % [r, g, b]
+      color_code = T.must(hash_value[0, 6])
+      r = T.must(color_code[0, 2]).to_i(16) % 128 + 128
+      g = T.must(color_code[2, 2]).to_i(16) % 128 + 128
+      b = T.must(color_code[4, 2]).to_i(16) % 128 + 128
+      "#%02X%02X%02X" % [r, g, b]
     end
   end
 
