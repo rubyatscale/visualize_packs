@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visualize_packs (0.5.23)
+    visualize_packs (0.6.0)
       bigdecimal
       packs-specification
       parse_packwerk (>= 0.20.0)
