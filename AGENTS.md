@@ -1,5 +1,3 @@
-# AGENTS.md
-
 This file provides guidance to AI coding agents when working with code in this repository.
 
 ## What this project is
@@ -25,4 +23,4 @@ bundle exec srb tc
 
 - `lib/visualize_packs.rb` — entry point; reads pack configuration and produces graph output
 - `lib/visualize_packs/` — core logic: graph building, layout, and rendering (e.g. to DOT/SVG)
-- `spec/` — RSpec tests; `spec/fixtures/` holds sample pack configurations
+- `spec/` — RSpec tests; `spec/sample_app1/` contains a sample pack-structured application used in tests
