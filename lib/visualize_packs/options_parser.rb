@@ -26,13 +26,13 @@ class OptionsParser
       opt.on('--no-node-todos', "Don't show package-based todos") { |o| options.show_node_todos = false }
 
       opt.on('--focus-pack=STRING', "Focus on a specific pack(s). Comma-separated list of packs. Wildcards supported: 'packs/*'") { |o| options.focus_pack = o.to_s.split(",") }
-      opt.on('--focus-pack-edge-mode=STRING', "If focus-pack is set, this shows only between focussed packs (when set to none) or the edges into / out of / in and out of the focus packs to non-focus packs (which will be re-added to the graph). One of #{FocusPackEdgeDirection.values.map &:serialize}") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
-      opt.on('--exclude-packs=', "Exclude listed packs from diagram. If used with include you will get all included that are not excluded. Wildcards support: 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
+      opt.on('--focus-pack-edge-mode=STRING', "If focus-pack is set, this shows only between focused packs (when set to none) or the edges into / out of / in and out of the focus packs to non-focus packs (which will be re-added to the graph). One of #{FocusPackEdgeDirection.values.map &:serialize}") { |o| options.show_only_edges_to_focus_pack = FocusPackEdgeDirection.deserialize(o) }
+      opt.on('--exclude-packs=', "Exclude listed packs from diagram. If used with include you will get all included that are not excluded. Wildcards supported: 'packs/ignores/*'") { |o| options.exclude_packs = o.to_s.split(",") }
 
       opt.on('--roll-nested-into-parent-packs', "Don't show nested packs (not counting root). Connect edges to top-level pack instead") { |o| options.roll_nested_into_parent_packs = true }
       opt.on('--no-nesting-arrows', "Don't draw relationships between parents and nested packs") { |o| options.show_nested_relationships = false }
 
-      opt.on('--remote-base-url=STRING', "Link pack packs to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
+      opt.on('--remote-base-url=STRING', "Link packs to a URL (affects graphviz SVG generation)") { |o| options.remote_base_url = o }
 
       opt.on('--title=STRING', "Set a custom diagram title") { |o| options.title = o }
 
