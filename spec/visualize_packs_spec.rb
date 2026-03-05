@@ -429,10 +429,10 @@ RSpec.describe "VisualizePacks" do
       #Filtering + excluding (including wildcards)
       ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil,         %w(packs/a/1), 'a 234c', 'exclude_packs removes node'],
       ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil,         %w(packs/a/*), 'a  34c', 'exclude_packs with wildcard removes nodes'],
-      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil, %w(packs/a packs/a/*), '   34c', 'exclude_packs with multiple exludes works'],
-      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',   %w(packs/a),           %w(packs/a), '      ', 'exclude_packs exludes focus'],
-      ['a1234c',   true_, true_, 'dpav', 'a',  'a1   ', '               ',   %w(packs/a),           %w(packs/a), ' 1    ', 'exclude_packs exludes focus but keeps dependency'],
-      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '            ad1',   %w(packs/a),           %w(packs/a), ' 1    ', 'exclude_packs exludes focus but keeps todo'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',           nil, %w(packs/a packs/a/*), '   34c', 'exclude_packs with multiple excludes works'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '               ',   %w(packs/a),           %w(packs/a), '      ', 'exclude_packs excludes focus'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  'a1   ', '               ',   %w(packs/a),           %w(packs/a), ' 1    ', 'exclude_packs excludes focus but keeps dependency'],
+      ['a1234c',   true_, true_, 'dpav', 'a',  '     ', '            ad1',   %w(packs/a),           %w(packs/a), ' 1    ', 'exclude_packs excludes focus but keeps todo'],
       #Filtering + dependencies + todos + excluding
       ['a1234c',   true_, true_, ' pa ', 'o',  'a1 2a', '    ad3 4aa apc',   %w(packs/a),           %w(packs/a), ' 1   c', 'combination of todo filtering, edge mode, focus, and exclude works'],
      ].each do |c|
