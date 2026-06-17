@@ -56,6 +56,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          ruby-version: head
+          ruby-version: '3.3'
       - name: Run static type checks
         run: bundle exec srb tc
