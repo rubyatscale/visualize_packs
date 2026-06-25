@@ -36,7 +36,7 @@ bundle exec visualize_packs --help
 
 ## Contributing
 
-To contribute, install graphviz (and the `dot` command) and imagemagick. You must also have Ruby 3.2.2 and bundler installed. Then
+To contribute, install graphviz (and the `dot` command) and imagemagick. You must also have Ruby 3.3 and bundler installed. Then
 
 ```
 ./spec/test.sh

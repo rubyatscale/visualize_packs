@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir['README.md', 'lib/**/*', "bin/**/*"]
   spec.require_paths = ['lib']
-  spec.required_ruby_version = '>= 2.7'
+  spec.required_ruby_version = '>= 3.3'
 
   spec.add_dependency 'bigdecimal'
   spec.add_development_dependency 'bundler'
