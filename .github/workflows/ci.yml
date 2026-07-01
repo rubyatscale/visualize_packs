@@ -12,8 +12,9 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 3.3
-          - 3.4
+          - '3.3'
+          - '3.4'
+          - '4.0'
     env:
       BUNDLE_GEMFILE: Gemfile
     name: "RSpec tests: Ruby ${{ matrix.ruby }}"
@@ -31,8 +32,9 @@ jobs:
     strategy:
       matrix:
         ruby:
-          - 3.3
-          - 3.4
+          - '3.3'
+          - '3.4'
+          - '4.0'
     env:
       BUNDLE_GEMFILE: Gemfile
     name: "Visual Regression Suite: Ruby ${{ matrix.ruby }}"
@@ -54,6 +56,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          ruby-version: '3.3'
+          ruby-version: '4.0'
       - name: Run static type checks
         run: bundle exec srb tc
