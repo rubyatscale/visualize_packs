@@ -13,6 +13,14 @@
     "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "resolutions": {
+    "react-scripts/@pmmmwh/react-refresh-webpack-plugin/loader-utils": "^2.0.3",
+    "react-scripts/@svgr/webpack/loader-utils": "^2.0.3",
+    "react-scripts/babel-loader/loader-utils": "^2.0.3",
+    "react-scripts/file-loader/loader-utils": "^2.0.3",
+    "react-scripts/resolve-url-loader/loader-utils": "^2.0.3",
+    "react-scripts/resolve-url-loader/adjust-sourcemap-loader/loader-utils": "^2.0.3"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
