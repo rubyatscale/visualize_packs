@@ -15,5 +15,6 @@ To start the graph in `modularity-graph`:
 
 1. Run `ruby parse_packwerk_integration.rb` from the command line. You can pass in the above environment variables like this:
 - Example: `RELATIVE_PATH_TO_REPOSITORY='../../my_repo' GITHUB_REPO_SLUG='MyOrg/myrepo' ruby parse_packwerk_integration.rb`
-2. Run `yarn start`
-3. Go to `http://localhost:3000/`
+2. Run `yarn install` (first time only)
+3. Run `yarn dev`
+4. Go to `http://localhost:3000/`
