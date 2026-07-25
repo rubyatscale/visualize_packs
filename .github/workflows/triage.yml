@@ -6,4 +6,6 @@ on:
       - opened
 jobs:
   call-workflow-from-shared-config:
-    uses: rubyatscale/shared-config/.github/workflows/triage.yml@main
+    permissions:
+      issues: write
+    uses: rubyatscale/shared-config/.github/workflows/triage.yml@main # zizmor: ignore[unpinned-uses] internal reusable workflow tracked at @main by convention so shared-config updates propagate automatically
