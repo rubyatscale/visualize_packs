@@ -20,3 +20,13 @@ updates:
           - "*"
     cooldown:
       default-days: 7
+  - package-ecosystem: "npm"
+    directory: "/d3_graph_generator"
+    schedule:
+      interval: "monthly"
+    groups:
+      npm:
+        patterns:
+          - "*"
+    cooldown:
+      default-days: 7
